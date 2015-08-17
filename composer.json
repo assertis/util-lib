@@ -1,0 +1,24 @@
+{
+  "name": "assertis/util-lib",
+  "description": "Miscellaneous small PHP utilities.",
+  "authors": [
+    {
+      "name": "Michał Tatarynowicz",
+      "email": "michal.tatarynowicz@assertis.co.uk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {"Assertis\\Util\\": "src"}
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "require": {
+    "php": "~5.5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8"
+  }
+}
