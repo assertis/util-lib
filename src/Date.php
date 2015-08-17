@@ -18,8 +18,8 @@ use JsonSerializable;
 class Date extends DateTime implements JsonSerializable
 {
 
-    const SHORT_FORMAT   = 'Y-m-d';
-    const LONG_FORMAT    = 'Y-m-d H:i:s';
+    const SHORT_FORMAT = 'Y-m-d';
+    const LONG_FORMAT = 'Y-m-d H:i:s';
     const ENGLISH_FORMAT = 'd-m-Y';
 
     /**
@@ -290,5 +290,4 @@ class Date extends DateTime implements JsonSerializable
     {
         return new self($this->formatShort() . " 23:59:59");
     }
-
 }

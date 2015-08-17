@@ -316,7 +316,8 @@ abstract class ObjectList extends ArrayObject
      * @param ObjectList $otherList
      * @return static
      */
-    public function exclude(ObjectList $otherList) {
+    public function exclude(ObjectList $otherList)
+    {
         return $this->filter(function ($item) use ($otherList) {
             return !$otherList->contains($item);
         });
@@ -326,12 +327,12 @@ abstract class ObjectList extends ArrayObject
      * @param callable $sorter
      * @return static
      */
-    public function sort(callable $sorter) {
+    public function sort(callable $sorter)
+    {
         $items = $this->getArrayCopy();
         // Can't unit test anything using usort without suppressing its errors.
         @usort($items, $sorter);
         $this->exchangeArray($items);
         return $this;
     }
-
 }

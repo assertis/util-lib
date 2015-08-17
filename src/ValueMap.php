@@ -8,7 +8,8 @@ namespace Assertis\Util;
 
 use Exception;
 
-class ValueMap {
+class ValueMap
+{
 
     /**
      * @var array
@@ -18,7 +19,8 @@ class ValueMap {
     /**
      * @param array $data
      */
-    public function __construct(array $data = []) {
+    public function __construct(array $data = [])
+    {
         $this->data = $data;
     }
 
@@ -26,14 +28,16 @@ class ValueMap {
      * @param mixed $key
      * @param mixed $value
      */
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         $this->data[$key] = $value;
     }
 
     /**
      * @param mixed $value
      */
-    public function add($value) {
+    public function add($value)
+    {
         $this->data[$value] = true;
     }
 
@@ -43,14 +47,13 @@ class ValueMap {
      * @return mixed
      * @throws Exception
      */
-    public function get($key, $default=false) {
+    public function get($key, $default = false)
+    {
         if ($this->has($key)) {
             return $this->data[$key];
-        }
-        elseif (func_num_args() > 1) {
+        } elseif (func_num_args() > 1) {
             return $default;
-        }
-        else {
+        } else {
             throw new Exception("Invalid key: {$key}");
         }
     }
@@ -59,14 +62,15 @@ class ValueMap {
      * @param mixed $key
      * @return bool
      */
-    public function has($key) {
+    public function has($key)
+    {
         return array_key_exists($key, $this->data);
     }
 
     /**
      */
-    public function clear() {
+    public function clear()
+    {
         $this->data = [];
     }
-
 }

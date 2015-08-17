@@ -13,7 +13,8 @@ use JsonSerializable;
  * Class Weekdays
  * @package Assertis\Util
  */
-class Weekdays implements JsonSerializable {
+class Weekdays implements JsonSerializable
+{
 
     /**
      * @var bool
@@ -59,21 +60,23 @@ class Weekdays implements JsonSerializable {
      * @param bool $saturday
      * @param bool $sunday
      */
-    public function __construct($monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday) {
-        $this->monday = (bool) $monday;
-        $this->tuesday = (bool) $tuesday;
-        $this->wednesday = (bool) $wednesday;
-        $this->thursday = (bool) $thursday;
-        $this->friday = (bool) $friday;
-        $this->saturday = (bool) $saturday;
-        $this->sunday = (bool) $sunday;
+    public function __construct($monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday)
+    {
+        $this->monday = (bool)$monday;
+        $this->tuesday = (bool)$tuesday;
+        $this->wednesday = (bool)$wednesday;
+        $this->thursday = (bool)$thursday;
+        $this->friday = (bool)$friday;
+        $this->saturday = (bool)$saturday;
+        $this->sunday = (bool)$sunday;
     }
 
     /**
      * @param string $data
      * @return Weekdays
      */
-    public static function fromString($data) {
+    public static function fromString($data)
+    {
         if (!preg_match('/^([A-Z][a-z]{2},)*[A-Z][a-z]{2}$/', $data)) {
             throw new InvalidArgumentException("Input {$data} is not a valid Weekdays information string.");
         }
@@ -92,56 +95,64 @@ class Weekdays implements JsonSerializable {
     /**
      * @return boolean
      */
-    public function monday() {
+    public function monday()
+    {
         return $this->monday;
     }
 
     /**
      * @return boolean
      */
-    public function tuesday() {
+    public function tuesday()
+    {
         return $this->tuesday;
     }
 
     /**
      * @return boolean
      */
-    public function wednesday() {
+    public function wednesday()
+    {
         return $this->wednesday;
     }
 
     /**
      * @return boolean
      */
-    public function thursday() {
+    public function thursday()
+    {
         return $this->thursday;
     }
 
     /**
      * @return boolean
      */
-    public function friday() {
+    public function friday()
+    {
         return $this->friday;
     }
 
     /**
      * @return boolean
      */
-    public function saturday() {
+    public function saturday()
+    {
         return $this->saturday;
     }
 
     /**
      * @return boolean
      */
-    public function sunday() {
+    public function sunday()
+    {
         return $this->sunday;
     }
 
     /**
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         return [
             'Mon' => $this->monday(),
             'Tue' => $this->tuesday(),
@@ -157,10 +168,11 @@ class Weekdays implements JsonSerializable {
      * @param string $empty
      * @return string
      */
-    public function short($empty='-') {
+    public function short($empty = '-')
+    {
         $out = '';
         foreach ($this->toArray() as $key => $val) {
-            $out .= $val? substr($key, 0, 1): $empty;
+            $out .= $val ? substr($key, 0, 1) : $empty;
         }
         return $out;
     }
@@ -168,14 +180,16 @@ class Weekdays implements JsonSerializable {
     /**
      * @return array
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return $this->toArray();
     }
 
     /**
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return join(', ', array_keys(array_filter($this->jsonSerialize())));
     }
 
@@ -183,8 +197,8 @@ class Weekdays implements JsonSerializable {
      * @param Date $date
      * @return bool
      */
-    public function matches(Date $date) {
-        return (bool) $this->toArray()[$date->format('D')];
+    public function matches(Date $date)
+    {
+        return (bool)$this->toArray()[$date->format('D')];
     }
-
 }

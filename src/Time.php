@@ -13,7 +13,8 @@ use UnexpectedValueException;
  * Class Time
  * @package Assertis\Util
  */
-class Time implements JsonSerializable {
+class Time implements JsonSerializable
+{
 
     const NRS_FORMAT = '/^([0-2]\d)([0-5]\d)$/';
     const DEFAULT_FORMAT = '/^([0-2]?\d)\:([0-5]\d)$/';
@@ -33,18 +34,17 @@ class Time implements JsonSerializable {
      * @return Time|null
      * @throws UnexpectedValueException
      */
-    public static function fromString($string) {
+    public static function fromString($string)
+    {
         if ('' === trim($string)) {
             return null;
         }
 
         if (preg_match(self::DEFAULT_FORMAT, $string, $match)) {
             return new self((int)$match[1], (int)$match[2]);
-        }
-        elseif (preg_match(self::NRS_FORMAT, $string, $match)) {
+        } elseif (preg_match(self::NRS_FORMAT, $string, $match)) {
             return new self((int)$match[1], (int)$match[2]);
-        }
-        else {
+        } else {
             throw new UnexpectedValueException("Could not parse \"{$string}\" as time.");
         }
     }
@@ -53,7 +53,8 @@ class Time implements JsonSerializable {
      * @param int $hours
      * @param int $minutes
      */
-    public function __construct($hours, $minutes) {
+    public function __construct($hours, $minutes)
+    {
         $this->hours = $hours;
         $this->minutes = $minutes;
     }
@@ -61,36 +62,41 @@ class Time implements JsonSerializable {
     /**
      * @return int
      */
-    public function getHours() {
+    public function getHours()
+    {
         return $this->hours;
     }
 
     /**
      * @return int
      */
-    public function getMinutes() {
+    public function getMinutes()
+    {
         return $this->minutes;
     }
 
     /**
      * @return string
      */
-    public function getTime() {
-        return $this->hours .':'. sprintf('%02d', $this->minutes);
+    public function getTime()
+    {
+        return $this->hours . ':' . sprintf('%02d', $this->minutes);
     }
 
     /**
      * @return int
      */
-    public function toInt() {
-        return (int) ($this->hours.sprintf('%02d', $this->minutes));
+    public function toInt()
+    {
+        return (int)($this->hours . sprintf('%02d', $this->minutes));
     }
 
     /**
      * @param Time $other
      * @return bool
      */
-    public function isAfter(Time $other) {
+    public function isAfter(Time $other)
+    {
         return $this->toInt() > $other->toInt();
     }
 
@@ -98,22 +104,24 @@ class Time implements JsonSerializable {
      * @param Time $other
      * @return bool
      */
-    public function isBefore(Time $other) {
+    public function isBefore(Time $other)
+    {
         return $this->toInt() < $other->toInt();
     }
 
     /**
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getTime();
     }
 
     /**
      * @return string
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return $this->getTime();
     }
-
 }
