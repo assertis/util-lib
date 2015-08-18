@@ -7,47 +7,61 @@ use PHPUnit_Framework_TestCase;
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class WeekdaysTest extends PHPUnit_Framework_TestCase {
+class WeekdaysTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * @return array
      */
-    public function provideInvalidDefinitions() {
+    public function provideInvalidDefinitions()
+    {
         return [
-            [ 'Mon Tue' ],
-            [ 'wed' ],
-            [ '' ],
+            ['Mon Tue'],
+            ['wed'],
+            [''],
         ];
     }
 
     /**
      * @dataProvider provideInvalidDefinitions
      * @expectedException \InvalidArgumentException
+     * @param string $input
      */
-    public function testShouldThrowExceptionOnInvalidFormat($input) {
+    public function testShouldThrowExceptionOnInvalidFormat($input)
+    {
         Weekdays::fromString($input);
     }
 
     /**
      * @return array
      */
-    public function provideSingleWeekdays() {
+    public function provideSingleWeekdays()
+    {
         return [
-            [ 'Mon', true, false, false, false, false, false, false ],
-            [ 'Tue', false, true, false, false, false, false, false ],
-            [ 'Wed', false, false, true, false, false, false, false ],
-            [ 'Thu', false, false, false, true, false, false, false ],
-            [ 'Fri', false, false, false, false, true, false, false ],
-            [ 'Sat', false, false, false, false, false, true, false ],
-            [ 'Sun', false, false, false, false, false, false, true ],
-            [ 'Mon,Tue,Wed,Thu,Fri,Sat,Sun', true, true, true, true, true, true, true ],
+            ['Mon', true, false, false, false, false, false, false],
+            ['Tue', false, true, false, false, false, false, false],
+            ['Wed', false, false, true, false, false, false, false],
+            ['Thu', false, false, false, true, false, false, false],
+            ['Fri', false, false, false, false, true, false, false],
+            ['Sat', false, false, false, false, false, true, false],
+            ['Sun', false, false, false, false, false, false, true],
+            ['Mon,Tue,Wed,Thu,Fri,Sat,Sun', true, true, true, true, true, true, true],
         ];
     }
 
     /**
      * @dataProvider provideSingleWeekdays
+     * @param array $input
+     * @param bool $isMon
+     * @param bool $isTue
+     * @param bool $isWed
+     * @param bool $isThu
+     * @param bool $isFri
+     * @param bool $isSat
+     * @param bool $isSun
      */
-    public function testShouldSetInputProperly($input, $isMon, $isTue, $isWed, $isThu, $isFri, $isSat, $isSun) {
+    public function testShouldSetInputProperly($input, $isMon, $isTue, $isWed, $isThu, $isFri, $isSat, $isSun)
+    {
         $weekdays = Weekdays::fromString($input);
         $this->assertEquals($weekdays->monday(), $isMon);
         $this->assertEquals($weekdays->tuesday(), $isTue);
@@ -58,16 +72,18 @@ class WeekdaysTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($weekdays->sunday(), $isSun);
     }
 
-    public function testSerialization() {
+    public function testSerialization()
+    {
         $input = 'Mon,Wed,Fri,Sun';
         $str = 'Mon, Wed, Fri, Sun';
         $json = '{"Mon":true,"Tue":false,"Wed":true,"Thu":false,"Fri":true,"Sat":false,"Sun":true}';
         $weekdays = Weekdays::fromString($input);
-        $this->assertEquals($str, (string) $weekdays);
+        $this->assertEquals($str, (string)$weekdays);
         $this->assertEquals($json, json_encode($weekdays));
     }
 
-    public function testMatches() {
+    public function testMatches()
+    {
         $right = Date::fromString(date('Y-m-d', strtotime('next Monday')));
         $wrong = Date::fromString(date('Y-m-d', strtotime('next Tuesday')));
 
@@ -76,5 +92,4 @@ class WeekdaysTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($weekdays->matches($right));
         $this->assertFalse($weekdays->matches($wrong));
     }
-
 }
