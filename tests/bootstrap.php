@@ -1,5 +1,7 @@
 <?php
 
+use Assertis\Util\ObjectList;
+
 $possibleAutoloadFiles = [
     __DIR__.'/../vendor/autoload.php',
     __DIR__.'/../../../autoload.php',
@@ -13,3 +15,14 @@ foreach ($possibleAutoloadFiles as $possibleAutoloadFile) {
 }
 
 error_reporting(E_ALL);
+
+class TestObjectList extends ObjectList
+{
+    /**
+     * @inheritdoc
+     */
+    public function accepts($value)
+    {
+        return true;
+    }
+}

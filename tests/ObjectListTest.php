@@ -4,27 +4,28 @@ namespace Assertis\Util;
 
 use PHPUnit_Framework_TestCase;
 use stdClass;
+use TestObjectList;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class ObjectListTest extends PHPUnit_Framework_TestCase {
+class ObjectListTest extends PHPUnit_Framework_TestCase
+{
 
     /**
      * @param array $values
      * @return ObjectList
      */
-    private function getMockList($values) {
-        $stub = $this->getMockForAbstractClass(ObjectList::class);
-        $stub->expects($this->any())->method('accepts')->willReturn(true);
-        $stub->__construct($values);
-        return $stub;
+    private function getMockList($values)
+    {
+        return new TestObjectList($values);
     }
 
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testConstructThrowsExceptionIfElementNotAccepted() {
+    public function testConstructThrowsExceptionIfElementNotAccepted()
+    {
         $stub = $this->getMockBuilder(ObjectList::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -33,22 +34,24 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
             ->method('accepts')
             ->willReturn(false);
 
-        $stub->__construct([ 'not-accepted' ]);
+        $stub->__construct(['not-accepted']);
     }
 
-    public function testConstructor() {
+    public function testConstructor()
+    {
         $stub = $this->getMockForAbstractClass(ObjectList::class);
         $stub->expects($this->any())
             ->method('accepts')
             ->willReturn(true);
 
-        $values = [ 'value-1', 'value-2' ];
+        $values = ['value-1', 'value-2'];
 
         $stub->__construct($values);
         $this->assertSame($values, $stub->getArrayCopy());
     }
 
-    public function testAppend() {
+    public function testAppend()
+    {
         $stub = $this->getMockForAbstractClass(ObjectList::class);
         $stub->expects($this->any())
             ->method('accepts')
@@ -56,13 +59,14 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
 
         $value = 'value-1';
         $stub->append($value);
-        $this->assertSame([ $value ], $stub->getArrayCopy());
+        $this->assertSame([$value], $stub->getArrayCopy());
     }
 
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testAppendThrowsExceptionIfValueNotAccepted() {
+    public function testAppendThrowsExceptionIfValueNotAccepted()
+    {
         $stub = $this->getMockForAbstractClass(ObjectList::class);
         $stub->expects($this->any())
             ->method('accepts')
@@ -75,7 +79,8 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testOffsetSetThrowsExceptionIfValueNotAccepted() {
+    public function testOffsetSetThrowsExceptionIfValueNotAccepted()
+    {
         $stub = $this->getMockForAbstractClass(ObjectList::class);
         $stub->expects($this->any())
             ->method('accepts')
@@ -84,21 +89,23 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $stub[0] = 'not-accepted';
     }
 
-    public function provideGetAllPermutations() {
+    public function provideGetAllPermutations()
+    {
         return [
-            [ [ ], 0 ],
-            [ [ 1 ], 1 ],
-            [ [ 1, 2 ], 2 ],
-            [ [ 1, 2, 3 ], 6 ],
-            [ [ 1, 2, 3, 4 ], 24 ],
-            [ [ 1, 2, 3, 4, 5 ], 120 ],
+            [[], 0],
+            [[1], 1],
+            [[1, 2], 2],
+            [[1, 2, 3], 6],
+            [[1, 2, 3, 4], 24],
+            [[1, 2, 3, 4, 5], 120],
         ];
     }
 
     /**
      * @dataProvider provideGetAllPermutations
      */
-    public function testGetAllPermutations($values, $count) {
+    public function testGetAllPermutations($values, $count)
+    {
         $stub = $this->getMockList($values);
 
         $perms = $stub->getAllPermutations();
@@ -114,8 +121,9 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         }
     }
 
-    public function testGetAllPermutationsWithLimit() {
-        $values = [ 1, 2, 3, 4, 5 ];
+    public function testGetAllPermutationsWithLimit()
+    {
+        $values = [1, 2, 3, 4, 5];
         $limit = 3;
 
         $stub = $this->getMockList($values);
@@ -123,8 +131,9 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame($limit, count($stub->getAllPermutations($limit)));
     }
 
-    public function testGetFirstAndLast() {
-        $values = [ 1, 2, 3];
+    public function testGetFirstAndLast()
+    {
+        $values = [1, 2, 3];
 
         $stub = $this->getMockList($values);
 
@@ -132,8 +141,9 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(3, $stub->getLast());
     }
 
-    public function testPop() {
-        $values = [ 1, 2, 3];
+    public function testPop()
+    {
+        $values = [1, 2, 3];
 
         $stub = $this->getMockList($values);
 
@@ -149,12 +159,13 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(0, $stub->count());
     }
 
-    public function testCountAndPopMatching() {
-        $values = [ 1, 2, 3, 4, 5];
+    public function testCountAndPopMatching()
+    {
+        $values = [1, 2, 3, 4, 5];
 
         $stub = $this->getMockList($values);
 
-        $matchOdd = function($value){
+        $matchOdd = function ($value) {
             return $value % 2;
         };
 
@@ -168,12 +179,13 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(2, $stub->count());
     }
 
-    public function testMap() {
-        $values = [ 1, 2, 3, 4, 5];
+    public function testMap()
+    {
+        $values = [1, 2, 3, 4, 5];
 
         $stub = $this->getMockList($values);
 
-        $map = function($value){
+        $map = function ($value) {
             return $value * 2;
         };
 
@@ -181,13 +193,14 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame($values, $stub->getArrayCopy());
     }
 
-    public function testEach() {
-        $values = [ 1, 2, 3, 4, 5];
+    public function testEach()
+    {
+        $values = [1, 2, 3, 4, 5];
 
         $stub = $this->getMockList($values);
 
         $total = 0;
-        $stub->each(function($value) use (&$total) {
+        $stub->each(function ($value) use (&$total) {
             $total += $value;
         });
 
@@ -195,16 +208,17 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame($values, $stub->getArrayCopy());
     }
 
-    public function testReduce() {
-        $values = [ 1, 2, 3, 4, 5];
+    public function testReduce()
+    {
+        $values = [1, 2, 3, 4, 5];
 
         $stub = $this->getMockList($values);
 
-        $total = $stub->reduce(function($carry, $value) {
+        $total = $stub->reduce(function ($carry, $value) {
             return $carry + $value;
         });
 
-        $totalWithInitial = $stub->reduce(function($carry, $value) {
+        $totalWithInitial = $stub->reduce(function ($carry, $value) {
             return $carry + $value;
         }, 10);
 
@@ -213,8 +227,9 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame($values, $stub->getArrayCopy());
     }
 
-    public function testAppendAll() {
-        $values = [ 1, 2, 3, 4, 5];
+    public function testAppendAll()
+    {
+        $values = [1, 2, 3, 4, 5];
 
         $stub = $this->getMockList($values);
         $stub2 = $this->getMockList($values);
@@ -224,10 +239,11 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
 
         $this->assertSame($stub, $stub->appendAll($stub2));
 
-        $this->assertSame(count($values)+$stub2->count(), $stub->count());
+        $this->assertSame(count($values) + $stub2->count(), $stub->count());
     }
 
-    public function testContains() {
+    public function testContains()
+    {
         $values = [
             new stdClass(),
             new stdClass(),
@@ -240,4 +256,15 @@ class ObjectListTest extends PHPUnit_Framework_TestCase {
         $this->assertSame(false, $stub->contains(new stdClass()));
     }
 
+    public function testGroup()
+    {
+        $values = [1, 2, 3, 4, 5];
+
+        $stub = $this->getMockList($values);
+        $groups = $stub->group(function ($value) {
+            return $value % 2;
+        });
+
+        $this->assertSame(2, count($groups));
+    }
 }
