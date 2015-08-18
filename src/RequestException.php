@@ -9,7 +9,6 @@ use Exception;
  */
 abstract class RequestException extends Exception
 {
-
     const ERROR_CODE_PREFIX = 'ERR-';
     const ERROR_CODE_UNKNOWN = 'UNKNOWN';
 

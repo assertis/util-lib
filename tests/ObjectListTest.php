@@ -2,9 +2,10 @@
 
 namespace Assertis\Util;
 
+use ObjectListNeverAccept;
 use PHPUnit_Framework_TestCase;
 use stdClass;
-use TestObjectList;
+use ObjectListAlwaysAccept;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
@@ -13,49 +14,25 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @param array $values
-     * @return ObjectList
-     */
-    private function getMockList($values)
-    {
-        return new TestObjectList($values);
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testConstructThrowsExceptionIfElementNotAccepted()
     {
-        $stub = $this->getMockBuilder(ObjectList::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $stub->expects($this->any())
-            ->method('accepts')
-            ->willReturn(false);
-
+        $stub = new ObjectListNeverAccept();
         $stub->__construct(['not-accepted']);
     }
 
     public function testConstructor()
     {
-        $stub = $this->getMockForAbstractClass(ObjectList::class);
-        $stub->expects($this->any())
-            ->method('accepts')
-            ->willReturn(true);
-
         $values = ['value-1', 'value-2'];
-
-        $stub->__construct($values);
+        $stub = new ObjectListAlwaysAccept($values);
+        
         $this->assertSame($values, $stub->getArrayCopy());
     }
 
     public function testAppend()
     {
-        $stub = $this->getMockForAbstractClass(ObjectList::class);
-        $stub->expects($this->any())
-            ->method('accepts')
-            ->willReturn(true);
+        $stub = new ObjectListAlwaysAccept();
 
         $value = 'value-1';
         $stub->append($value);
@@ -67,13 +44,8 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
      */
     public function testAppendThrowsExceptionIfValueNotAccepted()
     {
-        $stub = $this->getMockForAbstractClass(ObjectList::class);
-        $stub->expects($this->any())
-            ->method('accepts')
-            ->willReturn(false);
-
-        $value = 'not-accepted';
-        $stub->append($value);
+        $stub = new ObjectListNeverAccept();
+        $stub->append('not-accepted');
     }
 
     /**
@@ -81,11 +53,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
      */
     public function testOffsetSetThrowsExceptionIfValueNotAccepted()
     {
-        $stub = $this->getMockForAbstractClass(ObjectList::class);
-        $stub->expects($this->any())
-            ->method('accepts')
-            ->willReturn(false);
-
+        $stub = new ObjectListNeverAccept();
         $stub[0] = 'not-accepted';
     }
 
@@ -103,10 +71,12 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideGetAllPermutations
+     * @param array $values
+     * @param int $count
      */
     public function testGetAllPermutations($values, $count)
     {
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $perms = $stub->getAllPermutations();
 
@@ -126,7 +96,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $values = [1, 2, 3, 4, 5];
         $limit = 3;
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $this->assertSame($limit, count($stub->getAllPermutations($limit)));
     }
@@ -135,7 +105,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $this->assertSame(1, $stub->getFirst());
         $this->assertSame(3, $stub->getLast());
@@ -145,7 +115,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $this->assertSame(3, $stub->count());
 
@@ -163,7 +133,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3, 4, 5];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $matchOdd = function ($value) {
             return $value % 2;
@@ -183,7 +153,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3, 4, 5];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $map = function ($value) {
             return $value * 2;
@@ -197,7 +167,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3, 4, 5];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $total = 0;
         $stub->each(function ($value) use (&$total) {
@@ -212,7 +182,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3, 4, 5];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $total = $stub->reduce(function ($carry, $value) {
             return $carry + $value;
@@ -231,8 +201,8 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3, 4, 5];
 
-        $stub = $this->getMockList($values);
-        $stub2 = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
+        $stub2 = new ObjectListAlwaysAccept($values);
 
         $this->assertSame(count($values), $stub->count());
         $this->assertSame(count($values), $stub2->count());
@@ -250,7 +220,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
             new stdClass(),
         ];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
 
         $this->assertSame(true, $stub->contains($values[0]));
         $this->assertSame(false, $stub->contains(new stdClass()));
@@ -260,7 +230,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = [1, 2, 3, 4, 5];
 
-        $stub = $this->getMockList($values);
+        $stub = new ObjectListAlwaysAccept($values);
         $groups = $stub->group(function ($value) {
             return $value % 2;
         });

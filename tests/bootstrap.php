@@ -16,7 +16,7 @@ foreach ($possibleAutoloadFiles as $possibleAutoloadFile) {
 
 error_reporting(E_ALL);
 
-class TestObjectList extends ObjectList
+class ObjectListAlwaysAccept extends ObjectList
 {
     /**
      * @inheritdoc
@@ -24,5 +24,16 @@ class TestObjectList extends ObjectList
     public function accepts($value)
     {
         return true;
+    }
+}
+
+class ObjectListNeverAccept extends ObjectList
+{
+    /**
+     * @inheritdoc
+     */
+    public function accepts($value)
+    {
+        return false;
     }
 }
