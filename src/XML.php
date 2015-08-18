@@ -168,9 +168,9 @@ class XML extends SimpleXMLElement
     public function attr($name, $value = null)
     {
         if (func_num_args() == 2) {
-            return (string)($this->attributes()->$name = $value);
+            return (string)($this[$name] = $value);
         } else {
-            return (string)($this->attributes()->$name);
+            return (string)($this[$name]);
         }
     }
 
