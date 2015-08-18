@@ -104,7 +104,7 @@ abstract class ObjectList extends ArrayObject
             if (!array_key_exists($value, $out)) {
                 $out[$value] = new static;
             }
-            $list = &$object[$value];
+            $list = &$out[$value];
             /** @var $list static */
             $list->append($item);
         }
