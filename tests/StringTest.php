@@ -30,4 +30,24 @@ class StringTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame($expected, String::ucwords($input));
     }
+
+    public function testSubstrReturnsEmptyStringWhenEmptyStringPassed()
+    {
+        $this->assertSame('', String::substr(''));
+    }
+
+    public function testSubstrReturnsSubstringWhenLongerStringPassedWithShorteningConstraints()
+    {
+        $this->assertSame('super', String::substr('supermegalongtext', 0, 5));
+    }
+
+    public function testSubstrReturnsShorterSubstringWhenSomeStringPassedWithShorteningConstraintsGettingOutOfBand()
+    {
+        $this->assertSame('ext', String::substr('supermegalongtext', 14, 5));
+    }
+
+    public function testSubstrReturnsEmptyStringWhenConstraintsOutOfBoundPassed()
+    {
+        $this->assertSame('', String::substr('supermegalongtext', 17, 5));
+    }
 }
