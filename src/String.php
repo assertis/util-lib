@@ -52,8 +52,13 @@ final class String
         $lastTextIndex = strlen($text) - 1;
         if (strlen($text) === 0) {
             return $text;
-        } else if ($lastTextIndex < $start) {
+        }
+        if ($lastTextIndex < $start) {
             return '';
+        }
+
+        if (null === $length) {
+            return substr($text, $start);
         }
 
         return substr($text, $start, $length);

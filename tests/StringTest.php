@@ -50,4 +50,9 @@ class StringTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('', String::substr('supermegalongtext', 17, 5));
     }
+
+    public function testSubstrReturnsRestOfString_whenOnlyStartParameterPassed()
+    {
+        $this->assertSame('longtext', String::substr('supermegalongtext', 9));
+    }
 }
