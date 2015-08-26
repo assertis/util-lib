@@ -82,6 +82,21 @@ class XML extends SimpleXMLElement
     }
 
     /**
+     * @param string $text
+     * @return self
+     */
+    public function appendComment($text)
+    {
+        $dom = dom_import_simplexml($this);
+        $owner = $dom->ownerDocument;
+        $node = $owner->createComment($text);
+        $owner->importNode($node);
+        $dom->appendChild($node);
+        
+        return $this;
+    }
+
+    /**
      * Removes an element from the document.
      *
      * @return XML
