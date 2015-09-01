@@ -243,4 +243,15 @@ class DateTest extends PHPUnit_Framework_TestCase
     {
         $this->assertStringEndsWith(date('Y'), (new Date())->formatEnglish());
     }
+
+    public function testSetTimeFromTimeObject()
+    {
+        $date = new Date('2015-06-04 10:00:00');
+        $time = new Time(15, 15);
+        $dateWithDifferentTime = $date->setTimeUsingTimeObject($time);
+        $this->assertEquals('2015-06-04 15:15:00', $dateWithDifferentTime->formatLong());
+        $this->assertEquals('2015-06-04 10:00:00', $date->formatLong());
+    }
+
+
 }
