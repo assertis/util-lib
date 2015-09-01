@@ -290,4 +290,17 @@ class Date extends DateTime implements JsonSerializable
     {
         return new self($this->formatShort() . " 23:59:59");
     }
+
+    /**
+     * @param Time $time
+     * @return Date
+     */
+    public function setTimeUsingTimeObject(Time $time)
+    {
+        $date = clone $this;
+        $date->setTime($time->getHours(), $time->getMinutes());
+
+        return $date;
+    }
+
 }
