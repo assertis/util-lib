@@ -17,6 +17,8 @@ use JsonSerializable;
  */
 class Date extends DateTime implements JsonSerializable
 {
+    const LONG_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2})\:(\d{2})\:(\d{2})$/';
+    const SHORT_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2})$/';
 
     const SHORT_FORMAT = 'Y-m-d';
     const LONG_FORMAT = 'Y-m-d H:i:s';
@@ -29,18 +31,27 @@ class Date extends DateTime implements JsonSerializable
      */
     public static function fromString($string)
     {
-        if (!preg_match('/^(\d{4})\-(\d{2})\-(\d{2})$/', $string, $match)) {
+        if (preg_match(self::LONG_INPUT_FORMAT, $string, $match)) {
+            $date = [ $match[1], $match[2], $match[3] ];
+            $time = [ $match[4], $match[5], $match[6] ];
+        } elseif (preg_match(self::SHORT_INPUT_FORMAT, $string, $match)) {
+            $date = [ $match[1], $match[2], $match[3] ];
+            $time = [ 0, 0, 0 ];
+        } else {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
 
-        if ($match[2] < 1 || $match[2] > 12 || $match[3] < 1 || $match[3] > 31) {
+        $out = new static;
+        
+        if (false === $out->setDate($date[0], $date[1], $date[2])) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
-        }
-
-        $date = new static;
-        $date->setDate($match[1], $match[2], $match[3]);
-        $date->setTime(0, 0, 0);
-        return $date;
+        };
+        
+        if (false === $out->setTime($time[0], $time[1], $time[2])) {
+            throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
+        };
+        
+        return $out;
     }
 
     /**
@@ -69,6 +80,7 @@ class Date extends DateTime implements JsonSerializable
     {
         $date = new Date();
         $date->setTimestamp($dateTime->getTimestamp());
+        
         return $date;
     }
 
@@ -94,6 +106,7 @@ class Date extends DateTime implements JsonSerializable
     public function isWorkingDay()
     {
         $day = (int)$this->format('w');
+        
         return !in_array($day, [6, 0]);
     }
 
@@ -290,4 +303,96 @@ class Date extends DateTime implements JsonSerializable
     {
         return new self($this->formatShort() . " 23:59:59");
     }
+
+    /**
+     * Get the 2 bit year for CCST mag stripe
+     *
+     * Binary value of year, in the range 0 to 3, i.e. a single digit in
+     * a repeating 4 year cycle commencing in 1981 with the year
+     * 0, 2002 would therefore be 1.
+     *
+     * @return string
+     */
+    public function getTwoBitYear()
+    {
+        $year = (int)$this->format('Y');
+        $year -= 1981;
+
+        return $year % 4;
+    }
+
+    /**
+     * @return integer The day of the month (1-31).
+     */
+    public function getDayOfMonth()
+    {
+        return (int)$this->format('j');
+    }
+
+    /**
+     * @return integer The month of the year (1-12).
+     */
+    public function getMonthOfYear()
+    {
+        return (int)$this->format('n');
+    }
+
+    /**
+     * Get the 9 bit date for CCST mag stripe
+     *
+     * Encode the binary value of the date shown below, where the range is 000 to
+     * 511 where, 14th Jan 2008 = 000, 1st Jan 2009 =353, 1st Jan 2010 = 206.
+     * Another way of looking at this is to number days consecutively starting from
+     * a base date of 0=1 Jan 1980. This gives 10593=1 Jan 2009. The 9 least
+     * significant bits of the binary equivalent of a particular date’s number then
+     * gives the required encoding.
+     *
+     * @return string
+     */
+    public function getNineBitDate()
+    {
+        $nineteenEighty = strtotime('1980-01-01 00:00:00');
+        $diff = ceil(($this->getTimestamp() - $nineteenEighty) / 86400);
+
+        return $diff % 512;
+    }
+
+    /**
+     * Get the 10 bit date for CCST mag stripe (used for season tickets, normal tickets use 9-bit date).
+     *
+     * Encode the binary value of the date shown below, where the range is 000 to
+     * 1023 where, 14th Jan 2008 = 000, 1st Jan 2009 =353, 1st Jan 2010 = 718.
+     * Another way of looking at this is to number days consecutively starting from
+     * a base date of 0=1 Jan 1980. This gives 10593=1 Jan 2009. The 10 least
+     * significant bits of the binary equivalent of a particular date’s number then
+     * gives the required encoding.
+     *
+     * @return int
+     */
+    public function getTenBitDate()
+    {
+        $nineteenEighty = strtotime('1980-01-01 00:00:00');
+        $diff = ceil(($this->getTimestamp() - $nineteenEighty) / 86400);
+
+        return $diff % 1024;
+    }
+
+
+    /**
+     * Get the 9 bit minute of the day for CCST mag stripe
+     *
+     * The times are processed and encoded in 5-minute blocks, in
+     * the range 100 to 387 with 0000 - 0004hrs = 100, 0005 - 0009hrs =
+     * 101, etc.
+     *
+     * @return int
+     */
+    public function getNineBitMinuteOfDay()
+    {
+        $min = ceil(date("i", $this->getTimestamp()) / 5);
+        $hour = floor(date("H", $this->getTimestamp()) * 12);
+        
+        return (int)(100 + $min + $hour - 1);
+    }
+
 }

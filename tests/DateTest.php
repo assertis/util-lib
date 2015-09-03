@@ -19,14 +19,6 @@ class DateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testShouldThrowExceptionOnInvalidValues()
-    {
-        Date::fromString('2014-34-56');
-    }
-
-    /**
      * @return array
      */
     public function provideIsSaturday()
@@ -243,4 +235,64 @@ class DateTest extends PHPUnit_Framework_TestCase
     {
         $this->assertStringEndsWith(date('Y'), (new Date())->formatEnglish());
     }
+
+
+    public function provideGetTwoBitYear()
+    {
+        return [
+            ['1981-05-07', 0],
+            ['2002-05-07', 1]
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetTwoBitYear
+     * @param string $date
+     * @param int $bit
+     */
+    public function testGetTwoBitYear($date, $bit)
+    {
+        $obj = new Date($date);
+        $this->assertSame($obj->getTwoBitYear(), $bit);
+    }
+
+    public function provideGetNineBitDate()
+    {
+        return [
+            ['1980-01-01 00:00:00', 000],
+            ['2009-01-01 00:00:00', 353],
+            ['2010-01-01 00:00:00', 206],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetNineBitDate
+     * @param string $date
+     * @param int $bits
+     */
+    public function testGetNineBitDate1($date, $bits)
+    {
+        $obj = new Date($date);
+        $this->assertSame($bits, $obj->getNineBitDate());
+    }
+
+    public function provideGetNineBitMinuteOfDay()
+    {
+        return [
+            ['2010-01-01 00:09:00', 101],
+            ['2010-01-01 01:09:00', 113]
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetNineBitMinuteOfDay
+     * @param string $date
+     * @param int $bits
+     */
+    public function testGetNineBitMinuteOfDay($date, $bits)
+    {
+        $obj = new Date($date);
+        $this->assertSame($bits, $obj->getNineBitMinuteOfDay());
+    }
+
 }
