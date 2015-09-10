@@ -62,14 +62,12 @@ class Date extends DateTime implements JsonSerializable
      */
     public static function fromFormat($format, $string)
     {
-        $date = parent::createFromFormat($format, $string);
-        if (false === $date) {
+        $dateTime = parent::createFromFormat($format, $string);
+        if (false === $dateTime) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
-        $instance = new static;
-        $instance->setTimestamp($date->getTimestamp());
-
-        return $instance;
+        
+        return static::fromDateTime($dateTime);
     }
 
     /**
@@ -78,7 +76,7 @@ class Date extends DateTime implements JsonSerializable
      */
     public static function fromDateTime(DateTime $dateTime)
     {
-        $date = new Date();
+        $date = new static;
         $date->setTimestamp($dateTime->getTimestamp());
         
         return $date;
