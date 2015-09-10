@@ -93,7 +93,7 @@ abstract class ObjectList extends ArrayObject
 
     /**
      * @param callable $grouper
-     * @return static[]
+     * @return ObjectList
      */
     public function group(callable $grouper)
     {
@@ -109,7 +109,7 @@ abstract class ObjectList extends ArrayObject
             $list->append($item);
         }
 
-        return $out;
+        return new ObjectListList($out);
     }
 
     /**
