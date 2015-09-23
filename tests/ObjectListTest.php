@@ -263,9 +263,13 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
 
         $stub = new ObjectListAlwaysAccept($values);
 
+        $this->assertSame(count($values), $stub->count());
+
         $slice = $stub->slice($offset, $length);
         $this->assertSame($expectedCount, $slice->count());
         $this->assertSame($expectedFirst, $slice->getFirst());
         $this->assertSame($expectedLast, $slice->getLast());
+        
+        $this->assertSame(count($values), $stub->count());
     }
 }

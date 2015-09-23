@@ -343,7 +343,6 @@ abstract class ObjectList extends ArrayObject
      */
     public function slice($offset, $length = null)
     {
-        $this->exchangeArray(array_slice($this->getArrayCopy(), $offset, $length));
-        return $this;
+        return new static(array_slice($this->getArrayCopy(), $offset, $length));
     }
 }
