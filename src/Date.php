@@ -267,7 +267,16 @@ class Date extends DateTime implements JsonSerializable
      */
     public function isSameDay(Date $otherDate)
     {
-        return ($this->format('Y-m-d') == $otherDate->format('Y-m-d'));
+        return ($this->format('Y-m-d') === $otherDate->format('Y-m-d'));
+    }
+
+    /**
+     * @param Date $otherDate
+     * @return bool
+     */
+    public function isDifferentDay(Date $otherDate)
+    {
+        return !$this->isSameDay($otherDate);
     }
 
     /**
