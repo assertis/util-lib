@@ -335,4 +335,15 @@ abstract class ObjectList extends ArrayObject
         $this->exchangeArray($items);
         return $this;
     }
+
+    /**
+     * @param int $offset
+     * @param int|null $length
+     * @return static
+     */
+    public function slice($offset, $length = null)
+    {
+        $this->exchangeArray(array_slice($this->getArrayCopy(), $offset, $length));
+        return $this;
+    }
 }

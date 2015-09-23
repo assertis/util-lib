@@ -237,4 +237,35 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(2, count($groups));
     }
+
+    public function provideSlice()
+    {
+        return [
+            [ 0, 1, 1, 1, 1 ],
+            [ 1, 2, 2, 2, 3 ],
+            [ 4, 9, 1, 5, 5 ],
+            [ 4, null, 1, 5, 5 ],
+            [ 5, null, 0, false, false ],
+        ];
+    }
+    
+    /**
+     * @dataProvider provideSlice
+     * @param int $offset
+     * @param int|null $length
+     * @param int $expectedCount
+     * @param int $expectedFirst
+     * @param int $expectedLast
+     */
+    public function testSlice($offset, $length, $expectedCount, $expectedFirst, $expectedLast)
+    {
+        $values = [1, 2, 3, 4, 5];
+
+        $stub = new ObjectListAlwaysAccept($values);
+
+        $slice = $stub->slice($offset, $length);
+        $this->assertSame($expectedCount, $slice->count());
+        $this->assertSame($expectedFirst, $slice->getFirst());
+        $this->assertSame($expectedLast, $slice->getLast());
+    }
 }
