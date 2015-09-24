@@ -63,4 +63,39 @@ final class String
 
         return substr($text, $start, $length);
     }
+
+    /**
+     * @param string $text
+     * @param int $charsPerLine
+     * @return string
+     */
+    public static function wrap($text, $charsPerLine)
+    {
+        $inputLines = explode("\n", $text);
+        $outputLines = array();
+
+        foreach ($inputLines as $inputLine) {
+            $spaceLeft = $charsPerLine;
+            $inputWords = explode(' ', $inputLine);
+
+            $outputLine = [];
+
+            foreach ($inputWords as $inputWord) {
+                if ($spaceLeft < strlen($inputWord)) {
+                    $outputLines[] = join(' ', $outputLine);
+                    $outputLine = [];
+                    $spaceLeft = $charsPerLine;
+                }
+
+                $spaceLeft -= strlen($inputWord) + (count($outputLine) > 0 ? 1 : 0);
+                $outputLine[] = $inputWord;
+            }
+
+            if (count($outputLine) > 0) {
+                $outputLines[] = join(' ', $outputLine);
+            }
+        }
+
+        return join("\n", $outputLines);
+    }
 }

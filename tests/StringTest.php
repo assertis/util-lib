@@ -55,4 +55,28 @@ class StringTest extends PHPUnit_Framework_TestCase
     {
         $this->assertSame('longtext', String::substr('supermegalongtext', 9));
     }
+
+    public function provideWrap()
+    {
+        return [
+            [ 'Abc def ghi jkl.', 6, "Abc def\nghi\njkl." ],
+            [ "Abc def.\nGh ijk.", 6, "Abc\ndef.\n\nGh ijk." ],
+        ];
+    }
+    
+    /**
+     * @dataProvider provideWrap
+     * @param string $input
+     * @param int $perLine
+     * @param string $expected
+     */
+    public function testWrap($input, $perLine, $expected)
+    {
+        $input = 'Abc def ghi jkl.';
+        $perLine = 6;
+        $expected = "Abc def\nghi\njkl.";
+
+        $this->assertSame($expected, String::wrap($input, $perLine));
+
+    }
 }
