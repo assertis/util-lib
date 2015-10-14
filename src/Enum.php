@@ -35,7 +35,7 @@ class Enum
     {
         $this->reflection = new ReflectionClass(get_called_class());
         $this->constants = $this->reflection->getConstants();
-        $this->validValue($value);
+        $this->validateValue($value);
 
         $this->value = $value;
     }
@@ -81,7 +81,7 @@ class Enum
      * @param $value
      * @throws InvalidArgumentException
      */
-    private function validValue($value)
+    private function validateValue($value)
     {
         if (!in_array($value, $this->constants, true)) {
             throw new InvalidArgumentException("Bad type [$value] of constant in " . get_called_class());
