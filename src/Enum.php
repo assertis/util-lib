@@ -13,7 +13,6 @@ use ReflectionClass;
  */
 class Enum
 {
-
     /**
      * @var mixed
      */
@@ -34,7 +33,6 @@ class Enum
      */
     public function __construct($value)
     {
-
         $this->reflection = new ReflectionClass(get_called_class());
         $this->constants = $this->reflection->getConstants();
         $this->validValue($value);
@@ -89,6 +87,4 @@ class Enum
             throw new InvalidArgumentException("Bad type [$value] of constant in " . get_called_class());
         }
     }
-
-
 }
