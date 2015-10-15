@@ -11,6 +11,10 @@ abstract class RequestException extends Exception
 {
     const ERROR_CODE_PREFIX = 'ERR-';
     const ERROR_CODE_UNKNOWN = 'UNKNOWN';
+    
+    const TYPE_ERROR = 'error';
+    const TYPE_FAIL = 'fail';
+    const TYPE_OK = 'ok';
 
     /**
      * @return int
@@ -36,5 +40,21 @@ abstract class RequestException extends Exception
     public static function getUnknownErrorCode()
     {
         return self::ERROR_CODE_PREFIX . self::ERROR_CODE_UNKNOWN;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorType()
+    {
+        return self::TYPE_ERROR;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLogged()
+    {
+        return true;
     }
 }
