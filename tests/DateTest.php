@@ -19,6 +19,13 @@ class DateTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testShouldThrowExceptionOnInvalidValues() {
+        Date::fromString('2014-34-56');
+    }
+
+    /**
      * @return array
      */
     public function provideIsSaturday()

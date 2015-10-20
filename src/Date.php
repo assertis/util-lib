@@ -42,14 +42,18 @@ class Date extends DateTime implements JsonSerializable
         }
 
         $out = new static;
+
+        if ($date[1] < 1 || $date[1] > 12 || $date[2] < 1 || $date[2] > 31) {
+            throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
+        }
         
         if (false === $out->setDate($date[0], $date[1], $date[2])) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
-        };
+        }
         
         if (false === $out->setTime($time[0], $time[1], $time[2])) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
-        };
+        }
         
         return $out;
     }
