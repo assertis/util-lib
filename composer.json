@@ -1,5 +1,6 @@
 {
   "name": "assertis/util-lib",
+  "licence": "Public Domain",
   "description": "Miscellaneous small PHP utilities.",
   "authors": [
     {
@@ -9,11 +10,6 @@
   ],
   "autoload": {
     "psr-4": {"Assertis\\Util\\": "src"}
-  },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
   },
   "require": {
     "php": "~5.5.0",
