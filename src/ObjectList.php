@@ -345,4 +345,15 @@ abstract class ObjectList extends ArrayObject
     {
         return new static(array_slice($this->getArrayCopy(), $offset, $length));
     }
+
+    /**
+     * @param callable $valueProvider
+     * @return int|float
+     */
+    public function sum(callable $valueProvider, $startValue = null)
+    {
+        return $this->reduce(function ($total, $item) use ($valueProvider) {
+            return $total + $valueProvider($item);
+        }, $startValue);
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace Assertis\Util;
 
+use ObjectListAlwaysAccept;
 use ObjectListNeverAccept;
 use PHPUnit_Framework_TestCase;
 use stdClass;
-use ObjectListAlwaysAccept;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
@@ -26,7 +26,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     {
         $values = ['value-1', 'value-2'];
         $stub = new ObjectListAlwaysAccept($values);
-        
+
         $this->assertSame($values, $stub->getArrayCopy());
     }
 
@@ -241,14 +241,14 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     public function provideSlice()
     {
         return [
-            [ 0, 1, 1, 1, 1 ],
-            [ 1, 2, 2, 2, 3 ],
-            [ 4, 9, 1, 5, 5 ],
-            [ 4, null, 1, 5, 5 ],
-            [ 5, null, 0, false, false ],
+            [0, 1, 1, 1, 1],
+            [1, 2, 2, 2, 3],
+            [4, 9, 1, 5, 5],
+            [4, null, 1, 5, 5],
+            [5, null, 0, false, false],
         ];
     }
-    
+
     /**
      * @dataProvider provideSlice
      * @param int $offset
@@ -269,7 +269,35 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expectedCount, $slice->count());
         $this->assertSame($expectedFirst, $slice->getFirst());
         $this->assertSame($expectedLast, $slice->getLast());
-        
+
         $this->assertSame(count($values), $stub->count());
+    }
+
+    /**
+     * @return array
+     */
+    public function provideSum()
+    {
+        return [
+            [[1, 2, 3], null, 6],
+            [[1, 2, 3], 0.0, 6.0],
+            [[1.0, 2, 3], null, 6.0],
+            [[1.0, 2, 3], 0, 6.0],
+        ];
+    }
+
+    /**
+     * @dataProvider provideSum
+     * @param array $values
+     * @param int|float $expected
+     */
+    public function testSum($values, $default, $expected)
+    {
+        $stub = new ObjectListAlwaysAccept($values);
+        $return = function ($value) {
+            return $value;
+        };
+
+        $this->assertSame($expected, $stub->sum($return, $default));
     }
 }
