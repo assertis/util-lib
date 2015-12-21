@@ -348,7 +348,8 @@ abstract class ObjectList extends ArrayObject
 
     /**
      * @param callable $valueProvider
-     * @return int|float
+     * @param float|int|null $startValue
+     * @return float|int
      */
     public function sum(callable $valueProvider, $startValue = null)
     {

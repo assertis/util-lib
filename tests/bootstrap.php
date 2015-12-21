@@ -1,6 +1,7 @@
 <?php
 
 use Assertis\Util\ObjectList;
+use Assertis\Util\TypedMap;
 
 $possibleAutoloadFiles = [
     __DIR__.'/../vendor/autoload.php',
@@ -28,6 +29,28 @@ class ObjectListAlwaysAccept extends ObjectList
 }
 
 class ObjectListNeverAccept extends ObjectList
+{
+    /**
+     * @inheritdoc
+     */
+    public function accepts($value)
+    {
+        return false;
+    }
+}
+
+class TypedMapAlwaysAccept extends TypedMap
+{
+    /**
+     * @inheritdoc
+     */
+    public function accepts($value)
+    {
+        return true;
+    }
+}
+
+class TypedMapNeverAccept extends TypedMap
 {
     /**
      * @inheritdoc
