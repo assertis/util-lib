@@ -10,7 +10,7 @@ namespace Assertis\Util;
  *
  * Provide util methods for strings
  */
-final class String
+final class StringObject
 {
 
     /**
@@ -35,7 +35,7 @@ final class String
     public static function ccwords($word)
     {
         $spaced = str_replace('-', ' ', $word);
-        $ucworded = String::ucwords($spaced);
+        $ucworded = StringObject::ucwords($spaced);
 
         return str_replace(' ', '', $ucworded);
     }

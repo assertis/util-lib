@@ -28,32 +28,32 @@ class StringTest extends PHPUnit_Framework_TestCase
      */
     public function testUcwords($input, $expected)
     {
-        $this->assertSame($expected, String::ucwords($input));
+        $this->assertSame($expected, StringObject::ucwords($input));
     }
 
     public function testSubstrReturnsEmptyStringWhenEmptyStringPassed()
     {
-        $this->assertSame('', String::substr(''));
+        $this->assertSame('', StringObject::substr(''));
     }
 
     public function testSubstrReturnsSubstringWhenLongerStringPassedWithShorteningConstraints()
     {
-        $this->assertSame('super', String::substr('supermegalongtext', 0, 5));
+        $this->assertSame('super', StringObject::substr('supermegalongtext', 0, 5));
     }
 
     public function testSubstrReturnsShorterSubstringWhenSomeStringPassedWithShorteningConstraintsGettingOutOfBand()
     {
-        $this->assertSame('ext', String::substr('supermegalongtext', 14, 5));
+        $this->assertSame('ext', StringObject::substr('supermegalongtext', 14, 5));
     }
 
     public function testSubstrReturnsEmptyStringWhenConstraintsOutOfBoundPassed()
     {
-        $this->assertSame('', String::substr('supermegalongtext', 17, 5));
+        $this->assertSame('', StringObject::substr('supermegalongtext', 17, 5));
     }
 
     public function testSubstrReturnsRestOfString_whenOnlyStartParameterPassed()
     {
-        $this->assertSame('longtext', String::substr('supermegalongtext', 9));
+        $this->assertSame('longtext', StringObject::substr('supermegalongtext', 9));
     }
 
     public function provideWrap()
@@ -76,7 +76,7 @@ class StringTest extends PHPUnit_Framework_TestCase
         $perLine = 6;
         $expected = "Abc def\nghi\njkl.";
 
-        $this->assertSame($expected, String::wrap($input, $perLine));
+        $this->assertSame($expected, StringObject::wrap($input, $perLine));
 
     }
 }
