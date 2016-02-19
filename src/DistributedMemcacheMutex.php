@@ -9,7 +9,7 @@ use Memcache;
  */
 class DistributedMemcacheMutex
 {
-    const SEVEN_DAYS_SECONDS = 604800;
+    const FIVE_MINUTES_SECONDS = 300;
 
     /**
      * @var Memcache
@@ -30,7 +30,7 @@ class DistributedMemcacheMutex
      *
      * @throws AlreadyLockedException
      */
-    public function lock($name, $expirationTimeInSeconds = self::SEVEN_DAYS_SECONDS)
+    public function lock($name, $expirationTimeInSeconds = self::FIVE_MINUTES_SECONDS)
     {
         if (false === $this->mamecache->add($name, 1, false, $expirationTimeInSeconds)) {
             throw new AlreadyLockedException($name);
