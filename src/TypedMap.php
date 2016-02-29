@@ -11,6 +11,11 @@ use InvalidArgumentException;
 abstract class TypedMap extends ArrayObject
 {
     /**
+     * @var array
+     */
+    private $keys = [];
+
+    /**
      * @param array $input
      * @param int $flags
      * @param string $iterator_class
@@ -64,7 +69,10 @@ abstract class TypedMap extends ArrayObject
     {
         $this->assertValid($key, $newValue);
 
-        parent::offsetSet($key, $newValue);
+        $keyId = is_object($key) ? spl_object_hash($key) : $key;
+        $this->keys[$keyId] = $key;
+
+        parent::offsetSet($keyId, $newValue);
     }
 
     /**
@@ -107,6 +115,17 @@ abstract class TypedMap extends ArrayObject
 
     /**
      * @param mixed $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        $keyId = is_object($key) ? spl_object_hash($key) : $key;
+
+        return parent::offsetGet($keyId);
+    }
+
+    /**
+     * @param mixed $key
      * @param mixed $default
      * @return mixed
      * @throws InvalidArgumentException
@@ -128,7 +147,9 @@ abstract class TypedMap extends ArrayObject
      */
     public function has($key)
     {
-        return array_key_exists($key, $this);
+        return is_object($key) ?
+            in_array($key, $this->keys) :
+            array_key_exists($key, $this);
     }
 
     /**

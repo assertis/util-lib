@@ -4,6 +4,7 @@ namespace Assertis\Util;
 
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
+use stdClass;
 use TypedMapAlwaysAccept;
 use TypedMapNeverAccept;
 use TypedMapNeverAcceptKey;
@@ -84,4 +85,17 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $map = new TypedMapNeverAcceptKey();
         $map['foo'] = 'bar';
     }
+    
+    public function testObjectAsKey()
+    {
+        $key = new stdClass('foo');
+        $value = new stdClass('bar');
+        
+        $map = new TypedMapAlwaysAccept();
+        $map[$key] = $value;
+        
+        $this->assertTrue($map->has($key));
+        $this->assertSame($value, $map[$key]);
+        $this->assertSame($value, $map->get($key));
+    }    
 }
