@@ -17,11 +17,10 @@ abstract class TypedMap extends ArrayObject
      */
     public function __construct(array $input = [], $flags = 0, $iterator_class = "ArrayIterator")
     {
-        foreach ($input as $element) {
-            if (!$this->accepts($element)) {
-                throw new InvalidArgumentException($this->getErrorText());
-            }
+        foreach ($input as $key => $value) {
+            $this->assertValid($key, $value);
         }
+
         parent::__construct($input, $flags, $iterator_class);
     }
 
@@ -32,17 +31,49 @@ abstract class TypedMap extends ArrayObject
     abstract public function accepts($value);
 
     /**
+     * @param mixed $key
+     * @return bool
+     */
+    public function acceptsKey($key)
+    {
+        return true;
+    }
+
+    /**
+     * @param mixed $key
+     * @param mixed $value
+     */
+    private function assertValid($key, $value)
+    {
+        if (!$this->acceptsKey($key)) {
+            throw new InvalidArgumentException($this->getKeyErrorText());
+        }
+
+        if (!$this->accepts($value)) {
+            throw new InvalidArgumentException($this->getValueErrorText());
+        }
+    }
+
+    /**
      * Set object to array
      *
-     * @param mixed $index
+     * @param mixed $key
      * @param mixed $newValue
      */
-    public function offsetSet($index, $newValue)
+    public function offsetSet($key, $newValue)
     {
-        if (!$this->accepts($newValue)) {
-            throw new InvalidArgumentException($this->getErrorText());
-        }
-        parent::offsetSet($index, $newValue);
+        $this->assertValid($key, $newValue);
+
+        parent::offsetSet($key, $newValue);
+    }
+
+    /**
+     * @deprecated
+     * @return string
+     */
+    protected function getErrorText()
+    {
+        return 'Bad type of value in ' . get_called_class();
     }
 
     /**
@@ -50,9 +81,19 @@ abstract class TypedMap extends ArrayObject
      *
      * @return string
      */
-    protected function getErrorText()
+    protected function getValueErrorText()
     {
-        return 'Bad type of value in ' . get_called_class();
+        return $this->getErrorText();
+    }
+
+    /**
+     * Return error text
+     *
+     * @return string
+     */
+    protected function getKeyErrorText()
+    {
+        return 'Bad type of key in ' . get_called_class();
     }
 
     /**

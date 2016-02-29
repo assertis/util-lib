@@ -6,6 +6,7 @@ use InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 use TypedMapAlwaysAccept;
 use TypedMapNeverAccept;
+use TypedMapNeverAcceptKey;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
@@ -21,7 +22,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
 
         $this->assertTrue($map->has($key));
         $this->assertSame($value, $map[$key]);
-        
+
         $this->setExpectedException(InvalidArgumentException::class);
         new TypedMapNeverAccept([$key => $value]);
     }
@@ -47,32 +48,40 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $map = new TypedMapNeverAccept();
         $map['foo'] = 'bar';
     }
-    
+
     public function testGet()
     {
         $key = 'foo';
         $invalidKey = 'invalid';
-        
+
         $value = 'bar';
         $defaultValue = 'baz';
 
-        $map = new TypedMapAlwaysAccept([$key=>$value]);
-        
+        $map = new TypedMapAlwaysAccept([$key => $value]);
+
         $this->assertSame($value, $map->get($key));
         $this->assertSame($defaultValue, $map->get($invalidKey, $defaultValue));
-        
+
         $this->setExpectedException(InvalidArgumentException::class);
-        $map->get($invalidKey);        
+        $map->get($invalidKey);
     }
-    
+
     public function testClear()
     {
         $key = 'foo';
         $value = 'bar';
-        
-        $map = new TypedMapAlwaysAccept([$key=>$value]);
-        
+
+        $map = new TypedMapAlwaysAccept([$key => $value]);
+
         $map->clear();
         $this->assertFalse($map->has($key));
+    }
+
+    public function testOffsetSetKeyRefused()
+    {
+        $this->setExpectedException(InvalidArgumentException::class);
+
+        $map = new TypedMapNeverAcceptKey();
+        $map['foo'] = 'bar';
     }
 }

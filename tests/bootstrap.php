@@ -60,3 +60,22 @@ class TypedMapNeverAccept extends TypedMap
         return false;
     }
 }
+
+class TypedMapNeverAcceptKey extends TypedMap
+{
+    /**
+     * @inheritdoc
+     */
+    public function accepts($value)
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function acceptsKey($value)
+    {
+        return false;
+    }
+}
