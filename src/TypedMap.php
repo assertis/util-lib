@@ -110,7 +110,7 @@ abstract class TypedMap extends ArrayObject
      */
     public function set($key, $value)
     {
-        $this->data[$key] = $value;
+        $this[$key] = $value;
     }
 
     /**

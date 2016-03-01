@@ -42,6 +42,20 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $this->assertSame($value, $map[$key]);
     }
 
+    public function testSetAccepted()
+    {
+        $map = new TypedMapAlwaysAccept();
+        $key = 'foo';
+        $value = 'bar';
+
+        $this->assertFalse($map->has($key));
+
+        $map->set($key, $value);
+
+        $this->assertTrue($map->has($key));
+        $this->assertSame($value, $map[$key]);
+    }
+
     public function testOffsetSetRefused()
     {
         $this->setExpectedException(InvalidArgumentException::class);
