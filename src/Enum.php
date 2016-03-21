@@ -70,7 +70,7 @@ class Enum
     /**
      * @return array
      */
-    static public function values()
+    public static function values()
     {
         $reflection = new ReflectionClass(get_called_class());
 

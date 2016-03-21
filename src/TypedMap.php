@@ -137,7 +137,7 @@ abstract class TypedMap extends ArrayObject
         } elseif (func_num_args() > 1) {
             return $default;
         } else {
-            throw new InvalidArgumentException("Invalid key: {$key}");
+            throw new InvalidArgumentException("Invalid key: ".var_export($key, true));
         }
     }
 
