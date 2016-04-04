@@ -296,7 +296,7 @@ class Date extends DateTime implements JsonSerializable
      */
     public function isInThePast()
     {
-        return $this->isBefore(new self);
+        return $this->isBefore(self::getCurrent());
     }
 
     /**
@@ -304,7 +304,7 @@ class Date extends DateTime implements JsonSerializable
      */
     public function isInTheFuture()
     {
-        return $this->isAfter(new self);
+        return $this->isAfter(self::getCurrent());
     }
 
     /**
