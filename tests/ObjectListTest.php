@@ -5,6 +5,7 @@ namespace Assertis\Util;
 use ObjectListAlwaysAccept;
 use ObjectListNeverAccept;
 use PHPUnit_Framework_TestCase;
+use RuntimeException;
 use stdClass;
 
 /**
@@ -299,5 +300,21 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         };
 
         $this->assertSame($expected, $stub->sum($return, $default));
+    }
+
+    public function testGet()
+    {
+        $values = [1, 2, 3];
+
+        $stub = new ObjectListAlwaysAccept($values);
+
+        $this->assertSame(1, $stub->get(function ($value) {
+            return $value === 1;
+        }));
+        
+        $this->setExpectedException(RuntimeException::class);
+        $stub->get(function ($value) {
+            return $value === 4;
+        });
     }
 }

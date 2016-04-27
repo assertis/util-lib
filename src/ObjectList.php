@@ -4,6 +4,7 @@ namespace Assertis\Util;
 
 use ArrayObject;
 use InvalidArgumentException;
+use RuntimeException;
 use Traversable;
 
 /**
@@ -154,6 +155,7 @@ abstract class ObjectList extends ArrayObject
         if (!$this->accepts($newValue)) {
             throw new InvalidArgumentException($this->getErrorText());
         }
+
         parent::offsetSet($index, $newValue);
     }
 
@@ -356,5 +358,20 @@ abstract class ObjectList extends ArrayObject
         return $this->reduce(function ($total, $item) use ($valueProvider) {
             return $total + $valueProvider($item);
         }, $startValue);
+    }
+
+    /**
+     * @param callable $filter
+     * @return mixed
+     */
+    public function get(callable $filter)
+    {
+        foreach ($this as $item) {
+            if ($filter($item)) {
+                return $item;
+            }
+        }
+
+        throw new RuntimeException("Could not find an item in " . get_class($this) . " using a find filter.");
     }
 }
