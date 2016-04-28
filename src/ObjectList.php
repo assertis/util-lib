@@ -42,7 +42,7 @@ abstract class ObjectList extends ArrayObject
     abstract public function accepts($value);
 
     /**
-     * When a new value is added or set checks if it is acceptable
+     * Check if {$newValue} is acceptable and set it.
      *
      * @param mixed $index
      * @param mixed $newValue
@@ -57,7 +57,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Returns error text for when accepts() returns false.
+     * Return error text for when accepts() returns false.
      *
      * @return string
      */
@@ -150,7 +150,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Sorts this list using a sorter method (see: usort)
+     * Sort this list using {$sorter} (see: usort)
      *
      * @param callable $sorter
      * @return static
