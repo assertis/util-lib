@@ -4,7 +4,6 @@ namespace Assertis\Util;
 
 use ArrayObject;
 use InvalidArgumentException;
-use RuntimeException;
 use Traversable;
 
 /**
@@ -277,7 +276,9 @@ abstract class ObjectList extends ArrayObject
         $element = $this->find($filter);
 
         if (null === $element) {
-            throw new RuntimeException("Could not find an element in " . get_class($this) . " using a find filter.");
+            throw new ObjectListElementNotFoundException(
+                "Could not find an element in " . get_class($this) . " using a find filter."
+            );
         }
 
         return $element;
