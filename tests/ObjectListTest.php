@@ -5,6 +5,7 @@ namespace Assertis\Util;
 use ObjectListAlwaysAccept;
 use ObjectListNeverAccept;
 use PHPUnit_Framework_TestCase;
+use RuntimeException;
 use stdClass;
 
 /**
@@ -57,6 +58,9 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $stub[0] = 'not-accepted';
     }
 
+    /**
+     * @return array
+     */
     public function provideGetAllPermutations()
     {
         return [
@@ -238,6 +242,9 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, count($groups));
     }
 
+    /**
+     * @return array
+     */
     public function provideSlice()
     {
         return [
@@ -289,6 +296,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideSum
      * @param array $values
+     * @param mixed $default
      * @param int|float $expected
      */
     public function testSum($values, $default, $expected)
@@ -299,5 +307,36 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         };
 
         $this->assertSame($expected, $stub->sum($return, $default));
+    }
+    
+    public function testFind()
+    {
+        $values = [1, 2, 3];
+
+        $stub = new ObjectListAlwaysAccept($values);
+
+        $this->assertSame(1, $stub->find(function ($value) {
+            return $value === 1;
+        }));
+
+        $this->assertSame(null, $stub->find(function ($value) {
+            return $value === 4;
+        }));
+    }
+
+    public function testGet()
+    {
+        $values = [1, 2, 3];
+
+        $stub = new ObjectListAlwaysAccept($values);
+
+        $this->assertSame(1, $stub->get(function ($value) {
+            return $value === 1;
+        }));
+
+        $this->setExpectedException(RuntimeException::class);
+        $stub->get(function ($value) {
+            return $value === 4;
+        });
     }
 }

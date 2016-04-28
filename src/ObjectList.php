@@ -4,25 +4,17 @@ namespace Assertis\Util;
 
 use ArrayObject;
 use InvalidArgumentException;
+use RuntimeException;
 use Traversable;
 
 /**
- * Class ObjectList
- * @package Assertis\Util
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  *
- * Class contain logic for object iterator
+ * Note: an element matches a filter when $filter($element) === true.
  */
 abstract class ObjectList extends ArrayObject
 {
-
-    /**
-     * @param mixed $value
-     * @return boolean
-     */
-    abstract public function accepts($value);
-
     /**
      * @param array $input
      * @param int $flags
@@ -38,82 +30,48 @@ abstract class ObjectList extends ArrayObject
         parent::__construct($input, $flags, $iterator_class);
     }
 
-    /**
-     * @param callable $filter
-     * @return int
-     */
-    public function countMatching(callable $filter)
-    {
-        $out = 0;
-        foreach ($this as $item) {
-            if ($filter($item)) {
-                $out++;
-            }
-        }
-        return $out;
-    }
+    // Methods that govern adding elements to the list
 
     /**
-     * @param callable $filter
-     * @return static
+     * Return true if the value is acceptable for this list. Typically something like:
+     *   return $value instanceof MyClass
+     *
+     * @param mixed $value
+     * @return boolean
      */
-    public function filter(callable $filter)
-    {
-        return new static(array_filter($this->getArrayCopy(), $filter));
-    }
+    abstract public function accepts($value);
 
     /**
-     * @param callable $mapper
-     * @return array
+     * Check if {$newValue} is acceptable and set it.
+     *
+     * @param mixed $index
+     * @param mixed $newValue
      */
-    public function map(callable $mapper)
+    public function offsetSet($index, $newValue)
     {
-        return array_map($mapper, $this->getArrayCopy());
-    }
-
-    /**
-     * @param callable $operation
-     * @return static
-     */
-    public function each(callable $operation)
-    {
-        $this->map($operation);
-        return $this;
-    }
-
-    /**
-     * @param callable $reducer
-     * @param mixed|null $initial
-     * @return mixed
-     */
-    public function reduce(callable $reducer, $initial = null)
-    {
-        return array_reduce($this->getArrayCopy(), $reducer, $initial);
-    }
-
-    /**
-     * @param callable $grouper
-     * @return ObjectListList
-     */
-    public function group(callable $grouper)
-    {
-        $out = [];
-
-        foreach ($this as $item) {
-            $value = $grouper($item);
-            if (!array_key_exists($value, $out)) {
-                $out[$value] = new static;
-            }
-            $list = &$out[$value];
-            /** @var $list static */
-            $list->append($item);
+        if (!$this->accepts($newValue)) {
+            throw new InvalidArgumentException($this->getErrorText());
         }
 
-        return new ObjectListList($out);
+        parent::offsetSet($index, $newValue);
     }
 
     /**
-     * Append object to array
+     * Return error text for when accepts() returns false.
+     *
+     * @return string
+     */
+    protected function getErrorText()
+    {
+        return 'Bad type of value in ' . get_called_class();
+    }
+
+    //
+    // Operations that modify this instance
+    //
+
+    /**
+     * Add element to this list.
      *
      * @param mixed $value
      * @return self
@@ -129,108 +87,46 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Append a list of objects to this list
+     * Add a list of elements to this list.
      *
      * @param Traversable $list
-     *
      * @return static
      */
     public function appendAll(Traversable $list)
     {
-        foreach ($list as $item) {
-            $this->append($item);
+        foreach ($list as $element) {
+            $this->append($element);
         }
         return $this;
     }
 
     /**
-     * Set object to array
+     * Remove an element from this list.
      *
-     * @param mixed $index
-     * @param mixed $newValue
+     * @param mixed $element
+     * @return self
      */
-    public function offsetSet($index, $newValue)
+    public function delete($element)
     {
-        if (!$this->accepts($newValue)) {
-            throw new InvalidArgumentException($this->getErrorText());
-        }
-        parent::offsetSet($index, $newValue);
+        $list = $this->getArrayCopy();
+        $offset = array_search($element, $list, true);
+        $this->offsetUnset($offset);
+
+        return $this;
     }
 
     /**
-     * Return error text
+     * Pop an element off the end of this list (see: array_pop).
      *
-     * @return string
-     */
-    protected function getErrorText()
-    {
-        return 'Bad type of value in ' . get_called_class();
-    }
-
-    /**
-     * Create all permutations of the list.
-     *
-     * @param int $max
-     * @return static[]
-     */
-    public function getAllPermutations($max = null)
-    {
-        $out = [];
-        if (count($this) === 0) {
-            return $out;
-        }
-        $this->permute($out, $this->getArrayCopy(), [], $max);
-        return $max ? array_slice($out, 0, $max) : $out;
-    }
-
-    /**
-     * Create all permutations of an array of items in the $out variable.
-     *
-     * @param array $out
-     * @param array $items
-     * @param array $perms
-     * @param int $max
-     */
-    private function permute(&$out, $items, $perms = [], $max = null)
-    {
-        if ($max && count($out) >= $max) {
-            return;
-        } elseif (empty($items)) {
-            $obj = clone $this;
-            $obj->exchangeArray($perms);
-            $out[] = $obj;
-        } else {
-            for ($i = count($items) - 1; $i >= 0; --$i) {
-                $newItems = $items;
-                $newPermutations = $perms;
-                list($item) = array_splice($newItems, $i, 1);
-                array_unshift($newPermutations, $item);
-                $this->permute($out, $newItems, $newPermutations, $max);
-            }
-        }
-    }
-
-    /**
      * @return mixed
      */
     public function pop()
     {
-        $items = $this->getArrayCopy();
-        $item = array_pop($items);
-        $this->exchangeArray($items);
-        return $item;
-    }
+        $list = $this->getArrayCopy();
+        $element = array_pop($list);
+        $this->exchangeArray($list);
 
-    /**
-     * @param mixed $item
-     * @return self
-     */
-    public function delete($item)
-    {
-        $items = $this->getArrayCopy();
-        $offset = array_search($item, $items, true);
-        $this->offsetUnset($offset);
-        return $this;
+        return $element;
     }
 
     /**
@@ -242,17 +138,95 @@ abstract class ObjectList extends ArrayObject
      */
     public function popMatching(callable $filter)
     {
-        foreach ($this as $item) {
-            if ($filter($item)) {
-                $this->delete($item);
-                return $item;
+        foreach ($this as $element) {
+            if ($filter($element)) {
+                $this->delete($element);
+
+                return $element;
             }
         }
+
         return null;
     }
 
     /**
-     * Return first element
+     * Sort this list using {$sorter} (see: usort).
+     *
+     * @param callable $sorter
+     * @return static
+     */
+    public function sort(callable $sorter)
+    {
+        $list = $this->getArrayCopy();
+        // Can't unit test anything using usort without suppressing its errors.
+        @usort($list, $sorter);
+        $this->exchangeArray($list);
+
+        return $this;
+    }
+
+    //
+    // Operations that return a new instance
+    //
+
+    /**
+     * Return a new list containing only those elements matching {$filter}.
+     *
+     * @param callable $filter
+     * @return static
+     */
+    public function filter(callable $filter)
+    {
+        return new static(array_filter($this->getArrayCopy(), $filter));
+    }
+
+    /**
+     * Return a new list containing only those elements not present in {$otherList}.
+     *
+     * @param ObjectList $otherList
+     * @return static
+     */
+    public function exclude(ObjectList $otherList)
+    {
+        return $this->filter(function ($element) use ($otherList) {
+            return !$otherList->contains($element);
+        });
+    }
+
+    /**
+     * Return a new list containing {$length} elements starting on {$offset}.
+     *
+     * @param int $offset
+     * @param int|null $length
+     * @return static
+     */
+    public function slice($offset, $length = null)
+    {
+        return new static(array_slice($this->getArrayCopy(), $offset, $length));
+    }
+
+    /**
+     * Return a new list containing cloned copies of all elements from this list.
+     *
+     * @return static
+     */
+    public function getClone()
+    {
+        $out = new static;
+
+        foreach ($this as $element) {
+            $out->append(clone $element);
+        }
+
+        return $out;
+    }
+
+    //
+    // Operations that return a single element
+    //
+
+    /**
+     * Return first element.
      *
      * @return mixed
      */
@@ -264,7 +238,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Return last element
+     * Return last element.
      *
      * @return mixed
      */
@@ -276,27 +250,188 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * @return static
+     * Return first element matching {$filter}, or null.
+     *
+     * @param callable $filter
+     * @return mixed|null
      */
-    public function getClone()
+    public function find(callable $filter)
     {
-        $out = new static;
-        foreach ($this as $item) {
-            $out->append(clone $item);
+        foreach ($this as $element) {
+            if ($filter($element)) {
+                return $element;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Return first element matching {$filter}, or throws a RuntimeException.
+     *
+     * @param callable $filter
+     * @return mixed
+     */
+    public function get(callable $filter)
+    {
+        $element = $this->find($filter);
+
+        if (null === $element) {
+            throw new RuntimeException("Could not find an element in " . get_class($this) . " using a find filter.");
+        }
+
+        return $element;
+    }
+
+    //
+    // Operations that return a list of this kind of list
+    //
+
+    /**
+     * For each element create a key using {$grouper} and split this list into a series of lists based on that key.
+     * The returned object is an ObjectListList which behaves like any other ObjectList.
+     *
+     * @param callable $grouper
+     * @return ObjectListList
+     */
+    public function group(callable $grouper)
+    {
+        $out = [];
+
+        foreach ($this as $element) {
+            $value = $grouper($element);
+            if (!array_key_exists($value, $out)) {
+                $out[$value] = new static;
+            }
+            $list = &$out[$value];
+            /** @var $list static */
+            $list->append($element);
+        }
+
+        return new ObjectListList($out);
+    }
+
+    /**
+     * Return all possible element order permutations this list. You can set the maximum number of returned
+     * permutations.
+     *
+     * The returned object is an ObjectListList which behaves like any other ObjectList.
+     *
+     * @param int $max
+     * @return static[]
+     */
+    public function getAllPermutations($max = null)
+    {
+        $out = [];
+
+        if (count($this) === 0) {
+            return $out;
+        }
+
+        $this->permute($out, $this->getArrayCopy(), [], $max);
+
+        return new ObjectListList($max ? array_slice($out, 0, $max) : $out);
+    }
+
+    /**
+     * Create all permutations of an array of elements in the $out variable.
+     *
+     * @param array $out
+     * @param array $list
+     * @param array $perms
+     * @param int $max
+     */
+    private function permute(&$out, $list, $perms = [], $max = null)
+    {
+        if ($max && count($out) >= $max) {
+            return;
+        } elseif (empty($list)) {
+            $obj = clone $this;
+            $obj->exchangeArray($perms);
+            $out[] = $obj;
+        } else {
+            for ($i = count($list) - 1; $i >= 0; --$i) {
+                $newList = $list;
+                $newPermutations = $perms;
+                list($element) = array_splice($newList, $i, 1);
+                array_unshift($newPermutations, $element);
+                $this->permute($out, $newList, $newPermutations, $max);
+            }
+        }
+    }
+
+    //
+    // Operations that return a different representation of the list
+    //
+
+    /**
+     * Applies {$mapper} to each element of this list and returns an array of outputs.
+     *
+     * @param callable $mapper
+     * @return array
+     */
+    public function map(callable $mapper)
+    {
+        return array_map($mapper, $this->getArrayCopy());
+    }
+
+    /**
+     * Iteratively reduce this list to a single value.
+     *
+     * @param callable $reducer
+     * @param mixed|null $initial
+     * @return mixed
+     */
+    public function reduce(callable $reducer, $initial = null)
+    {
+        return array_reduce($this->getArrayCopy(), $reducer, $initial);
+    }
+
+    /**
+     * Iteratively reduce this list into a single value by adding up the result of {$valueProvider} for each element.
+     *
+     * @param callable $valueProvider
+     * @param float|int|null $startValue
+     * @return float|int
+     */
+    public function sum(callable $valueProvider, $startValue = null)
+    {
+        return $this->reduce(function ($total, $element) use ($valueProvider) {
+            return $total + $valueProvider($element);
+        }, $startValue);
+    }
+
+    /**
+     * Return the number of elements matching {$filter}.
+     *
+     * @param callable $filter
+     * @return int
+     */
+    public function countMatching(callable $filter)
+    {
+        $out = 0;
+        foreach ($this as $element) {
+            if ($filter($element)) {
+                $out++;
+            }
         }
         return $out;
     }
 
     /**
-     * @param mixed $item
+     * Return true if this list contains {$element}.
+     *
+     * @param mixed $element
      * @return bool
      */
-    public function contains($item)
+    public function contains($element)
     {
-        return false !== array_search($item, $this->getArrayCopy(), true);
+        return false !== array_search($element, $this->getArrayCopy(), true);
     }
 
     /**
+     * Turn this object into an array using toArray method on each element if they have it.
+     *
      * @return array
      */
     public function toArray()
@@ -312,49 +447,20 @@ abstract class ObjectList extends ArrayObject
         return $out;
     }
 
-    /**
-     * @param ObjectList $otherList
-     * @return static
-     */
-    public function exclude(ObjectList $otherList)
-    {
-        return $this->filter(function ($item) use ($otherList) {
-            return !$otherList->contains($item);
-        });
-    }
+    //
+    // Other
+    //
 
     /**
-     * @param callable $sorter
+     * Executes {$operation} for each of the elements and returns this list intact.
+     *
+     * @param callable $operation
      * @return static
      */
-    public function sort(callable $sorter)
+    public function each(callable $operation)
     {
-        $items = $this->getArrayCopy();
-        // Can't unit test anything using usort without suppressing its errors.
-        @usort($items, $sorter);
-        $this->exchangeArray($items);
+        $this->map($operation);
+
         return $this;
-    }
-
-    /**
-     * @param int $offset
-     * @param int|null $length
-     * @return static
-     */
-    public function slice($offset, $length = null)
-    {
-        return new static(array_slice($this->getArrayCopy(), $offset, $length));
-    }
-
-    /**
-     * @param callable $valueProvider
-     * @param float|int|null $startValue
-     * @return float|int
-     */
-    public function sum(callable $valueProvider, $startValue = null)
-    {
-        return $this->reduce(function ($total, $item) use ($valueProvider) {
-            return $total + $valueProvider($item);
-        }, $startValue);
     }
 }
