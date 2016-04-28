@@ -71,7 +71,7 @@ abstract class ObjectList extends ArrayObject
     //
 
     /**
-     * Add element to this list
+     * Add element to this list.
      *
      * @param mixed $value
      * @return self
@@ -87,7 +87,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Add a list of elements to this list
+     * Add a list of elements to this list.
      *
      * @param Traversable $list
      * @return static
@@ -101,7 +101,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Remove an element from this list
+     * Remove an element from this list.
      *
      * @param mixed $element
      * @return self
@@ -116,7 +116,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Pop an element off the end of this list (see: array_pop)
+     * Pop an element off the end of this list (see: array_pop).
      *
      * @return mixed
      */
@@ -150,7 +150,7 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
-     * Sort this list using {$sorter} (see: usort)
+     * Sort this list using {$sorter} (see: usort).
      *
      * @param callable $sorter
      * @return static
