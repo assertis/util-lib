@@ -26,6 +26,14 @@ class ObjectListAlwaysAccept extends ObjectList
     {
         return true;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public static function deserializeItem($data)
+    {
+        return $data;
+    }
 }
 
 class ObjectListNeverAccept extends ObjectList
