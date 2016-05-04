@@ -3,6 +3,7 @@
 namespace Assertis\Util;
 
 use ArrayObject;
+use Exception;
 use InvalidArgumentException;
 use Traversable;
 
@@ -362,6 +363,60 @@ abstract class ObjectList extends ArrayObject
     }
 
     //
+    // Serialization and deserialization
+    //
+
+    /**
+     * Turn this object into an array using toArray method on each element if they have it.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $out = [];
+        foreach ($this->getArrayCopy() as $key => $value) {
+            if (is_object($value) && method_exists($value, 'toArray')) {
+                $out[$key] = $value->toArray();
+            } else {
+                $out[$key] = $value;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * Create a single member element from serialized data.
+     *
+     * @param mixed $data
+     * @return mixed
+     * @throws Exception
+     */
+    public static function deserializeItem($data)
+    {
+        throw new Exception(
+            "To use fromArray deserialization feature please implement a static deserializeItem method."
+        );
+    }
+
+    /**
+     * Create an object of current list type from a toArray serialized form.
+     *
+     * @param array $items
+     * @return static
+     * @throws Exception
+     */
+    public static function fromArray(array $items)
+    {
+        $out = [];
+        foreach ($items as $item) {
+            $out[] = static::deserializeItem($item);
+        }
+
+        return new static($out);
+    }
+
+    //
     // Operations that return a different representation of the list
     //
 
@@ -428,24 +483,6 @@ abstract class ObjectList extends ArrayObject
     public function contains($element)
     {
         return false !== array_search($element, $this->getArrayCopy(), true);
-    }
-
-    /**
-     * Turn this object into an array using toArray method on each element if they have it.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        $out = [];
-        foreach ($this->getArrayCopy() as $key => $value) {
-            if (is_object($value) && method_exists($value, 'toArray')) {
-                $out[$key] = $value->toArray();
-            } else {
-                $out[$key] = $value;
-            }
-        }
-        return $out;
     }
 
     //
