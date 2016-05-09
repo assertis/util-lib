@@ -338,16 +338,35 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
             return $value === 4;
         });
     }
-    
+
     public function testSerialization()
     {
         $values = [1, 2, 3];
 
         $stub = new ObjectListAlwaysAccept($values);
-        
+
         $original = $stub->toArray();
         $transformed = ObjectListAlwaysAccept::fromArray($original)->toArray();
-        
+
         $this->assertSame($original, $transformed);
+    }
+
+    public function testUniqueFor()
+    {
+        $values = [1, 2, 3];
+
+        $stub = new ObjectListAlwaysAccept($values);
+
+        $resultOne = $stub->uniqueFor(function () {
+            return 1;
+        });
+        $resultAll = $stub->uniqueFor(function ($value) {
+            return $value;
+        });
+
+        $this->assertSameSize($stub, $resultAll);
+
+        $this->assertSame(1, $resultOne->count());
+        $this->assertSame(1, $resultOne->getFirst());
     }
 }

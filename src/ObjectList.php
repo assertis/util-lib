@@ -194,6 +194,25 @@ abstract class ObjectList extends ArrayObject
     }
 
     /**
+     * Returns a new list containing one element for each {$selector($element)} value (i.e. array_unique using
+     * a callback for each value).
+     *
+     * @param callable $selector
+     * @return static
+     */
+    public function uniqueFor(callable $selector)
+    {
+        $keys = [];
+
+        return $this->filter(function ($item) use ($selector, &$keys) {
+            $value = $selector($item);
+            $key = is_object($value) ? spl_object_hash($value) : $value;
+
+            return array_key_exists($key, $keys) ? false : $keys[$key] = true;
+        });
+    }
+
+    /**
      * Return a new list containing {$length} elements starting on {$offset}.
      *
      * @param int $offset
