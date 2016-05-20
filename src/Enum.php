@@ -3,6 +3,7 @@
 namespace Assertis\Util;
 
 use InvalidArgumentException;
+use JsonSerializable;
 use ReflectionClass;
 
 /**
@@ -11,7 +12,7 @@ use ReflectionClass;
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  * Class represents enumeration class
  */
-class Enum
+class Enum implements JsonSerializable
 {
     /**
      * @var mixed
@@ -65,6 +66,14 @@ class Enum
     public function __toString()
     {
         return (string)$this->value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->value;
     }
 
     /**
