@@ -22,6 +22,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $map = new TypedMapAlwaysAccept([$key => $value]);
 
         $this->assertTrue($map->has($key));
+        $this->assertTrue(isset($map[$key]));
         $this->assertSame($value, $map[$key]);
 
         $this->setExpectedException(InvalidArgumentException::class);
@@ -87,8 +88,8 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $value = 'bar';
 
         $map = new TypedMapAlwaysAccept([$key => $value]);
-
         $map->clear();
+
         $this->assertFalse($map->has($key));
     }
 
@@ -130,5 +131,30 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame([$key1, $key2, $key3], $map->getKeys());
         $this->assertSame([$value1, $value2, $value3], $map->getValues());
+    }
+    
+    public function testUnset()
+    {
+        $key1 = 'foo';
+        $key2 = new stdClass('bar');
+        
+        $map = new TypedMapAlwaysAccept();
+        $map->set($key1, true);
+        $map->set($key2, true);
+
+        $this->assertTrue(isset($map[$key1]));
+        $this->assertTrue($map->has($key2));
+
+        unset($map[$key1]);
+
+        $this->assertFalse(isset($map[$key1]));
+        $this->assertFalse($map->has($key1));
+        $this->assertTrue($map->has($key2));
+
+        $map->offsetUnset($key2);
+
+        $this->assertFalse(isset($map[$key1]));
+        $this->assertFalse($map->has($key1));
+        $this->assertFalse($map->has($key2));
     }
 }
