@@ -22,11 +22,13 @@ abstract class TypedMap extends ArrayObject
      */
     public function __construct(array $input = [], $flags = 0, $iterator_class = "ArrayIterator")
     {
+        parent::__construct([], $flags, $iterator_class);
+
         foreach ($input as $key => $value) {
             $this->assertValid($key, $value);
-        }
 
-        parent::__construct($input, $flags, $iterator_class);
+            $this->set($key, $value);
+        }
     }
 
     /**
@@ -60,6 +62,41 @@ abstract class TypedMap extends ArrayObject
     }
 
     /**
+     * @param mixed $key
+     * @param mixed $default
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function get($key, $default = false)
+    {
+        if ($this->has($key)) {
+            return $this[$key];
+        } elseif (func_num_args() > 1) {
+            return $default;
+        } else {
+            throw new InvalidArgumentException("Invalid key: " . var_export($key, true));
+        }
+    }
+
+    /**
+     * @param mixed $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return parent::offsetGet($this->getKeyId($key));
+    }
+
+    /**
+     * @param mixed $key
+     * @param mixed $value
+     */
+    public function set($key, $value)
+    {
+        $this[$key] = $value;
+    }
+
+    /**
      * Set object to array
      *
      * @param mixed $key
@@ -69,10 +106,21 @@ abstract class TypedMap extends ArrayObject
     {
         $this->assertValid($key, $newValue);
 
-        $keyId = is_object($key) ? spl_object_hash($key) : $key;
+        $keyId = $this->getKeyId($key);
         $this->keys[$keyId] = $key;
 
         parent::offsetSet($keyId, $newValue);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function offsetUnset($key)
+    {
+        $keyId = $this->getKeyId($key);
+        
+        unset($this->keys[$keyId]);
+        parent::offsetUnset($keyId);
     }
 
     /**
@@ -106,39 +154,11 @@ abstract class TypedMap extends ArrayObject
 
     /**
      * @param mixed $key
-     * @param mixed $value
+     * @return string
      */
-    public function set($key, $value)
+    protected function getKeyId($key)
     {
-        $this[$key] = $value;
-    }
-
-    /**
-     * @param mixed $key
-     * @return mixed
-     */
-    public function offsetGet($key)
-    {
-        $keyId = is_object($key) ? spl_object_hash($key) : $key;
-
-        return parent::offsetGet($keyId);
-    }
-
-    /**
-     * @param mixed $key
-     * @param mixed $default
-     * @return mixed
-     * @throws InvalidArgumentException
-     */
-    public function get($key, $default = false)
-    {
-        if ($this->has($key)) {
-            return $this[$key];
-        } elseif (func_num_args() > 1) {
-            return $default;
-        } else {
-            throw new InvalidArgumentException("Invalid key: ".var_export($key, true));
-        }
+        return is_object($key) ? spl_object_hash($key) : $key;
     }
 
     /**
@@ -163,15 +183,14 @@ abstract class TypedMap extends ArrayObject
      */
     public function has($key)
     {
-        return is_object($key) ?
-            in_array($key, $this->keys) :
-            array_key_exists($key, $this);
+        return array_key_exists($this->getKeyId($key), $this->keys);
     }
 
     /**
      */
     public function clear()
     {
+        $this->keys = [];
         $this->exchangeArray([]);
     }
 }
