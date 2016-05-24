@@ -99,17 +99,36 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $map = new TypedMapNeverAcceptKey();
         $map['foo'] = 'bar';
     }
-    
+
     public function testObjectAsKey()
     {
         $key = new stdClass('foo');
         $value = new stdClass('bar');
-        
+
         $map = new TypedMapAlwaysAccept();
         $map[$key] = $value;
-        
+
         $this->assertTrue($map->has($key));
         $this->assertSame($value, $map[$key]);
         $this->assertSame($value, $map->get($key));
-    }    
+    }
+
+    public function testGetKeysGetValues()
+    {
+        $key1 = new stdClass('foo');
+        $key2 = new stdClass('bar');
+        $key3 = new stdClass('baz');
+        
+        $value1 = 'FOO';
+        $value2 = new stdClass('BAR');
+        $value3 = null;
+
+        $map = new TypedMapAlwaysAccept();
+        $map->set($key1, $value1);
+        $map->set($key2, $value2);
+        $map->set($key3, $value3);
+
+        $this->assertSame([$key1, $key2, $key3], $map->getKeys());
+        $this->assertSame([$value1, $value2, $value3], $map->getValues());
+    }
 }

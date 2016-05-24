@@ -142,6 +142,22 @@ abstract class TypedMap extends ArrayObject
     }
 
     /**
+     * @return array
+     */
+    public function getKeys()
+    {
+        return array_values($this->keys);
+    }
+
+    /**
+     * @return array
+     */
+    public function getValues()
+    {
+        return array_values($this->getArrayCopy());
+    }
+
+    /**
      * @param mixed $key
      * @return bool
      */
