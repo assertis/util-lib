@@ -157,4 +157,21 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($map->has($key1));
         $this->assertFalse($map->has($key2));
     }
+    
+    public function testSerialization()
+    {
+        $key1 = 'foo';
+        $value1 = new stdClass('Foo');
+        $key2 = new stdClass('Bar');
+        $value2 = 'bar';
+
+        $map = new TypedMapAlwaysAccept();
+        $map->set($key1, $value1);
+        $map->set($key2, $value2);
+        
+        $expected = $map->toArray();
+        $actual = TypedMapAlwaysAccept::fromArray($expected)->toArray();
+        
+        $this->assertSame($expected, $actual);
+    }
 }

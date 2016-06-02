@@ -3,13 +3,17 @@
 namespace Assertis\Util;
 
 use ArrayObject;
+use Exception;
 use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
-abstract class TypedMap extends ArrayObject
+abstract class TypedMap extends ArrayObject implements JsonSerializable
 {
+    const KEY = 'key';
+    const VALUE = 'value';
     /**
      * @var array
      */
@@ -118,7 +122,7 @@ abstract class TypedMap extends ArrayObject
     public function offsetUnset($key)
     {
         $keyId = $this->getKeyId($key);
-        
+
         unset($this->keys[$keyId]);
         parent::offsetUnset($keyId);
     }
@@ -192,5 +196,89 @@ abstract class TypedMap extends ArrayObject
     {
         $this->keys = [];
         $this->exchangeArray([]);
+    }
+
+    /**
+     * @param mixed $item
+     * @return mixed
+     */
+    private function getToArrayValue($item)
+    {
+        return is_object($item) && method_exists($item, 'toArray') ?
+            $item->toArray() : $item;
+    }
+
+    /**
+     * Turn this object into an array using toArray method on each element if they have it.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $out = [];
+        foreach ($this->getArrayCopy() as $keyId => $value) {
+            $key = $this->keys[$keyId];
+            $out[] = [
+                self::KEY   => $this->getToArrayValue($key),
+                self::VALUE => $this->getToArrayValue($value),
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Create a single key element from serialized data.
+     *
+     * @param mixed $data
+     * @return mixed
+     * @throws Exception
+     */
+    public static function deserializeKey($data)
+    {
+        throw new Exception(
+            "To use fromArray deserialization feature please implement a static deserializeItem method."
+        );
+    }
+
+    /**
+     * Create a single value element from serialized data.
+     *
+     * @param mixed $data
+     * @return mixed
+     * @throws Exception
+     */
+    public static function deserializeValue($data)
+    {
+        throw new Exception(
+            "To use fromArray deserialization feature please implement a static deserializeItem method."
+        );
+    }
+
+    /**
+     * @param array $data
+     * @return static
+     * @throws Exception
+     */
+    public static function fromArray(array $data)
+    {
+        $out = new static();
+
+        foreach ($data as $item) {
+            $out->set(
+                static::deserializeKey($item[self::KEY]),
+                static::deserializeValue($item[self::VALUE])
+            );
+        }
+
+        return $out;
     }
 }
