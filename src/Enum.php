@@ -18,12 +18,6 @@ class Enum implements JsonSerializable
      * @var mixed
      */
     private $value;
-
-    /**
-     * @var ReflectionClass
-     */
-    private $reflection;
-
     /**
      * @var array
      */
@@ -34,8 +28,7 @@ class Enum implements JsonSerializable
      */
     public function __construct($value)
     {
-        $this->reflection = new ReflectionClass(get_called_class());
-        $this->constants = $this->reflection->getConstants();
+        $this->constants = (new ReflectionClass(get_called_class()))->getConstants();
         $this->validateValue($value);
 
         $this->value = $value;

@@ -413,9 +413,10 @@ abstract class ObjectList extends ArrayObject
      */
     public static function deserializeItem($data)
     {
-        throw new Exception(
-            "To use fromArray deserialization feature please implement a static deserializeItem method."
-        );
+        throw new Exception(sprintf(
+            "To use fromArray deserialization feature please implement a static deserializeItem method in %s.",
+            get_called_class()
+        ));
     }
 
     /**

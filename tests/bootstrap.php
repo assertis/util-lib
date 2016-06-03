@@ -56,6 +56,22 @@ class TypedMapAlwaysAccept extends TypedMap
     {
         return true;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public static function deserializeKey($data)
+    {
+        return $data;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function deserializeValue($data)
+    {
+        return $data;
+    }
 }
 
 class TypedMapNeverAccept extends TypedMap
