@@ -12,7 +12,7 @@
     "psr-4": {"Assertis\\Util\\": "src"}
   },
   "require": {
-    "php": "^5.5",
+    "php": ">5.5",
     "ext-SimpleXML": "*",
     "ext-dom": "*"
     

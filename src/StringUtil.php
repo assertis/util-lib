@@ -10,7 +10,7 @@ namespace Assertis\Util;
  *
  * Provide util methods for strings
  */
-final class String
+final class StringUtil
 {
 
     /**

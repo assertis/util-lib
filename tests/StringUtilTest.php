@@ -7,7 +7,7 @@ use PHPUnit_Framework_TestCase;
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class StringTest extends PHPUnit_Framework_TestCase
+class StringUtilTest extends PHPUnit_Framework_TestCase
 {
 
     public function provideUcwords()
@@ -28,32 +28,32 @@ class StringTest extends PHPUnit_Framework_TestCase
      */
     public function testUcwords($input, $expected)
     {
-        $this->assertSame($expected, String::ucwords($input));
+        $this->assertSame($expected, StringUtil::ucwords($input));
     }
 
     public function testSubstrReturnsEmptyStringWhenEmptyStringPassed()
     {
-        $this->assertSame('', String::substr(''));
+        $this->assertSame('', StringUtil::substr(''));
     }
 
     public function testSubstrReturnsSubstringWhenLongerStringPassedWithShorteningConstraints()
     {
-        $this->assertSame('super', String::substr('supermegalongtext', 0, 5));
+        $this->assertSame('super', StringUtil::substr('supermegalongtext', 0, 5));
     }
 
     public function testSubstrReturnsShorterSubstringWhenSomeStringPassedWithShorteningConstraintsGettingOutOfBand()
     {
-        $this->assertSame('ext', String::substr('supermegalongtext', 14, 5));
+        $this->assertSame('ext', StringUtil::substr('supermegalongtext', 14, 5));
     }
 
     public function testSubstrReturnsEmptyStringWhenConstraintsOutOfBoundPassed()
     {
-        $this->assertSame('', String::substr('supermegalongtext', 17, 5));
+        $this->assertSame('', StringUtil::substr('supermegalongtext', 17, 5));
     }
 
     public function testSubstrReturnsRestOfString_whenOnlyStartParameterPassed()
     {
-        $this->assertSame('longtext', String::substr('supermegalongtext', 9));
+        $this->assertSame('longtext', StringUtil::substr('supermegalongtext', 9));
     }
 
     public function provideWrap()
@@ -76,7 +76,7 @@ class StringTest extends PHPUnit_Framework_TestCase
         $perLine = 6;
         $expected = "Abc def\nghi\njkl.";
 
-        $this->assertSame($expected, String::wrap($input, $perLine));
+        $this->assertSame($expected, StringUtil::wrap($input, $perLine));
 
     }
 }
