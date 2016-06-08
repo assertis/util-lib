@@ -35,7 +35,7 @@ final class Str
     public static function ccwords($word)
     {
         $spaced = str_replace('-', ' ', $word);
-        $ucworded = String::ucwords($spaced);
+        $ucworded = self::ucwords($spaced);
 
         return str_replace(' ', '', $ucworded);
     }
