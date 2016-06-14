@@ -166,6 +166,15 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     }
 
     /**
+     * @param mixed $keyId
+     * @return mixed
+     */
+    protected function getKey($keyId)
+    {
+        return $this->keys[$keyId];
+    }
+    
+    /**
      * @return array
      */
     public function getKeys()
@@ -217,7 +226,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     {
         $out = [];
         foreach ($this->getArrayCopy() as $keyId => $value) {
-            $key = $this->keys[$keyId];
+            $key = $this->getKey($keyId);
             $out[] = [
                 self::KEY   => $this->getToArrayValue($key),
                 self::VALUE => $this->getToArrayValue($value),
