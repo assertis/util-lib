@@ -4,6 +4,9 @@ namespace Assertis\Util;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
+ *
+ * @method static TypedMapAssociativeSerializationTrait deserializeKey(mixed $key)
+ * @method static TypedMapAssociativeSerializationTrait deserializeValue(mixed $value)
  */
 trait TypedMapAssociativeSerializationTrait
 {
@@ -31,6 +34,12 @@ trait TypedMapAssociativeSerializationTrait
     abstract public function getKey($keyId);
 
     /**
+     * @param mixed $key
+     * @param mixed $value
+     */
+    abstract public function set($key, $value);
+
+    /**
      * @return array
      */
     public function toArray()
@@ -50,7 +59,6 @@ trait TypedMapAssociativeSerializationTrait
      */
     public static function fromArray(array $data)
     {
-        /** @var TypedMap $out */
         $out = new static();
 
         foreach ($data as $key => $value) {
