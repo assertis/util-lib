@@ -2,6 +2,9 @@
 
 namespace Assertis\Util;
 
+/**
+ * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
+ */
 class ObjectListList extends ObjectList
 {
     /**

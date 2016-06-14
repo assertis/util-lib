@@ -21,7 +21,8 @@ class DateTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testShouldThrowExceptionOnInvalidValues() {
+    public function testShouldThrowExceptionOnInvalidValues()
+    {
         Date::fromString('2014-34-56');
     }
 
@@ -78,7 +79,7 @@ class DateTest extends PHPUnit_Framework_TestCase
             ['2015-04-07', true],
             ['2015-04-11', false],
             ['2015-04-12', false],
-            ['2015-04-13', true]
+            ['2015-04-13', true],
         ];
     }
 
@@ -216,7 +217,7 @@ class DateTest extends PHPUnit_Framework_TestCase
     {
         return [
             ['2015-05-08', 5, '2015-05-03'],
-            ['2015-05-27', 5, '2015-05-20']
+            ['2015-05-27', 5, '2015-05-20'],
         ];
     }
 
@@ -243,12 +244,14 @@ class DateTest extends PHPUnit_Framework_TestCase
         $this->assertStringEndsWith(date('Y'), (new Date())->formatEnglish());
     }
 
-
+    /**
+     * @return array
+     */
     public function provideGetTwoBitYear()
     {
         return [
             ['1981-05-07', 0],
-            ['2002-05-07', 1]
+            ['2002-05-07', 1],
         ];
     }
 
@@ -263,6 +266,9 @@ class DateTest extends PHPUnit_Framework_TestCase
         $this->assertSame($obj->getTwoBitYear(), $bit);
     }
 
+    /**
+     * @return array
+     */
     public function provideGetNineBitDate()
     {
         return [
@@ -283,11 +289,14 @@ class DateTest extends PHPUnit_Framework_TestCase
         $this->assertSame($bits, $obj->getNineBitDate());
     }
 
+    /**
+     * @return array
+     */
     public function provideGetNineBitMinuteOfDay()
     {
         return [
             ['2010-01-01 00:09:00', 101],
-            ['2010-01-01 01:09:00', 113]
+            ['2010-01-01 01:09:00', 113],
         ];
     }
 

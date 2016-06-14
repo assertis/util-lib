@@ -5,7 +5,7 @@ namespace Assertis\Util;
 use Memcache;
 
 /**
- * Utility methods for manipulating distributed locks using mamecache
+ * Utility methods for manipulating distributed locks using memcache
  */
 class DistributedMemcacheMutex
 {
@@ -14,14 +14,14 @@ class DistributedMemcacheMutex
     /**
      * @var Memcache
      */
-    private $mamecache;
+    private $memcache;
 
     /**
-     * @param Memcache $mamecache
+     * @param Memcache $memcache
      */
-    public function __construct(Memcache $mamecache)
+    public function __construct(Memcache $memcache)
     {
-        $this->mamecache = $mamecache;
+        $this->memcache = $memcache;
     }
 
     /**
@@ -32,7 +32,7 @@ class DistributedMemcacheMutex
      */
     public function lock($name, $expirationTimeInSeconds = self::FIVE_MINUTES_SECONDS)
     {
-        if (false === $this->mamecache->add($name, 1, false, $expirationTimeInSeconds)) {
+        if (false === $this->memcache->add($name, 1, false, $expirationTimeInSeconds)) {
             throw new AlreadyLockedException($name);
         }
     }
@@ -42,6 +42,6 @@ class DistributedMemcacheMutex
      */
     public function unlock($name)
     {
-        $this->mamecache->delete($name);
+        $this->memcache->delete($name);
     }
 }

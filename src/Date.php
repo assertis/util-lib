@@ -405,5 +405,4 @@ class Date extends DateTime implements JsonSerializable
         
         return (int)(100 + $min + $hour - 1);
     }
-
 }

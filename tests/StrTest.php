@@ -7,9 +7,11 @@ use PHPUnit_Framework_TestCase;
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class StringUtilTest extends PHPUnit_Framework_TestCase
+class StrTest extends PHPUnit_Framework_TestCase
 {
-
+    /**
+     * @return array
+     */
     public function provideUcwords()
     {
         return [
@@ -28,39 +30,42 @@ class StringUtilTest extends PHPUnit_Framework_TestCase
      */
     public function testUcwords($input, $expected)
     {
-        $this->assertSame($expected, StringUtil::ucwords($input));
+        $this->assertSame($expected, Str::ucwords($input));
     }
 
     public function testSubstrReturnsEmptyStringWhenEmptyStringPassed()
     {
-        $this->assertSame('', StringUtil::substr(''));
+        $this->assertSame('', Str::substr(''));
     }
 
     public function testSubstrReturnsSubstringWhenLongerStringPassedWithShorteningConstraints()
     {
-        $this->assertSame('super', StringUtil::substr('supermegalongtext', 0, 5));
+        $this->assertSame('super', Str::substr('supermegalongtext', 0, 5));
     }
 
     public function testSubstrReturnsShorterSubstringWhenSomeStringPassedWithShorteningConstraintsGettingOutOfBand()
     {
-        $this->assertSame('ext', StringUtil::substr('supermegalongtext', 14, 5));
+        $this->assertSame('ext', Str::substr('supermegalongtext', 14, 5));
     }
 
     public function testSubstrReturnsEmptyStringWhenConstraintsOutOfBoundPassed()
     {
-        $this->assertSame('', StringUtil::substr('supermegalongtext', 17, 5));
+        $this->assertSame('', Str::substr('supermegalongtext', 17, 5));
     }
 
     public function testSubstrReturnsRestOfString_whenOnlyStartParameterPassed()
     {
-        $this->assertSame('longtext', StringUtil::substr('supermegalongtext', 9));
+        $this->assertSame('longtext', Str::substr('supermegalongtext', 9));
     }
 
+    /**
+     * @return array
+     */
     public function provideWrap()
     {
         return [
             [ 'Abc def ghi jkl.', 6, "Abc def\nghi\njkl." ],
-            [ "Abc def.\nGh ijk.", 6, "Abc\ndef.\n\nGh ijk." ],
+            [ "Abc def.\nGh ijk.", 6, "Abc\ndef.\nGh ijk." ],
         ];
     }
     
@@ -72,11 +77,7 @@ class StringUtilTest extends PHPUnit_Framework_TestCase
      */
     public function testWrap($input, $perLine, $expected)
     {
-        $input = 'Abc def ghi jkl.';
-        $perLine = 6;
-        $expected = "Abc def\nghi\njkl.";
-
-        $this->assertSame($expected, StringUtil::wrap($input, $perLine));
+        $this->assertSame($expected, Str::wrap($input, $perLine));
 
     }
 }

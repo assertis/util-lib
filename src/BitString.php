@@ -2,8 +2,8 @@
 
 namespace Assertis\Util;
 
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
 
 /**
  * Simple fixed-length bit string that makes it easy to manipulate binary data.
@@ -40,7 +40,7 @@ class BitString
         if ($length < 0) {
             throw new InvalidArgumentException('Length must be non-negative.');
         }
-        
+
         $this->length = $length;
         $this->wordSize = PHP_INT_SIZE * 8;
         $this->data = array_fill(0, ceil($length / $this->wordSize), 0);
@@ -62,10 +62,10 @@ class BitString
     public function getBit($index)
     {
         $this->assertValidIndex($index);
-        
+
         $word = (int)floor($index / $this->wordSize);
         $offset = $index % $this->wordSize;
-        
+
         return ($this->data[$word] & (1 << $offset)) != 0;
     }
 
@@ -78,7 +78,7 @@ class BitString
     public function setBit($index, $set)
     {
         $this->assertValidIndex($index);
-        
+
         $word = (int)floor($index / $this->wordSize);
         $offset = $index % $this->wordSize;
         if ($set) {
@@ -140,7 +140,7 @@ class BitString
      */
     public function getBytes($mostSignificantBit, $count)
     {
-        $bytes = array();
+        $bytes = [];
         for ($i = 0; $i < $count; $i++) {
             $bytes[] = $this->getByte($mostSignificantBit - (8 * $i));
         }
@@ -175,7 +175,6 @@ class BitString
     /**
      * The data in the bit string is treated as big-endian.  The first character of the hex
      * string represents the four most significant bits.
-
      * @return string
      */
     public function toHexString()
@@ -191,7 +190,7 @@ class BitString
                 $length -= 8;
             }
         }
-        
+
         return strtoupper($hex);
     }
 
@@ -232,16 +231,21 @@ class BitString
     /**
      * The data is treated as big-endian.  The first (left-most) character of the string
      * argument is converted into the most significant bits of the resultant bit string.
+     *
+     * @param string $string
+     * @return BitString
      */
     public static function fromString($string)
     {
         $bitCount = strlen($string) * 8;
         $bitString = new BitString($bitCount);
         $index = $bitCount - 1;
+        
         foreach (str_split($string) as $char) {
             $bitString->setBitsHighToLow($index, str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT));
             $index -= 8;
         }
+
         return $bitString;
     }
 }

@@ -72,7 +72,7 @@ final class Str
     public static function wrap($text, $charsPerLine)
     {
         $inputLines = explode("\n", $text);
-        $outputLines = array();
+        $outputLines = [];
 
         foreach ($inputLines as $inputLine) {
             $spaceLeft = $charsPerLine;

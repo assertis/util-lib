@@ -38,7 +38,7 @@ class XML extends SimpleXMLElement
                 $this[$kk] = (string)$vv;
             }
         }
-        
+
         return $this;
     }
 
@@ -61,7 +61,7 @@ class XML extends SimpleXMLElement
                 $this->append($node);
             }
         }
-        
+
         return $this;
     }
 
@@ -77,7 +77,7 @@ class XML extends SimpleXMLElement
         $newDom = dom_import_simplexml($newChild);
         $newNode = $dom->ownerDocument->importNode($newDom, true);
         $dom->appendChild($newNode);
-        
+
         return $this;
     }
 
@@ -92,7 +92,7 @@ class XML extends SimpleXMLElement
         $node = $owner->createComment($text);
         $owner->importNode($node);
         $dom->appendChild($node);
-        
+
         return $this;
     }
 
@@ -105,7 +105,7 @@ class XML extends SimpleXMLElement
     {
         $dom = dom_import_simplexml($this);
         $dom->parentNode->removeChild($dom);
-        
+
         return $this;
     }
 
@@ -121,7 +121,7 @@ class XML extends SimpleXMLElement
         $new_dom = dom_import_simplexml($new_child);
         $new_node = $dom->ownerDocument->importNode($new_dom, true);
         $dom->parentNode->replaceChild($new_node, $dom);
-        
+
         return $this;
     }
 
@@ -226,7 +226,7 @@ class XML extends SimpleXMLElement
         $doc->formatOutput = $format;
         $doc->preserveWhiteSpace = $preserveWhiteSpace;
         $doc->loadXML(parent::asXML());
-        
+
         return $noXmlHeader ?
             $doc->saveXML($doc->documentElement) :
             $doc->saveXML();
@@ -239,12 +239,12 @@ class XML extends SimpleXMLElement
      */
     public function asHTML()
     {
-        $replace = array(
+        $replace = [
             ' ' => '&nbsp;',
             "\t" => '&nbsp; &nbsp; ',
             '<' => '&lt;',
             '>' => '&gt;',
-        );
+        ];
         return nl2br(str_replace(array_keys($replace), array_values($replace), $this->asXML(true, false, true)));
     }
 }

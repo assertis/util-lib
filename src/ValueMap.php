@@ -1,13 +1,12 @@
 <?php
 
-/**
- * @author Michał Tatarynowicz <michal@assertis.co.uk>
- */
-
 namespace Assertis\Util;
 
 use Exception;
 
+/**
+ * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
+ */
 class ValueMap
 {
 
