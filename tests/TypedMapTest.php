@@ -119,7 +119,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $key1 = new stdClass('foo');
         $key2 = new stdClass('bar');
         $key3 = new stdClass('baz');
-        
+
         $value1 = 'FOO';
         $value2 = new stdClass('BAR');
         $value3 = null;
@@ -132,12 +132,12 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $this->assertSame([$key1, $key2, $key3], $map->getKeys());
         $this->assertSame([$value1, $value2, $value3], $map->getValues());
     }
-    
+
     public function testUnset()
     {
         $key1 = 'foo';
         $key2 = new stdClass('bar');
-        
+
         $map = new TypedMapAlwaysAccept();
         $map->set($key1, true);
         $map->set($key2, true);
@@ -157,7 +157,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($map->has($key1));
         $this->assertFalse($map->has($key2));
     }
-    
+
     public function testSerialization()
     {
         $key1 = 'foo';
@@ -168,10 +168,31 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $map = new TypedMapAlwaysAccept();
         $map->set($key1, $value1);
         $map->set($key2, $value2);
-        
+
         $expected = $map->toArray();
         $actual = TypedMapAlwaysAccept::fromArray($expected)->toArray();
-        
+
         $this->assertSame($expected, $actual);
+    }
+
+    public function testForeach()
+    {
+        $key1 = new stdClass('foo');
+        $value1 = 'Foo';
+        $key2 = new stdClass('bar');
+        $value2 = 'Bar';
+
+        $map = new TypedMapAlwaysAccept();
+        $map->set($key1, $value1);
+        $map->set($key2, $value2);
+
+        $counter = 0;
+        foreach ($map as $key => $value) {
+            $counter++;
+            $this->assertInstanceOf(stdClass::class, $key);
+            $this->assertInternalType('string', $value);
+        }
+        
+        $this->assertSame(2, $counter);
     }
 }
