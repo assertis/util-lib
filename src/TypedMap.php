@@ -198,7 +198,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     {
         return array_key_exists($this->getKeyId($key), $this->keys);
     }
-
+    
     /**
      */
     public function clear()
@@ -289,5 +289,13 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
         }
 
         return $out;
+    }
+
+    /**
+     * @return TypedMapIterator
+     */
+    public function getIterator()
+    {
+        return new TypedMapIterator($this->keys, $this->getArrayCopy(), 0);
     }
 }
