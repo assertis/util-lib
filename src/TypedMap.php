@@ -12,8 +12,9 @@ use JsonSerializable;
  */
 abstract class TypedMap extends ArrayObject implements JsonSerializable
 {
-    const KEY = 'key';
-    const VALUE = 'value';
+    const DEFAULT_KEY_NAME = 'key';
+    const DEFAULT_VALUE_NAME = 'value';
+
     /**
      * @var array
      */
@@ -173,7 +174,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     {
         return $this->keys[$keyId];
     }
-    
+
     /**
      * @return array
      */
@@ -198,7 +199,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     {
         return array_key_exists($this->getKeyId($key), $this->keys);
     }
-    
+
     /**
      */
     public function clear()
@@ -224,12 +225,15 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      */
     public function toArray()
     {
+        $keyName = static::getKeyName();
+        $valueName = static::getValueName();
+
         $out = [];
         foreach ($this->getArrayCopy() as $keyId => $value) {
             $key = $this->getKey($keyId);
             $out[] = [
-                self::KEY   => $this->getToArrayValue($key),
-                self::VALUE => $this->getToArrayValue($value),
+                $keyName => $this->getToArrayValue($key),
+                $valueName => $this->getToArrayValue($value),
             ];
         }
 
@@ -273,18 +277,36 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public static function getKeyName()
+    {
+        return self::DEFAULT_KEY_NAME;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getValueName()
+    {
+        return self::DEFAULT_VALUE_NAME;
+    }
+
+    /**
      * @param array $data
      * @return static
      * @throws Exception
      */
     public static function fromArray(array $data)
     {
-        $out = new static();
+        $keyName = static::getKeyName();
+        $valueName = static::getValueName();
 
+        $out = new static();
         foreach ($data as $item) {
             $out->set(
-                static::deserializeKey($item[self::KEY]),
-                static::deserializeValue($item[self::VALUE])
+                static::deserializeKey($item[$keyName]),
+                static::deserializeValue($item[$valueName])
             );
         }
 
