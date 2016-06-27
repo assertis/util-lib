@@ -15,6 +15,7 @@ abstract class RequestException extends Exception
     const TYPE_ERROR = 'error';
     const TYPE_FAIL = 'fail';
     const TYPE_OK = 'ok';
+    const TYPE_SUCCESS = 'success';
 
     /**
      * @return int
