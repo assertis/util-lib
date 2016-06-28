@@ -209,15 +209,31 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     }
 
     /**
-     * @param mixed $item
+     * Serialize key.
+     *
+     * @param mixed $key
      * @return mixed
+     * @throws Exception
      */
-    private function getToArrayValue($item)
+    protected function serializeKey($key)
     {
-        return is_object($item) && method_exists($item, 'toArray') ?
-            $item->toArray() : $item;
+        return is_object($key) && method_exists($key, 'toArray') ?
+            $key->toArray() : $key;
     }
 
+    /**
+     * Serialize value.
+     *
+     * @param mixed $value
+     * @return mixed
+     * @throws Exception
+     */
+    protected function serializeValue($value)
+    {
+        return is_object($value) && method_exists($value, 'toArray') ?
+            $value->toArray() : $value;
+    }
+    
     /**
      * Turn this object into an array using toArray method on each element if they have it.
      *
@@ -232,8 +248,8 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
         foreach ($this->getArrayCopy() as $keyId => $value) {
             $key = $this->getKey($keyId);
             $out[] = [
-                $keyName => $this->getToArrayValue($key),
-                $valueName => $this->getToArrayValue($value),
+                $keyName => $this->serializeKey($key),
+                $valueName => $this->serializeValue($value),
             ];
         }
 
