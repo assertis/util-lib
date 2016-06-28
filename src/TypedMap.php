@@ -217,8 +217,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      */
     protected function serializeKey($key)
     {
-        return is_object($key) && method_exists($key, 'toArray') ?
-            $key->toArray() : $key;
+        return (is_object($key) && method_exists($key, 'toArray')) ? $key->toArray() : $key;
     }
 
     /**
@@ -230,10 +229,9 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      */
     protected function serializeValue($value)
     {
-        return is_object($value) && method_exists($value, 'toArray') ?
-            $value->toArray() : $value;
+        return (is_object($value) && method_exists($value, 'toArray')) ? $value->toArray() : $value;
     }
-    
+
     /**
      * Turn this object into an array using toArray method on each element if they have it.
      *
