@@ -19,11 +19,11 @@ abstract class Id implements JsonSerializable
      */
     public function __construct($value)
     {
-        $this->value = $value;
+        $this->value = (string) $value;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getValue()
     {
@@ -47,7 +47,7 @@ abstract class Id implements JsonSerializable
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function jsonSerialize()
     {

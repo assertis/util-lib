@@ -334,4 +334,21 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     {
         return new TypedMapIterator($this->keys, $this->getArrayCopy(), 0);
     }
+
+    /**
+     * @param callable $filter
+     * @return static
+     */
+    public function filter(callable $filter)
+    {
+        $out = new static;
+        
+        foreach ($this as $key => $value) {
+            if ($filter($key, $value)) {
+                $out->set($key, $value);
+            }
+        }
+        
+        return $out;
+    }
 }
