@@ -2,6 +2,7 @@
 
 namespace Assertis\Util;
 
+use InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
 class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
@@ -10,6 +11,10 @@ class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
      * @var DistributedMemcacheMutex
      */
     private $mutex;
+    /**
+     * @var DistributedMemcacheMutex
+     */
+    private $serverlessMutex;
 
     /**
      * {@inheritdoc}
@@ -17,7 +22,9 @@ class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mutex = new DistributedMemcacheMutex(new MemcacheStub());
+        $memcache = new MemcacheStub();
+        $this->mutex = new DistributedMemcacheMutex($memcache->withServersAdded());
+        $this->serverlessMutex = new DistributedMemcacheMutex($memcache);
     }
 
     /**
@@ -41,7 +48,7 @@ class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
         try {
             $this->mutex->lock('some_key');
             $this->mutex->lock('some_key');
-            $this->fail('DistributedMemcacheMutex::lock method should throw AlreadyLockedException');
+            $this->fail('DistributedMemcacheMutex::lock method should throw AlreadyLockedException.');
         } catch (AlreadyLockedException $exception) {
             $this->success();
         }
@@ -73,6 +80,19 @@ class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
             $this->success();
         } catch (AlreadyLockedException $exception) {
             $this->fail($exception->getMessage(). ' It should not exists because it was not present.');
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function lockWhenNoServers()
+    {
+        try {
+            $this->serverlessMutex->lock('some_key');
+            $this->fail('DistributedMemcacheMutex::lock method should throw InvalidArgumentException.');
+        } catch (InvalidArgumentException $exception) {
+            $this->success();
         }
     }
 

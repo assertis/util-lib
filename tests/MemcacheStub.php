@@ -4,20 +4,33 @@ namespace Assertis\Util;
 
 use Memcache;
 
+/**
+ * @author Mateusz Angulski <mateusz.angulski@assertis.co.uk>
+ */
 class MemcacheStub extends Memcache
 {
     /**
      * @var array
      */
     private $cache = [];
+    /**
+     * @var bool
+     */
+    private $areServersAdded = false;
 
     /**
-     * @param string $key
-     * @param mixed $var
-     * @param int $flag
-     * @param int $expire
-     *
-     * @return array|bool
+     * @return MemcacheStub
+     */
+    public function withServersAdded()
+    {
+        $withServers = clone $this;
+        $withServers->areServersAdded = true;
+
+        return $withServers;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function add($key, $var, $flag, $expire)
     {
@@ -30,10 +43,7 @@ class MemcacheStub extends Memcache
     }
 
     /**
-     * @param string $key
-     * @param int $timeout
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function delete($key, $timeout = 0)
     {
@@ -43,5 +53,13 @@ class MemcacheStub extends Memcache
         unset($this->cache[$key]);
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getstats()
+    {
+        return $this->areServersAdded;
     }
 }
