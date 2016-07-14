@@ -5,6 +5,7 @@ namespace Assertis\Util;
 use ArrayObject;
 use Exception;
 use InvalidArgumentException;
+use JsonSerializable;
 use Traversable;
 
 /**
@@ -13,7 +14,7 @@ use Traversable;
  *
  * Note: an element matches a filter when $filter($element) === true.
  */
-abstract class ObjectList extends ArrayObject
+abstract class ObjectList extends ArrayObject implements JsonSerializable
 {
     /**
      * @param array $input
@@ -402,6 +403,14 @@ abstract class ObjectList extends ArrayObject
         }
 
         return $out;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**
