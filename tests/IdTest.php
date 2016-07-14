@@ -17,10 +17,10 @@ class IdTest extends PHPUnit_Framework_TestCase
         /** @var Id|PHPUnit_Framework_MockObject_MockObject $id */
         $id = $this->getMockForAbstractClass(Id::class, [$value]);
 
-        $this->assertSame($value, $id->getValue());
+        $this->assertSame((string)$value, $id->getValue());
         $this->assertSame((string)$value, (string)$id);
         $this->assertSame((string)$value, $id->toArray());
-        $this->assertSame(json_encode($value), json_encode($id));
+        $this->assertSame(json_encode((string)$value), json_encode($id));
     }
     
     public function testMatches()
