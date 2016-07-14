@@ -58,7 +58,7 @@ class MemcacheStub extends Memcache
     /**
      * {@inheritdoc}
      */
-    public function getstats()
+    public function getversion()
     {
         return $this->areServersAdded;
     }

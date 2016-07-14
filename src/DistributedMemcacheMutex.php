@@ -46,7 +46,7 @@ class DistributedMemcacheMutex
      */
     private function assertServersAddedToMemcache()
     {
-        if ($this->memcache->getstats() === false) {
+        if ($this->memcache->getversion() === false) {
             throw new InvalidArgumentException(self::MEMCACHE_ERR_MSG);
         }
     }
