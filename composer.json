@@ -12,13 +12,13 @@
     "psr-4": {"Assertis\\Util\\": "src"}
   },
   "require": {
-    "php": "^5.5 | ^7.0",
+    "php": "^7.0",
     "ext-SimpleXML": "*",
     "ext-dom": "*"
     
   },
   "require-dev": {
     "symfony/var-dumper": "*",
-    "phpunit/phpunit": "~4.8"
+    "phpunit/phpunit": "^4.8"
   }
 }

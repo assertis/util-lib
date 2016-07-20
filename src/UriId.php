@@ -9,14 +9,14 @@ use InvalidArgumentException;
  */
 abstract class UriId extends Id
 {
-    const REGEX = '|^(/[a-z0-9\-_\.\?\=]+)+$|';
+    private const VALUE_REGEX = '|^(/[a-z0-9\-_\.\?\=]+)+$|';
 
     /**
      * @return string
      */
     protected function getValueRegex()
     {
-        return self::REGEX;
+        return self::VALUE_REGEX;
     }
 
     /**
