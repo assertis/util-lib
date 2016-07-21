@@ -35,6 +35,15 @@ class AmountPence implements JsonSerializable
 
     /**
      * @param AmountPence $amount
+     * @return AmountPence
+     */
+    public function plus(AmountPence $amount)
+    {
+        return new self($this->value + $amount->getValue());
+    }
+
+    /**
+     * @param AmountPence $amount
      * @return bool
      */
     public function equals(AmountPence $amount)
