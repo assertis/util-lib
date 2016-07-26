@@ -291,6 +291,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @param callable $filter
      * @return mixed
+     * @throws ObjectListElementNotFoundException
      */
     public function get(callable $filter)
     {
