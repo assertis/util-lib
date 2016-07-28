@@ -3,6 +3,7 @@
 namespace Assertis\Util;
 
 use Exception;
+use Psr\Log\LogLevel;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
@@ -57,5 +58,13 @@ abstract class RequestException extends Exception
     public function isLogged()
     {
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogLevel()
+    {
+        return LogLevel::ERROR;
     }
 }
