@@ -210,6 +210,20 @@ class DateTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($date1->isSameDay($date2));
     }
 
+    public function testIsSameTime()
+    {
+        $date1 = new Date('2015-01-03 15:15:01');
+
+        $date2 = new Date('2016-02-04 15:15:01');
+        $this->assertTrue($date1->isSameTime($date2));
+
+        $date3 = new Date('2015-01-03 15:15:01');
+        $this->assertTrue($date1->isSameTime($date3));
+
+        $date4 = new Date('2015-01-03 15:15:02');
+        $this->assertFalse($date1->isSameTime($date4));
+    }
+
     /**
      * @return array
      */
