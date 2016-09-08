@@ -4,6 +4,8 @@ namespace Assertis\Util;
 
 /**
  * @author Rafał Orłowski <rafal.orlowski@assertis.co.uk>
+ * 
+ * List of AmountPence objects
  */
 class AmountPenceList extends ObjectList
 {
