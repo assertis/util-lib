@@ -23,6 +23,28 @@ class TimeTest extends PHPUnit_Framework_TestCase
         Time::fromString('34:67');
     }
 
+    /**
+     * @return array
+     */
+    public function provideShouldAcceptFormats(): array
+    {
+        return [
+            ['0123', '1:23'],
+            ['1:23', '1:23'],
+            ['12:34:56', '12:34'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideShouldAcceptFormats
+     * @param string $input
+     * @param string $expected
+     */
+    public function testShouldAcceptFormats(string $input, string $expected)
+    {
+        $this->assertSame($expected, (string)Time::fromString($input));
+    }
+
     public function testFromStringAndGetters()
     {
         $string = '0930';

@@ -18,6 +18,7 @@ class Time implements JsonSerializable
 
     const NRS_FORMAT = '/^([0-2]\d)([0-5]\d)$/';
     const DEFAULT_FORMAT = '/^([0-2]?\d)\:([0-5]\d)$/';
+    const LONG_FORMAT = '/^([0-2]?\d)\:([0-5]\d)\:([0-5]\d)$/';
 
     /**
      * @var int
@@ -41,6 +42,8 @@ class Time implements JsonSerializable
         }
 
         if (preg_match(self::DEFAULT_FORMAT, $string, $match)) {
+            return new self((int)$match[1], (int)$match[2]);
+        } elseif (preg_match(self::LONG_FORMAT, $string, $match)) {
             return new self((int)$match[1], (int)$match[2]);
         } elseif (preg_match(self::NRS_FORMAT, $string, $match)) {
             return new self((int)$match[1], (int)$match[2]);
