@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Assertis\Util;
 
@@ -13,13 +14,12 @@ use SimpleXMLElement;
  */
 class XML extends SimpleXMLElement
 {
-
     /**
      * @param $filename
      * @param string $class
-     * @return static
+     * @return XML
      */
-    public static function load($filename, $class = __CLASS__)
+    public static function load(string $filename, string $class = __CLASS__): XML
     {
         return simplexml_load_file($filename, $class);
     }
@@ -29,9 +29,9 @@ class XML extends SimpleXMLElement
      *
      * @param SimpleXMLElement $from
      * @param bool $overwrite
-     * @return static
+     * @return self
      */
-    public function copyAttributes(SimpleXMLElement $from, $overwrite = false)
+    public function copyAttributes(SimpleXMLElement $from, bool $overwrite = false): XML
     {
         foreach ($from->attributes() as $kk => $vv) {
             if ($overwrite || !isset($this[$kk])) {
@@ -45,9 +45,9 @@ class XML extends SimpleXMLElement
     /**
      * @param SimpleXMLElement $from
      * @param bool $overwrite
-     * @return $this
+     * @return self
      */
-    public function copyNodes(SimpleXMLElement $from, $overwrite = false)
+    public function copyNodes(SimpleXMLElement $from, bool $overwrite = false): XML
     {
         foreach ($from->children() as $nodeName => $node) {
             $oldNode = $this->find($nodeName);
@@ -69,9 +69,9 @@ class XML extends SimpleXMLElement
      * Adds an existing SimpleXMLElement to this tree.
      *
      * @param SimpleXMLElement $newChild An element to add as a child.
-     * @return XML This tree.
+     * @return self
      */
-    public function append(SimpleXMLElement $newChild)
+    public function append(SimpleXMLElement $newChild): XML
     {
         $dom = dom_import_simplexml($this);
         $newDom = dom_import_simplexml($newChild);
@@ -85,7 +85,7 @@ class XML extends SimpleXMLElement
      * @param string $text
      * @return self
      */
-    public function appendComment($text)
+    public function appendComment(string $text): XML
     {
         $dom = dom_import_simplexml($this);
         $owner = $dom->ownerDocument;
@@ -99,9 +99,9 @@ class XML extends SimpleXMLElement
     /**
      * Removes an element from the document.
      *
-     * @return XML
+     * @return self
      */
-    public function remove()
+    public function remove(): XML
     {
         $dom = dom_import_simplexml($this);
         $dom->parentNode->removeChild($dom);
@@ -113,9 +113,9 @@ class XML extends SimpleXMLElement
      * Replaces an element with another.
      *
      * @param SimpleXMLElement $new_child
-     * @return XML
+     * @return self
      */
-    public function replace($new_child)
+    public function replace(SimpleXMLElement $new_child): XML
     {
         $dom = dom_import_simplexml($this);
         $new_dom = dom_import_simplexml($new_child);
@@ -128,7 +128,6 @@ class XML extends SimpleXMLElement
     /**
      * Removes all children from a DOMElement
      * @param DOMElement $node
-     * @return void
      */
     private function removeDOMChildren(DOMElement $node)
     {
@@ -148,7 +147,7 @@ class XML extends SimpleXMLElement
      * @return XML
      * @throws RuntimeException
      */
-    public function cdata($name, $text = null)
+    public function cdata(string $name, string $text = null): XML
     {
         if ($text === null && !$this->getName()) {
             throw new RuntimeException("Element not initialized yet, can't add CDATA.");
@@ -177,10 +176,10 @@ class XML extends SimpleXMLElement
      * Returns an SimpleXMLElement attribute value.
      *
      * @param string $name
-     * @param null $value
+     * @param mixed $value
      * @return string Attribute value.
      */
-    public function attr($name, $value = null)
+    public function attr(string $name, $value = null)
     {
         if (func_num_args() == 2) {
             return (string)($this[$name] = $value);
@@ -194,12 +193,57 @@ class XML extends SimpleXMLElement
      * element or null.
      *
      * @param string $xpath XPATH to search for.
-     * @return static|null The object matching the $xpath or null.
+     * @return XML|null The object matching the $xpath or null.
      */
-    public function find($xpath)
+    public function find(string $xpath)
     {
         $tmp = $this->xpath($xpath);
+
         return isset($tmp[0]) ? $tmp[0] : null;
+    }
+
+    /**
+     * This is a helper for XML files that have a default unprefixed namespace (i.e. `<Foo xmlns="...">`.
+     * SimpleXMLElement requires you to register that namespace before each call to XML::xpath().
+     *
+     * @param string $newPrefix
+     * @param string $path
+     * @return XML[]|SimpleXMLElement[]|false
+     */
+    public function xpathNs(string $newPrefix, string $path)
+    {
+        return $this->registerUnprefixedNamespaceAs($newPrefix)->xpath($path);
+    }
+
+    /**
+     * This is the unprefixed namespace equivalent of XML::find().
+     * @see XML::xpathNs()
+     *
+     * @param string $newPrefix
+     * @param string $path
+     * @return XML|null
+     */
+    public function findNs(string $newPrefix, string $path)
+    {
+        $tmp = $this->xpathNs($path, $newPrefix);
+
+        return isset($tmp[0]) ? $tmp[0] : null;
+    }
+
+    /**
+     * @param string $newPrefix
+     * @return self
+     */
+    private function registerUnprefixedNamespaceAs(string $newPrefix): XML
+    {
+        foreach ($this->getDocNamespaces() as $currentPrefix => $namespace) {
+            if (strlen($currentPrefix) !== 0) {
+                continue;
+            }
+            $this->registerXPathNamespace($newPrefix, $namespace);
+        }
+
+        return $this;
     }
 
     /**
@@ -207,7 +251,7 @@ class XML extends SimpleXMLElement
      *
      * @return static
      */
-    public function parents()
+    public function parent()
     {
         return $this->find('parent::*');
     }
@@ -218,7 +262,7 @@ class XML extends SimpleXMLElement
      * @param bool $format
      * @param bool $preserveWhiteSpace
      * @param bool $noXmlHeader
-     * @return mixed The XML string or operation result if saving.
+     * @return string|false The XML string or operation result if saving.
      */
     public function asXML($format = true, $preserveWhiteSpace = false, $noXmlHeader = false)
     {
@@ -237,13 +281,13 @@ class XML extends SimpleXMLElement
      *
      * @return string HTML string.
      */
-    public function asHTML()
+    public function asHTML(): string
     {
         $replace = [
-            ' ' => '&nbsp;',
+            ' '  => '&nbsp;',
             "\t" => '&nbsp; &nbsp; ',
-            '<' => '&lt;',
-            '>' => '&gt;',
+            '<'  => '&lt;',
+            '>'  => '&gt;',
         ];
         return nl2br(str_replace(array_keys($replace), array_values($replace), $this->asXML(true, false, true)));
     }
