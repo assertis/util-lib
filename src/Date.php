@@ -19,6 +19,7 @@ class Date extends DateTime implements JsonSerializable
 {
     const LONG_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2})\:(\d{2})\:(\d{2})$/';
     const SHORT_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2})$/';
+    const SHORT_PLAIN_INPUT_FORMAT = '/^(\d{2})(\d{2})(\d{2})$/';
 
     const SHORT_FORMAT = 'Y-m-d';
     const LONG_FORMAT = 'Y-m-d H:i:s';
@@ -36,6 +37,9 @@ class Date extends DateTime implements JsonSerializable
             $time = [ $match[4], $match[5], $match[6] ];
         } elseif (preg_match(self::SHORT_INPUT_FORMAT, $string, $match)) {
             $date = [ $match[1], $match[2], $match[3] ];
+            $time = [ 0, 0, 0 ];
+        } elseif (preg_match(self::SHORT_PLAIN_INPUT_FORMAT, $string, $match)) {
+            $date = [ '20'.$match[1], $match[2], $match[3] ];
             $time = [ 0, 0, 0 ];
         } else {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");

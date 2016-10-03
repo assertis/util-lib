@@ -29,6 +29,28 @@ class DateTest extends PHPUnit_Framework_TestCase
     /**
      * @return array
      */
+    public function provideFromString(): array
+    {
+        return [
+            ['2016-05-20 12:34:56', '2016-05-20'],
+            ['2016-05-20', '2016-05-20'],
+            ['160520', '2016-05-20'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideFromString
+     * @param string $string
+     * @param string $expected
+     */
+    public function testFromString(string $string, string $expected)
+    {
+        $this->assertSame($expected, Date::fromString($string)->formatShort());
+    }
+
+    /**
+     * @return array
+     */
     public function provideIsSaturday()
     {
         return [

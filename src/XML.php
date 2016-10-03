@@ -7,6 +7,7 @@ use DOMDocument;
 use DOMElement;
 use RuntimeException;
 use SimpleXMLElement;
+use UnexpectedValueException;
 
 /**
  * Adds functionality to PHP's SimpleXMLElement.
@@ -181,23 +182,36 @@ class XML extends SimpleXMLElement
      */
     public function attr(string $name, $value = null)
     {
-        if (func_num_args() == 2) {
+        if (func_num_args() === 2) {
             return (string)($this[$name] = $value);
         } else {
-            return (string)($this[$name]);
+            return (string)$this[$name];
         }
     }
 
     /**
-     * Searches for an XPATH in this tree and returns the first matching
+     * Searches for an XPath in this tree and returns the first matching
      * element or null.
      *
-     * @param string $xpath XPATH to search for.
+     * @param string $path XPath to search for.
+     * @param bool $strict Throw an exception if more than one element matches the XPath
      * @return XML|null The object matching the $xpath or null.
      */
-    public function find(string $xpath)
+    public function find(string $path, bool $strict = false)
     {
-        $tmp = $this->xpath($xpath);
+        if (false === $strict) {
+            trigger_error('Use of non-strict mode in XML::find is deprecated', E_USER_DEPRECATED);
+        }
+        
+        $tmp = $this->xpath($path);
+
+        if ($strict && count($tmp) > 1) {
+            throw new UnexpectedValueException(sprintf(
+                'Found %d nodes matching path %s',
+                count($tmp),
+                $path
+            ));
+        }
 
         return isset($tmp[0]) ? $tmp[0] : null;
     }
@@ -217,15 +231,30 @@ class XML extends SimpleXMLElement
 
     /**
      * This is the unprefixed namespace equivalent of XML::find().
+     * @see XML::find()
      * @see XML::xpathNs()
      *
      * @param string $newPrefix
      * @param string $path
+     * @param bool $strict
      * @return XML|null
+     * @throws UnexpectedValueException
      */
-    public function findNs(string $newPrefix, string $path)
+    public function findNs(string $newPrefix, string $path, bool $strict = false)
     {
-        $tmp = $this->xpathNs($path, $newPrefix);
+        if (false === $strict) {
+            trigger_error('Use of non-strict mode in XML::findNs is deprecated', E_USER_DEPRECATED);
+        }
+
+        $tmp = $this->xpathNs($newPrefix, $path);
+
+        if ($strict && count($tmp) > 1) {
+            throw new UnexpectedValueException(sprintf(
+                'Found %d nodes matching path %s',
+                count($tmp),
+                $path
+            ));
+        }
 
         return isset($tmp[0]) ? $tmp[0] : null;
     }

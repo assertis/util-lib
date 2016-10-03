@@ -15,7 +15,7 @@ foreach ($possibleAutoloadFiles as $possibleAutoloadFile) {
     }
 }
 
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_USER_DEPRECATED);
 
 class ObjectListAlwaysAccept extends ObjectList
 {
