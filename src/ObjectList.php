@@ -201,7 +201,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param ObjectList $otherList
      * @return static
      */
-    public function retain(ObjectList $otherList)
+    public function intersect(ObjectList $otherList)
     {
         return $this->filter(function ($element) use ($otherList) {
             return $otherList->contains($element);

@@ -385,7 +385,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $this->assertSame([1 => 2, 2 => 3], $actual->toArray());
     }
 
-    public function testRetain()
+    public function testIntersect()
     {
         $values = [1, 2, 3];
         $retained = [1, 3];
@@ -393,7 +393,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $stub = new ObjectListAlwaysAccept($values);
         $retainedList = new ObjectListAlwaysAccept($retained);
 
-        $actual = $stub->retain($retainedList);
+        $actual = $stub->intersect($retainedList);
 
         $this->assertSame(2, $actual->count());
         $this->assertSame([0 => 1, 2 => 3], $actual->toArray());
