@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Assertis\Util;
 
@@ -368,5 +369,33 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(1, $resultOne->count());
         $this->assertSame(1, $resultOne->getFirst());
+    }
+
+    public function testExclude()
+    {
+        $values = [1, 2, 3];
+        $excluded = [1];
+
+        $stub = new ObjectListAlwaysAccept($values);
+        $excludedList = new ObjectListAlwaysAccept($excluded);
+
+        $actual = $stub->exclude($excludedList);
+
+        $this->assertSame(2, $actual->count());
+        $this->assertSame([1 => 2, 2 => 3], $actual->toArray());
+    }
+
+    public function testRetain()
+    {
+        $values = [1, 2, 3];
+        $retained = [1, 3];
+
+        $stub = new ObjectListAlwaysAccept($values);
+        $retainedList = new ObjectListAlwaysAccept($retained);
+
+        $actual = $stub->retain($retainedList);
+
+        $this->assertSame(2, $actual->count());
+        $this->assertSame([0 => 1, 2 => 3], $actual->toArray());
     }
 }

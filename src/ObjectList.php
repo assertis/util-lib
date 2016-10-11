@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Assertis\Util;
 
@@ -195,6 +196,19 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     }
 
     /**
+     * Return a new list containing only those elements present in {$otherList}.
+     *
+     * @param ObjectList $otherList
+     * @return static
+     */
+    public function retain(ObjectList $otherList)
+    {
+        return $this->filter(function ($element) use ($otherList) {
+            return $otherList->contains($element);
+        });
+    }
+
+    /**
      * Returns a new list containing one element for each {$selector($element)} value (i.e. array_unique using
      * a callback for each value).
      *
@@ -341,14 +355,14 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * The returned object is an ObjectListList which behaves like any other ObjectList.
      *
      * @param int $max
-     * @return static[]
+     * @return ObjectListList
      */
-    public function getAllPermutations($max = null)
+    public function getAllPermutations($max = null): ObjectListList
     {
         $out = [];
 
         if (count($this) === 0) {
-            return $out;
+            return new ObjectListList();
         }
 
         $this->permute($out, $this->getArrayCopy(), [], $max);
