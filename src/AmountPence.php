@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Assertis\Util;
 
@@ -22,7 +23,7 @@ class AmountPence implements JsonSerializable
      */
     public static function fromHumanReadableString(string $amount): AmountPence
     {
-        $amount = str_replace(',', '.', $amount);
+        $amount = str_replace(',', '', $amount);
         $parts = explode('.', $amount);
 
         $big = intval($parts[0]);
@@ -43,7 +44,7 @@ class AmountPence implements JsonSerializable
      * @param AmountPence $amount
      * @return AmountPence
      */
-    public function minus(AmountPence $amount)
+    public function minus(AmountPence $amount): AmountPence
     {
         return new self($this->value - $amount->getValue());
     }
@@ -52,7 +53,7 @@ class AmountPence implements JsonSerializable
      * @param AmountPence $amount
      * @return AmountPence
      */
-    public function plus(AmountPence $amount)
+    public function plus(AmountPence $amount): AmountPence
     {
         return new self($this->value + $amount->getValue());
     }
@@ -61,7 +62,7 @@ class AmountPence implements JsonSerializable
      * @param AmountPence $amount
      * @return bool
      */
-    public function equals(AmountPence $amount)
+    public function equals(AmountPence $amount): bool
     {
         return $this->getValue() === $amount->getValue();
     }
@@ -69,7 +70,7 @@ class AmountPence implements JsonSerializable
     /**
      * @return int
      */
-    public function getValue()
+    public function getValue(): int
     {
         return $this->value;
     }
@@ -77,7 +78,7 @@ class AmountPence implements JsonSerializable
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf(self::FORMAT, $this->value / 100);
     }
@@ -85,7 +86,7 @@ class AmountPence implements JsonSerializable
     /**
      * @inheritdoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): int
     {
         return $this->value;
     }

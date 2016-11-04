@@ -18,12 +18,18 @@ class AmountPenceTest extends PHPUnit_Framework_TestCase
         static::assertSame('&pound;123456789.01', (string)new AmountPence(12345678901));
     }
 
-    public function testPlus()
+    public function testPlusMinus()
     {
         $initial = new AmountPence(1000);
-        $new = $initial->plus(new AmountPence(500));
 
-        static::assertEquals(1500, $new->getValue());
+        $higher = $initial->plus(new AmountPence(500));
+        $lower = $higher->minus(new AmountPence(200));
+
+        static::assertEquals(1500, $higher->getValue());
+        static::assertEquals(1300, $lower->getValue());
+
+        static::assertNotSame($initial, $higher);
+        static::assertNotSame($higher, $lower);
     }
 
     /**
@@ -36,7 +42,7 @@ class AmountPenceTest extends PHPUnit_Framework_TestCase
             ['123.45', 12345],
             ['123.4', 12340],
             ['123', 12300],
-            ['123,45', 12345],
+            ['1,234.56', 123456],
         ];
     }
 
