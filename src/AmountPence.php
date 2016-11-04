@@ -17,6 +17,21 @@ class AmountPence implements JsonSerializable
     private $value;
 
     /**
+     * @param string $amount
+     * @return AmountPence
+     */
+    public static function fromHumanReadableString(string $amount): AmountPence
+    {
+        $amount = str_replace(',', '.', $amount);
+        $parts = explode('.', $amount);
+
+        $big = intval($parts[0]);
+        $small = count($parts) > 1 ? intval(substr($parts[1].'00', 0, 2)) : 0;
+
+        return new self($big * 100 + $small);
+    }
+
+    /**
      * @param int $value
      */
     public function __construct($value)
