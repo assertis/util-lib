@@ -44,16 +44,31 @@ class WeekdayTest extends PHPUnit_Framework_TestCase
         static::assertSame($expected, Weekday::fromString($input)->getDayId());
     }
 
+    public function testFromStringWithCustomTable()
+    {
+        $table = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+
+        static::assertSame('Thursday', Weekday::fromString('TH', $table)->getLongName());
+    }
+
+    public function testFromStringWithCustomTableExcludesRegularTables()
+    {
+        $table = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+
+        $this->expectException(InvalidArgumentException::class);
+        Weekday::fromString('Thursday', $table);
+    }
+
     public function testFromStringError()
     {
         $this->expectException(InvalidArgumentException::class);
         Weekday::fromString('not a day');
     }
-    
+
     public function testToString()
     {
         $day = Weekday::fromString('Mon');
-        
+
         static::assertSame('Monday', $day->getLongName());
         static::assertSame('Mon', $day->getShortName());
         static::assertSame('Monday', (string)$day);
