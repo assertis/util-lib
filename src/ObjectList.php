@@ -524,7 +524,12 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      */
     public function hasMatching(callable $filter): bool
     {
-        return $this->countMatching($filter) > 0;
+        foreach ($this as $element){
+            if($filter($element)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
