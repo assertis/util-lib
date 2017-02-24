@@ -398,4 +398,17 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, $actual->count());
         $this->assertSame([0 => 1, 2 => 3], $actual->toArray());
     }
+
+    public function testHasMatching()
+    {
+        $list = new ObjectListAlwaysAccept([1,2,3,4,5]);
+        $this->assertTrue($list->hasMatching(function($int){
+            return $int === 4;
+        }));
+
+        $this->assertFalse($list->hasMatching(function($int){
+            return $int === 6;
+        }));
+    }
+
 }

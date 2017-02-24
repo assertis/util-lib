@@ -519,6 +519,20 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     }
 
     /**
+     * @param callable $filter
+     * @return bool
+     */
+    public function hasMatching(callable $filter): bool
+    {
+        foreach ($this as $element){
+            if($filter($element)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Return true if this list contains {$element}.
      *
      * @param mixed $element
