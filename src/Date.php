@@ -17,7 +17,6 @@ use JsonSerializable;
  */
 class Date extends DateTime implements JsonSerializable
 {
-    const ISO_8601_FORMAT = '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|(\+|-)\d{2}(:?\d{2})?)$/';
     const LONG_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2})\:(\d{2})\:(\d{2})$/';
     const SHORT_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2})$/';
     const SHORT_PLAIN_INPUT_FORMAT = '/^(\d{2})(\d{2})(\d{2})$/';
@@ -33,18 +32,17 @@ class Date extends DateTime implements JsonSerializable
      */
     public static function fromString($string)
     {
-        if (preg_match(self::ISO_8601_FORMAT, $string, $match)) {
-            $date = [$match[1], $match[2], $match[3]];
-            $time = [$match[4], $match[5], $match[6]];
-        } elseif (preg_match(self::LONG_INPUT_FORMAT, $string, $match)) {
+        if (preg_match(self::LONG_INPUT_FORMAT, $string, $match)) {
             $date = [$match[1], $match[2], $match[3]];
             $time = [$match[4], $match[5], $match[6]];
         } elseif (preg_match(self::SHORT_INPUT_FORMAT, $string, $match)) {
-            $date = [ $match[1], $match[2], $match[3] ];
-            $time = [ 0, 0, 0 ];
+            $date = [$match[1], $match[2], $match[3]];
+            $time = [0, 0, 0];
         } elseif (preg_match(self::SHORT_PLAIN_INPUT_FORMAT, $string, $match)) {
-            $date = [ '20'.$match[1], $match[2], $match[3] ];
-            $time = [ 0, 0, 0 ];
+            $date = ['20' . $match[1], $match[2], $match[3]];
+            $time = [0, 0, 0];
+        } elseif (strtotime($string)) {
+            return new self($string);
         } else {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
@@ -54,15 +52,15 @@ class Date extends DateTime implements JsonSerializable
         if ($date[1] < 1 || $date[1] > 12 || $date[2] < 1 || $date[2] > 31) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
-        
+
         if (false === $out->setDate($date[0], $date[1], $date[2])) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
-        
+
         if (false === $out->setTime($time[0], $time[1], $time[2])) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
-        
+
         return $out;
     }
 
@@ -78,7 +76,7 @@ class Date extends DateTime implements JsonSerializable
         if (false === $dateTime) {
             throw new InvalidArgumentException("String \"{$string}\" could not be parsed as date.");
         }
-        
+
         return static::fromDateTime($dateTime);
     }
 
@@ -90,7 +88,7 @@ class Date extends DateTime implements JsonSerializable
     {
         $date = new static;
         $date->setTimestamp($dateTime->getTimestamp());
-        
+
         return $date;
     }
 
@@ -116,7 +114,7 @@ class Date extends DateTime implements JsonSerializable
     public function isWorkingDay()
     {
         $day = (int)$this->format('w');
-        
+
         return !in_array($day, [6, 0]);
     }
 
@@ -419,7 +417,7 @@ class Date extends DateTime implements JsonSerializable
     {
         $min = ceil(date("i", $this->getTimestamp()) / 5);
         $hour = floor(date("H", $this->getTimestamp()) * 12);
-        
+
         return (int)(100 + $min + $hour - 1);
     }
 }

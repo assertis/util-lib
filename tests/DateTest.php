@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Assertis\Util;
 
@@ -32,9 +33,14 @@ class DateTest extends PHPUnit_Framework_TestCase
     public function provideFromString(): array
     {
         return [
-            ['2016-05-20 12:34:56', '2016-05-20'],
-            ['2016-05-20', '2016-05-20'],
-            ['160520', '2016-05-20'],
+            ['2016-05-20 12:34:56', '2016-05-20T12:34:56+00:00'],
+            ['2016-05-20', '2016-05-20T00:00:00+00:00'],
+            ['160520', '2016-05-20T00:00:00+00:00'],
+            // ISO-8601
+            ['2016-05-20T12:34:56+01:00', '2016-05-20T12:34:56+01:00'],
+            ['2016-05-20T12:34:56Z', '2016-05-20T12:34:56+00:00'],
+            // RFC 2822
+            ['Fri, 20 May 2016 12:34:56 +0200', '2016-05-20T12:34:56+02:00'],
         ];
     }
 
@@ -45,7 +51,7 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testFromString(string $string, string $expected)
     {
-        $this->assertSame($expected, Date::fromString($string)->formatShort());
+        static::assertSame($expected, Date::fromString($string)->format('c'));
     }
 
     /**
