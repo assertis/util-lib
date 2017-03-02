@@ -17,6 +17,7 @@ use JsonSerializable;
  */
 class Date extends DateTime implements JsonSerializable
 {
+    const ISO_8601_FORMAT = '/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|(\+|-)\d{2}(:?\d{2})?)$/';
     const LONG_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2})\:(\d{2})\:(\d{2})$/';
     const SHORT_INPUT_FORMAT = '/^(\d{4})\-(\d{2})\-(\d{2})$/';
     const SHORT_PLAIN_INPUT_FORMAT = '/^(\d{2})(\d{2})(\d{2})$/';
@@ -32,9 +33,12 @@ class Date extends DateTime implements JsonSerializable
      */
     public static function fromString($string)
     {
-        if (preg_match(self::LONG_INPUT_FORMAT, $string, $match)) {
-            $date = [ $match[1], $match[2], $match[3] ];
-            $time = [ $match[4], $match[5], $match[6] ];
+        if (preg_match(self::ISO_8601_FORMAT, $string, $match)) {
+            $date = [$match[1], $match[2], $match[3]];
+            $time = [$match[4], $match[5], $match[6]];
+        } elseif (preg_match(self::LONG_INPUT_FORMAT, $string, $match)) {
+            $date = [$match[1], $match[2], $match[3]];
+            $time = [$match[4], $match[5], $match[6]];
         } elseif (preg_match(self::SHORT_INPUT_FORMAT, $string, $match)) {
             $date = [ $match[1], $match[2], $match[3] ];
             $time = [ 0, 0, 0 ];
