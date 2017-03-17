@@ -8,6 +8,7 @@ namespace Assertis\Util;
 
 use DateInterval;
 use DateTime;
+use DateTimeInterface;
 use InvalidArgumentException;
 use JsonSerializable;
 
@@ -81,10 +82,10 @@ class Date extends DateTime implements JsonSerializable
     }
 
     /**
-     * @param DateTime $dateTime
+     * @param DateTimeInterface $dateTime
      * @return self
      */
-    public static function fromDateTime(DateTime $dateTime)
+    public static function fromDateTime(DateTimeInterface $dateTime)
     {
         $date = new static;
         $date->setTimestamp($dateTime->getTimestamp());
