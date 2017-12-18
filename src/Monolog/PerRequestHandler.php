@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Assertis\Util;
+namespace Assertis\Util\Monolog;
 
 use Exception;
 use Monolog\Handler\StreamHandler;

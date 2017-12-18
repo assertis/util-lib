@@ -85,4 +85,3 @@ class Base26Converter
         return $outputByteArray;
     }
 }
-
