@@ -26,6 +26,8 @@ class ValidationException extends RequestException
      */
     public function __construct(ConstraintViolationListInterface $violations)
     {
+        parent::__construct('Input data did not pass validation', Response::HTTP_BAD_REQUEST);
+        
         $this->violations = $violations;
     }
 
