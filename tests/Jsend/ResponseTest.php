@@ -32,6 +32,30 @@ HTTP;
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
     
+    public function testAddsCachingHeaders()
+    {
+        $data = ['foo' => 'bar'];
+        $date = new DateTime('2017-12-19 12:34:56');
+        $seconds = 123;
+
+        $response = Response::success($data);
+        $response->setDate($date);
+        $response->cacheFor($seconds);
+
+
+        $expected = <<<HTTP
+HTTP/1.0 200 OK
+Cache-Control: max-age={$seconds}, public, s-maxage={$seconds}
+Content-Type:  application/json
+Date:          {$date->format('D, d M Y H:i:s')} GMT
+Expires:       Tue, 19 Dec 2017 12:36:59 GMT
+
+{"status":"success","data":{"foo":"bar"},"links":[]}
+HTTP;
+
+        static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
+    }
+    
     public function testSuccess()
     {
         $data = ['foo' => 'bar'];

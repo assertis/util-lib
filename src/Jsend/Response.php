@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Assertis\Util\Jsend;
 
-use DateTime;
+use DateInterval;
 use JsonSerializable;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -28,9 +28,12 @@ class Response extends JsonResponse
      */
     public function cacheFor(int $seconds): Response
     {
+        $expires = clone $this->getDate();
+        $expires->add(DateInterval::createFromDateString($seconds.' seconds'));
+        
         $this->setSharedMaxAge($seconds);
         $this->setMaxAge($seconds);
-        $this->setExpires(new DateTime("+{$seconds} seconds"));
+        $this->setExpires($expires);
 
         return $this;
     }
@@ -57,32 +60,6 @@ class Response extends JsonResponse
             $status,
             $headers
         );
-    }
-
-    /**
-     * @param string $uri
-     * @param array|JsonSerializable|null $data
-     * @param array $headers
-     * @return Response
-     */
-    public static function created(string $uri, $data = null, array $headers = []): Response
-    {
-        $data['uri'] = $uri;
-        $headers['Location'] = $uri;
-
-        return self::success($data, self::HTTP_CREATED, $headers);
-    }
-
-    /**
-     * @param string $message
-     * @param array $headers
-     * @return Response
-     */
-    public static function notFound(string $message = null, array $headers = [])
-    {
-        $status = new StatusEnum(StatusEnum::FAIL);
-
-        return new self(new ResponseData($status, null, null, $message, null), self::HTTP_NOT_FOUND, $headers);
     }
 
     /**
@@ -143,5 +120,29 @@ class Response extends JsonResponse
             $status,
             $headers
         );
+    }
+
+    /**
+     * @param string $uri
+     * @param array|JsonSerializable|null $data
+     * @param array $headers
+     * @return Response
+     */
+    public static function created(string $uri, $data = null, array $headers = []): Response
+    {
+        $data['uri'] = $uri;
+        $headers['Location'] = $uri;
+
+        return self::success($data, self::HTTP_CREATED, $headers);
+    }
+
+    /**
+     * @param string $message
+     * @param array $headers
+     * @return Response
+     */
+    public static function notFound(string $message = null, array $headers = [])
+    {
+        return self::fail($message, null, null, self::HTTP_NOT_FOUND, $headers);
     }
 }
