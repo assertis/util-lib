@@ -10,7 +10,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @author Rafał Orłowski <rafal.orlowski@assertis.co.uk>
+ * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
 class InputFactory
 {
