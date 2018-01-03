@@ -5,6 +5,7 @@ namespace Assertis\Util\Jsend;
 
 use Assertis\Util\Weekdays;
 use DateTime;
+use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -123,6 +124,28 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Location:      /link
 
 {"status":"success","data":{"uri":"\/link"},"links":[]}
+HTTP;
+
+        static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
+
+        $data = new class implements JsonSerializable {
+            public function jsonSerialize()
+            {
+                return ['foo' => 'bar'];
+            }
+        };
+        
+        $response = Response::created('/link', $data);
+        $response->setDate($date);
+        
+        $expected = <<<HTTP
+HTTP/1.0 201 Created
+Cache-Control: no-cache, private
+Content-Type:  application/json
+Date:          {$date->format('D, d M Y H:i:s')} GMT
+Location:      /link
+
+{"status":"success","data":{"foo":"bar","uri":"\/link"},"links":[]}
 HTTP;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
