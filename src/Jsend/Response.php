@@ -130,6 +130,10 @@ class Response extends JsonResponse
      */
     public static function created(string $uri, $data = null, array $headers = []): Response
     {
+        if ($data instanceof JsonSerializable) {
+            $data = $data->jsonSerialize();
+        }
+        
         $data['uri'] = $uri;
         $headers['Location'] = $uri;
 
