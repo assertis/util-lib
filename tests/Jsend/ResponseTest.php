@@ -108,7 +108,7 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Location:      /link
 Name:          value
 
-{"status":"success","data":{"foo":"bar","uri":"\/link"},"links":[]}
+{"status":"success","data":{"uri":"\/link","foo":"bar"},"links":[]}
 HTTP;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
@@ -145,7 +145,7 @@ Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
 Location:      /link
 
-{"status":"success","data":{"foo":"bar","uri":"\/link"},"links":[]}
+{"status":"success","data":{"uri":"\/link","foo":"bar"},"links":[]}
 HTTP;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());

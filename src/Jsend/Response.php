@@ -132,9 +132,11 @@ class Response extends JsonResponse
     {
         if ($data instanceof JsonSerializable) {
             $data = $data->jsonSerialize();
+        } elseif (is_null($data)) {
+            $data = [];
         }
         
-        $data['uri'] = $uri;
+        $data = ['uri' => $uri] + $data;
         $headers['Location'] = $uri;
 
         return self::success($data, self::HTTP_CREATED, $headers);
