@@ -30,6 +30,10 @@ class ResponseData implements JsonSerializable
      * @var array|null
      */
     private $links;
+    /**
+     * @var array
+     */
+    private $debug;
 
     /**
      * @param StatusEnum $status
@@ -37,19 +41,22 @@ class ResponseData implements JsonSerializable
      * @param array|null $links
      * @param string|null $message
      * @param string|null $code
+     * @param array|null $debug
      */
     public function __construct(
         StatusEnum $status,
         $data = null,
         array $links = null,
         string $message = null,
-        string $code = null
+        string $code = null,
+        array $debug = null
     ) {
         $this->status = $status;
         $this->data = $data;
         $this->message = $message;
         $this->code = $code;
         $this->links = $links;
+        $this->debug = $debug;
     }
 
     /**
@@ -62,7 +69,8 @@ class ResponseData implements JsonSerializable
             'message' => $this->message,
             'code'    => $this->code,
             'data'    => $this->data,
-            'links'   => $this->links
+            'links'   => $this->links,
+            'debug'   => $this->debug
         ], function ($item) {
             return $item !== null;
         });
