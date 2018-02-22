@@ -5,6 +5,10 @@ namespace Assertis\Util\Jsend;
 /*
  * @author Lukasz Nowak <lukasz.nowak@assertis.co.uk>
  */
+use Assertis\Http\Client\ClientInterface;
+use Assertis\Http\Request\Request;
+use Symfony\Component\HttpFoundation\Response as Status;
+
 class ServiceStatusResponse
 {
 
@@ -94,6 +98,24 @@ class ServiceStatusResponse
                 'config' => $this->config
             ],
         ];
+    }
+
+    /**
+     * @param ClientInterface $client
+     * @param string $url
+     * @return bool
+     */
+    public static function isServiceOk(ClientInterface $client, string $url = 'status'): bool
+    {
+        $response = $client->send(new Request($url, '', [], Request::GET));
+
+        if ($response->getStatusCode() !== Status::HTTP_OK) {
+            return false;
+        }
+
+        $data = $response->json();
+
+        return is_array($data) && in_array($data['status'], ['ok', 'success']);
     }
 
 }
