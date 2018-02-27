@@ -31,7 +31,7 @@ class ServiceStatusResponse
     /**
      * @var array
      */
-    private $service;
+    private $services;
     /**
      * @var array
      */
@@ -52,7 +52,7 @@ class ServiceStatusResponse
      * @param string $name
      * @param int $apiVersion
      * @param array $mysql
-     * @param array $service
+     * @param array $services
      * @param array $settings
      * @param array $config
      */
@@ -62,7 +62,7 @@ class ServiceStatusResponse
         string $name,
         int $apiVersion,
         array $mysql = [],
-        array $service = [],
+        array $services = [],
         array $settings = [],
         array $config = []
     ) {
@@ -71,7 +71,7 @@ class ServiceStatusResponse
         $this->name = $name;
         $this->apiVersion = $apiVersion;
         $this->mysql = $mysql;
-        $this->service = $service;
+        $this->services = $services;
         $this->settings = $settings;
         $this->config = $config;
     }
@@ -94,7 +94,7 @@ class ServiceStatusResponse
                 'apiVersion' => $this->apiVersion,
                 'mysql' => $this->mysql,
                 'settings' => $this->settings,
-                'service' => $this->service,
+                'services' => $this->services,
                 'config' => $this->config
             ],
         ];
