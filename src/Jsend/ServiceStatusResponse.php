@@ -113,7 +113,8 @@ class ServiceStatusResponse
             return false;
         }
 
-        $data = $response->json();
+
+        $data = json_decode($response->getBody()->getContents(), true);
 
         return is_array($data) && in_array($data['status'], ['ok', 'success']);
     }
