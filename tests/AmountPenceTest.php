@@ -53,6 +53,8 @@ class AmountPenceTest extends PHPUnit_Framework_TestCase
      */
     public function testFromHumanReadableString(string $string, int $pence)
     {
-        self::assertSame($pence, AmountPence::fromHumanReadableString($string)->getValue());
+        $price = AmountPence::fromHumanReadableString($string);
+        self::assertInstanceOf(AmountPence::class, $price);
+        self::assertSame($pence, $price->getValue());
     }
 }
