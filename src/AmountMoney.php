@@ -32,7 +32,7 @@ class AmountMoney implements JsonSerializable
         $big = intval($parts[0]);
         $small = count($parts) > 1 ? intval(substr($parts[1].'00', 0, 2)) : 0;
 
-        return new self($big * 100 + $small);
+        return new static($big * 100 + $small);
     }
 
     /**
@@ -49,7 +49,7 @@ class AmountMoney implements JsonSerializable
      */
     public function minus(AmountMoney $amount): AmountMoney
     {
-        return new self($this->value - $amount->getValue());
+        return new static($this->value - $amount->getValue());
     }
 
     /**
@@ -58,7 +58,7 @@ class AmountMoney implements JsonSerializable
      */
     public function plus(AmountMoney $amount): AmountMoney
     {
-        return new self($this->value + $amount->getValue());
+        return new static($this->value + $amount->getValue());
     }
 
     /**

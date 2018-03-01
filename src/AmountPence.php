@@ -17,7 +17,7 @@ class AmountPence extends AmountMoney
      */
     public function minus(AmountMoney $amount): AmountMoney
     {
-        return new self($this->value - $amount->getValue());
+        return new static($this->value - $amount->getValue());
     }
 
     /**
@@ -26,7 +26,7 @@ class AmountPence extends AmountMoney
      */
     public function plus(AmountMoney $amount): AmountMoney
     {
-        return new self($this->value + $amount->getValue());
+        return new static($this->value + $amount->getValue());
     }
 
     /**
