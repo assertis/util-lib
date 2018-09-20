@@ -100,6 +100,72 @@ class ServiceStatusResponse
         ];
     }
 
+    public static function checkServices(
+        array $servicesClients,
+        &$status,
+        ?array $whoAsks = []
+    ): array {
+        $servicesStatus = [];
+        foreach ($servicesClients as $serviceName => $serviceClient) {
+            if (!empty($servicesStatus[$serviceName]) ||
+                is_null($serviceClient) ||
+                in_array($serviceName, $whoAsks)) {
+                $servicesStatus[$serviceName] = StatusEnum::SUCCESS;
+                continue;
+            }
+            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, 'status', $whoAsks);
+            $data = $serviceStatusResult->getResponseBody();
+            if ($data['status'] !== StatusEnum::SUCCESS) {
+                $status = StatusEnum::ERROR;
+            }
+            $servicesStatus[$serviceName] = $data['status'];
+            foreach ($data['data']['services'] as $key => $status) {
+                $servicesStatus[$key] = $status;
+            }
+        }
+        return $servicesStatus;
+    }
+
+    /**
+     * @param ClientInterface $client
+     * @param string $url
+     * @param string|null $serviceName
+     * @return ServiceStatusResponse
+     * @throws \Exception
+     */
+    public static function getServiceStatus(
+        ClientInterface $client,
+        string $url = 'status',
+        ?array $serviceName = []
+    ): ServiceStatusResponse {
+        $query = [];
+        if(!empty($serviceName[0])) {
+            $query['questioning'] = $serviceName[0];
+        }
+        $response = $client->send(new Request($url, '', $query, Request::GET));
+        $data = json_decode($response->getBody()->getContents(), true);
+        if (!is_array($data) || !isset($data['data'])) {
+            return new ServiceStatusResponse(
+                StatusEnum::ERROR,
+                '',
+                '',
+                1
+            );
+        }
+        $dataDetails = $data['data'];
+        return new ServiceStatusResponse(
+            $data['status'],
+            $dataDetails['environment'],
+            $dataDetails['name'],
+            $dataDetails['apiVersion'] ?? 1,
+            $dataDetails['mysql'] ?? [],
+            $dataDetails['services'] ?? [],
+            $dataDetails['settings'] ?? [],
+            $dataDetails['config'] ?? []
+        );
+
+    }
+
     /**
      * @param ClientInterface $client
      * @param string $url
