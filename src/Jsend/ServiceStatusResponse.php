@@ -103,7 +103,8 @@ class ServiceStatusResponse
     public static function checkServices(
         array $servicesClients,
         &$status,
-        ?array $whoAsks = []
+        ?array $whoAsks = [],
+        ?array $headers = []
     ): array {
         $servicesStatus = [];
         foreach ($servicesClients as $serviceName => $serviceClient) {
@@ -113,7 +114,7 @@ class ServiceStatusResponse
                 $servicesStatus[$serviceName] = StatusEnum::SUCCESS;
                 continue;
             }
-            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, 'status', $whoAsks);
+            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, 'status', $whoAsks, $headers);
             $data = $serviceStatusResult->getResponseBody();
             if ($data['status'] !== StatusEnum::SUCCESS) {
                 $status = StatusEnum::ERROR;
@@ -136,13 +137,14 @@ class ServiceStatusResponse
     public static function getServiceStatus(
         ClientInterface $client,
         string $url = 'status',
-        ?array $serviceName = []
+        ?array $serviceName = [],
+        ?array $headers = []
     ): ServiceStatusResponse {
         $query = [];
         if(!empty($serviceName[0])) {
             $query['questioning'] = $serviceName[0];
         }
-        $response = $client->send(new Request($url, '', $query, Request::GET));
+        $response = $client->send(new Request($url, '', $query, Request::GET, $headers));
         $data = json_decode($response->getBody()->getContents(), true);
         if (!is_array($data) || !isset($data['data'])) {
             return new ServiceStatusResponse(
