@@ -108,8 +108,9 @@ class ServiceStatusResponse
     ): array {
         $servicesStatus = [];
         foreach ($servicesClients as $serviceName => $serviceClient) {
+            $serviceName = $serviceClient->getName();
+            
             if (!empty($servicesStatus[$serviceName]) ||
-                is_null($serviceClient) ||
                 in_array($serviceName, $whoAsks)) {
                 $servicesStatus[$serviceName] = StatusEnum::SUCCESS;
                 continue;
@@ -160,10 +161,10 @@ class ServiceStatusResponse
             $dataDetails['environment'],
             $dataDetails['name'],
             $dataDetails['apiVersion'] ?? 1,
-            $dataDetails['mysql'] ?? [],
-            $dataDetails['services'] ?? [],
-            $dataDetails['settings'] ?? [],
-            $dataDetails['config'] ?? []
+            $dataDetails['mysql'],
+            $dataDetails['services'],
+            $dataDetails['settings'],
+            $dataDetails['config']
         );
 
     }
