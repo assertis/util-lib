@@ -101,6 +101,13 @@ class ServiceStatusResponse
         ];
     }
 
+    /**
+     * @param array of Client objects $servicesClients
+     * @param $status
+     * @param array|null $whoAsks
+     * @param array|null $headers
+     * @return array
+     */
     public static function checkServices(
         array $servicesClients,
         &$status,
