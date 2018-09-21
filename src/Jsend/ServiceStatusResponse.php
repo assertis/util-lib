@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response as Status;
 class ServiceStatusResponse
 {
 
+    const STATUS_ENDPOINT = 'status';
     /**
      * @var string
      */
@@ -109,13 +110,13 @@ class ServiceStatusResponse
         $servicesStatus = [];
         foreach ($servicesClients as $serviceName => $serviceClient) {
             $serviceName = $serviceClient->getName();
-            
+
             if (!empty($servicesStatus[$serviceName]) ||
                 in_array($serviceName, $whoAsks)) {
                 $servicesStatus[$serviceName] = StatusEnum::SUCCESS;
                 continue;
             }
-            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, 'status', $whoAsks, $headers);
+            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, $whoAsks, $headers);
             $data = $serviceStatusResult->getResponseBody();
             if ($data['status'] !== StatusEnum::SUCCESS) {
                 $status = StatusEnum::ERROR;
@@ -137,7 +138,6 @@ class ServiceStatusResponse
      */
     public static function getServiceStatus(
         ClientInterface $client,
-        string $url = 'status',
         ?array $serviceName = [],
         ?array $headers = []
     ): ServiceStatusResponse {
@@ -145,7 +145,7 @@ class ServiceStatusResponse
         if(!empty($serviceName[0])) {
             $query['questioning'] = $serviceName[0];
         }
-        $response = $client->send(new Request($url, '', $query, Request::GET, $headers));
+        $response = $client->send(new Request(self::STATUS_ENDPOINT, '', $query, Request::GET, $headers));
         $data = json_decode($response->getBody()->getContents(), true);
         if (!is_array($data) || !isset($data['data'])) {
             return new ServiceStatusResponse(
