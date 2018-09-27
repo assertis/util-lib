@@ -117,20 +117,22 @@ class ServiceStatusResponse
         $servicesStatus = [];
         foreach ($servicesClients as $serviceName => $serviceClient) {
             $serviceName = $serviceClient->getName();
-
             if (!empty($servicesStatus[$serviceName]) ||
                 in_array($serviceName, $whoAsks)) {
-                $servicesStatus[$serviceName] = StatusEnum::SUCCESS;
+                $servicesStatus[$serviceName] = !empty($serviceStatus[$serviceName]) ? $serviceStatus[$serviceName] : StatusEnum::SUCCESS;
                 continue;
             }
             $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, $whoAsks, $headers);
             $data = $serviceStatusResult->getResponseBody();
-            if ($data['status'] !== StatusEnum::SUCCESS) {
+            if($data['status'] !== StatusEnum::SUCCESS) {
                 $status = StatusEnum::ERROR;
             }
             $servicesStatus[$serviceName] = $data['status'];
-            foreach ($data['data']['services'] as $key => $status) {
-                $servicesStatus[$key] = $status;
+            foreach ($data['data']['services'] as $key => $serviceStatus) {
+                $servicesStatus[$key] = $serviceStatus;
+                if($serviceStatus !== StatusEnum::SUCCESS) {
+                    $status = StatusEnum::ERROR;
+                }
             }
         }
         return $servicesStatus;
