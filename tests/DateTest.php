@@ -10,6 +10,7 @@ use PHPUnit_Framework_TestCase;
  */
 class DateTest extends PHPUnit_Framework_TestCase
 {
+    private $timeZone;
 
     /**
      * @expectedException \InvalidArgumentException
@@ -51,7 +52,20 @@ class DateTest extends PHPUnit_Framework_TestCase
      */
     public function testFromString(string $string, string $expected)
     {
+        $this->changeToUTCTimeZone();
         static::assertSame($expected, Date::fromString($string)->format('c'));
+        $this->revertTimeZone();
+    }
+
+    private function changeToUTCTimeZone()
+    {
+        $this->timeZone = date_default_timezone_get();
+        date_default_timezone_set('UTC');
+    }
+
+    private function revertTimeZone()
+    {
+        date_default_timezone_set($this->timeZone);
     }
 
     /**
@@ -352,5 +366,4 @@ class DateTest extends PHPUnit_Framework_TestCase
         $obj = new Date($date);
         $this->assertSame($bits, $obj->getNineBitMinuteOfDay());
     }
-
 }
