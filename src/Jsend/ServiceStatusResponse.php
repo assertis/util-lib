@@ -170,10 +170,10 @@ class ServiceStatusResponse
             $dataDetails['environment'],
             $dataDetails['name'],
             $dataDetails['apiVersion'] ?? 1,
-            $dataDetails['mysql'],
-            $dataDetails['services'],
-            $dataDetails['settings'],
-            $dataDetails['config']
+            $dataDetails['mysql'] ?? [],
+            $dataDetails['services'] ?? [],
+            $dataDetails['settings'] ?? [],
+            $dataDetails['config'] ?? []
         );
 
     }
