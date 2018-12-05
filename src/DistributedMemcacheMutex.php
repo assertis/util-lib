@@ -4,7 +4,6 @@ namespace Assertis\Util;
 
 use InvalidArgumentException;
 use Memcache;
-use Memcached;
 
 /**
  * Utility methods for manipulating distributed locks using memcache
