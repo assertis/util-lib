@@ -2,12 +2,12 @@
 
 namespace Assertis\Util;
 
-use Memcache;
+use Memcached;
 
 /**
  * @author Mateusz Angulski <mateusz.angulski@assertis.co.uk>
  */
-class MemcacheStub extends Memcache
+class MemcachedStub extends Memcached
 {
     /**
      * @var array
@@ -19,20 +19,19 @@ class MemcacheStub extends Memcache
     private $areServersAdded = false;
 
     /**
-     * @return MemcacheStub
+     * @return MemcachedStub
      */
     public function withServersAdded()
     {
-        $withServers = clone $this;
-        $withServers->areServersAdded = true;
+        $this->areServersAdded = true;
 
-        return $withServers;
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add($key, $var, $expire)
+    public function add($key, $var, $expire = NULL)
     {
         if (array_key_exists($key, $this->cache)) {
             return false;

@@ -4,6 +4,7 @@ namespace Assertis\Util;
 
 use InvalidArgumentException;
 use Memcache;
+use Memcached;
 
 /**
  * Utility methods for manipulating distributed locks using memcache
@@ -16,7 +17,7 @@ class DistributedMemcacheMutex
     /**
      * @var Memcache
      */
-    private $memcache;
+    protected $memcache;
 
     /**
      * @param Memcache $memcache
@@ -44,7 +45,7 @@ class DistributedMemcacheMutex
     /**
      * @throws InvalidArgumentException
      */
-    private function assertServersAddedToMemcache()
+    protected function assertServersAddedToMemcache()
     {
         if ($this->memcache->getversion() === false) {
             throw new InvalidArgumentException(self::MEMCACHE_ERR_MSG);
