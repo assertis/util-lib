@@ -16,7 +16,7 @@ class DistributedMemcacheMutex
     /**
      * @var Memcache
      */
-    private $memcache;
+    protected $memcache;
 
     /**
      * @param Memcache $memcache
@@ -44,7 +44,7 @@ class DistributedMemcacheMutex
     /**
      * @throws InvalidArgumentException
      */
-    private function assertServersAddedToMemcache()
+    protected function assertServersAddedToMemcache()
     {
         if ($this->memcache->getversion() === false) {
             throw new InvalidArgumentException(self::MEMCACHE_ERR_MSG);
