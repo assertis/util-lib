@@ -8,11 +8,8 @@ use Memcache;
 /**
  * Utility methods for manipulating distributed locks using memcache
  */
-class DistributedMemcacheMutex
+class DistributedMemcacheMutex extends DistributedMutex
 {
-    const FIVE_MINUTES_SECONDS = 300;
-    const MEMCACHE_ERR_MSG = 'No servers added to memcache connection.';
-
     /**
      * @var Memcache
      */
@@ -49,13 +46,5 @@ class DistributedMemcacheMutex
         if ($this->memcache->getversion() === false) {
             throw new InvalidArgumentException(self::MEMCACHE_ERR_MSG);
         }
-    }
-
-    /**
-     * @param string $name
-     */
-    public function unlock($name)
-    {
-        $this->memcache->delete($name);
     }
 }
