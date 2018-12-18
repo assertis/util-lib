@@ -16,15 +16,14 @@ class MemcachedStub extends Memcached
     /**
      * @var bool
      */
-    private $areServersAdded = false;
+    private $serversAdded = [];
 
     /**
      * @return MemcachedStub
      */
     public function withServersAdded()
     {
-        $this->areServersAdded = true;
-
+        $this->serversAdded = ['localhost:11211' => '1.2.6'];
         return $this;
     }
 
@@ -59,6 +58,6 @@ class MemcachedStub extends Memcached
      */
     public function getversion()
     {
-        return $this->areServersAdded;
+        return $this->serversAdded;
     }
 }
