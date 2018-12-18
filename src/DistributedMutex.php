@@ -19,6 +19,8 @@ abstract class DistributedMutex
      */
     protected $memcache;
 
+    abstract public function lock($name, $expirationTimeInSeconds);
+
     /**
      * @param string $name
      */
