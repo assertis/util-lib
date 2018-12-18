@@ -51,7 +51,7 @@ class DistributedMemcachedMutex extends DistributedMutex
             throw new InvalidArgumentException(self::MEMCACHE_ERR_MSG);
         }
 
-        foreach($serverVersions as $server => $version) {
+        foreach ($serverVersions as $server => $version) {
             if ($version == '255.255.255') { //https://secure.php.net/manual/en/memcached.getversion.php#111539
                 throw new InvalidArgumentException(sprintf(self::MEMCACHE_RESPOND_ERR_MSG, $server));
             }

@@ -5,7 +5,6 @@
 
 namespace Assertis\Util;
 
-
 use Memcache;
 use Memcached;
 
