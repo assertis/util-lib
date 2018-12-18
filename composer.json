@@ -15,9 +15,7 @@
     "php": "^7.0",
     "ext-SimpleXML": "*",
     "ext-dom": "*",
-    "psr/log": "^1.0",
-    "ext-memcached": "*",
-    "ext-memcache": "*"
+    "psr/log": "^1.0"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.0",
