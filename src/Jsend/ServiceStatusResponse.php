@@ -5,6 +5,7 @@ namespace Assertis\Util\Jsend;
 /*
  * @author Lukasz Nowak <lukasz.nowak@assertis.co.uk>
  */
+
 use Assertis\Http\Client\ClientInterface;
 use Assertis\Http\Request\Request;
 use Symfony\Component\HttpFoundation\Response as Status;
@@ -66,7 +67,8 @@ class ServiceStatusResponse
         array $services = [],
         array $settings = [],
         array $config = []
-    ) {
+    )
+    {
         $this->status = $status;
         $this->environment = $environment;
         $this->name = $name;
@@ -112,8 +114,10 @@ class ServiceStatusResponse
         array $servicesClients,
         &$status,
         ?array $whoAsks = [],
-        ?array $headers = []
-    ): array {
+        ?array $headers = [],
+        ?int $recursive = 1
+    ): array
+    {
         $servicesStatus = [];
         foreach ($servicesClients as $serviceName => $serviceClient) {
             $serviceName = $serviceClient->getName();
@@ -122,15 +126,15 @@ class ServiceStatusResponse
                 $servicesStatus[$serviceName] = !empty($serviceStatus[$serviceName]) ? $serviceStatus[$serviceName] : StatusEnum::SUCCESS;
                 continue;
             }
-            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, $whoAsks, $headers);
+            $serviceStatusResult = ServiceStatusResponse::getServiceStatus($serviceClient, $whoAsks, $headers, $recursive);
             $data = $serviceStatusResult->getResponseBody();
-            if($data['status'] !== StatusEnum::SUCCESS) {
+            if ($data['status'] !== StatusEnum::SUCCESS) {
                 $status = StatusEnum::ERROR;
             }
             $servicesStatus[$serviceName] = $data['status'];
             foreach ($data['data']['services'] as $key => $serviceStatus) {
                 $servicesStatus[$key] = $serviceStatus;
-                if($serviceStatus !== StatusEnum::SUCCESS) {
+                if ($serviceStatus !== StatusEnum::SUCCESS) {
                     $status = StatusEnum::ERROR;
                 }
             }
@@ -148,10 +152,14 @@ class ServiceStatusResponse
     public static function getServiceStatus(
         ClientInterface $client,
         ?array $serviceName = [],
-        ?array $headers = []
-    ): ServiceStatusResponse {
-        $query = [];
-        if(!empty($serviceName[0])) {
+        ?array $headers = [],
+        ?int $recursive = 1
+    ): ServiceStatusResponse
+    {
+        $query = [
+            'recursive' => $recursive
+        ];
+        if (!empty($serviceName[0])) {
             $query['questioning'] = $serviceName[0];
         }
         $response = $client->send(new Request(self::STATUS_ENDPOINT, '', $query, Request::GET, $headers));
