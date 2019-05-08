@@ -174,9 +174,9 @@ class ServiceStatusResponse
         }
         $dataDetails = $data['data'];
         return new ServiceStatusResponse(
-            $data['status'],
-            $dataDetails['environment'],
-            $dataDetails['name'],
+            $data['status'] ?? 'error',
+            $dataDetails['environment'] ?? '[unknown]',
+            $dataDetails['name'] ?? '[unknown]',
             $dataDetails['apiVersion'] ?? 1,
             $dataDetails['mysql'] ?? [],
             $dataDetails['services'] ?? [],
