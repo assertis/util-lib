@@ -89,6 +89,7 @@ class Date extends DateTime implements JsonSerializable
     {
         $date = new static;
         $date->setTimestamp($dateTime->getTimestamp());
+        $date->setTimezone($dateTime->getTimezone());
 
         return $date;
     }
