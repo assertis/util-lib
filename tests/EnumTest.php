@@ -1,7 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Assertis\Util;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use PHPUnit_Framework_TestCase;
 
@@ -56,9 +58,9 @@ class EnumTest extends PHPUnit_Framework_TestCase
             'TRUE'         => true,
             'FALSE'        => false,
             'NULL'         => null,
-        ], $enum->values());
+        ], $enum::values());
     }
-    
+
     public function testValidateValue()
     {
         new TestEnum(TestEnum::STRING);
@@ -70,18 +72,50 @@ class EnumTest extends PHPUnit_Framework_TestCase
         $this->setExpectedException(InvalidArgumentException::class);
         new TestEnum(-1);
     }
+
+    public function testChild()
+    {
+        new TestChildEnum(TestChildEnum::CHILD);
+        new TestChildEnum(TestChildEnum::STRING);
+    }
+
+    public function testStaticConstructor()
+    {
+        TestEnum::STRING();
+        TestChildEnum::STRING();
+        TestChildEnum::CHILD();
+    }
+
+    public function testStaticConstructorFail()
+    {
+        $this->expectException(BadMethodCallException::class);
+
+        TestEnum::NOTHING();
+    }
 }
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
+
+/**
+ * @method static STRING
+ */
 class TestEnum extends Enum
 {
-    const STRING = 'A';
-    const EMPTY_STRING = '';
-    const ZERO = 0;
-    const TEN = 10;
-    const TRUE = true;
-    const FALSE = false;
-    const NULL = null;
+    public const STRING = 'A';
+    public const EMPTY_STRING = '';
+    public const ZERO = 0;
+    public const TEN = 10;
+    public const TRUE = true;
+    public const FALSE = false;
+    public const NULL = null;
+}
+
+/**
+ * @method static CHILD
+ */
+class TestChildEnum extends TestEnum
+{
+    public const CHILD = 'child';
 }
