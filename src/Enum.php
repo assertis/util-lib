@@ -1,37 +1,58 @@
 <?php
+declare(strict_types=1);
 
 namespace Assertis\Util;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use JsonSerializable;
 use ReflectionClass;
 
 /**
- * Class Enum
- * @package Assertis\Util
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  * Class represents enumeration class
  */
-class Enum implements JsonSerializable
+abstract class Enum implements JsonSerializable
 {
     /**
      * @var mixed
      */
     private $value;
-    /**
-     * @var array
-     */
-    private $constants;
 
     /**
      * @param mixed $value
      */
     public function __construct($value)
     {
-        $this->constants = (new ReflectionClass(get_called_class()))->getConstants();
         $this->validateValue($value);
 
         $this->value = $value;
+    }
+
+    public static function values(): array
+    {
+        static $constants;
+
+        if (empty($constants)) {
+            $constants = (new ReflectionClass(static::class))->getConstants();
+        }
+
+        return $constants;
+    }
+
+    public static function __callStatic(string $name, array $arguments): self
+    {
+        $values = static::values();
+
+        if (!array_key_exists($name, $values)) {
+            throw new BadMethodCallException(sprintf(
+                'Constant is not defined in class %s: %s',
+                static::class,
+                $name
+            ));
+        }
+
+        return new static($values[$name]);
     }
 
     /**
@@ -40,7 +61,7 @@ class Enum implements JsonSerializable
      * @param mixed $value
      * @return bool
      */
-    public function equal($value)
+    public function equal($value): bool
     {
         return $this->value === $value;
     }
@@ -53,10 +74,7 @@ class Enum implements JsonSerializable
         return $this->value;
     }
 
-    /**
-     * @return mixed
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->value;
     }
@@ -70,23 +88,13 @@ class Enum implements JsonSerializable
     }
 
     /**
-     * @return array
-     */
-    public static function values()
-    {
-        $reflection = new ReflectionClass(get_called_class());
-
-        return $reflection->getConstants();
-    }
-
-    /**
      * @param $value
      * @throws InvalidArgumentException
      */
-    private function validateValue($value)
+    private function validateValue($value): void
     {
-        if (!in_array($value, $this->constants, true)) {
-            throw new InvalidArgumentException("Bad type [$value] of constant in " . get_called_class());
+        if (!in_array($value, static::values(), true)) {
+            throw new InvalidArgumentException("Bad type [$value] of constant in " . static::class);
         }
     }
 }
