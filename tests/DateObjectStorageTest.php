@@ -1,14 +1,16 @@
 <?php
 
 namespace Assertis\Util;
+
 use DateTime;
-use PHPUnit_Framework_TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 use SplObjectStorage;
 
 /**
  * @author Rafał Orłowski <rafal.orlowski@assertis.co.uk>
  */
-class DateObjectStorageTest extends PHPUnit_Framework_TestCase
+class DateObjectStorageTest extends TestCase
 {
 
     public function testOffsetSetGet()
@@ -21,11 +23,9 @@ class DateObjectStorageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("sample value", $storage->offsetGet($date));
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testOffsetSetThrowException()
     {
+        $this->expectException(InvalidArgumentException::class);
 
         $storage = new DateObjectStorage();
         $storage[new DateTime()] = "sample value";
@@ -44,11 +44,10 @@ class DateObjectStorageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("xxx", $storage[$date2]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAttachThrowException()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $storage = new DateObjectStorage();
         $storage->attach(new DateTime());
     }
@@ -64,11 +63,10 @@ class DateObjectStorageTest extends PHPUnit_Framework_TestCase
         $this->assertCount(2, $storage);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAddAllThrowException()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $additionalStorage = new SplObjectStorage();
         $additionalStorage->attach(new Date());
         $additionalStorage->attach(new DateTime());

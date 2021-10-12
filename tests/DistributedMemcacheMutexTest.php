@@ -3,9 +3,9 @@
 namespace Assertis\Util;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
+class DistributedMemcacheMutexTest extends TestCase
 {
     /**
      * @var DistributedMemcacheMutex
@@ -19,7 +19,7 @@ class DistributedMemcacheMutexTest extends PHPUnit_Framework_TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $memcache = new MemcacheStub();

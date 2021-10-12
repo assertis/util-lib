@@ -21,18 +21,18 @@ class ResponseTest extends TestCase
         $response = Response::success($data);
         $response->setDate($date);
 
-        $expected = <<<HTTP
+        $expected = <<<REQ
 HTTP/1.0 200 OK
 Cache-Control: no-cache, private
 Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
 
 {"status":"success","data":{"Mon":true,"Tue":false,"Wed":true,"Thu":false,"Fri":true,"Sat":false,"Sun":true},"links":[]}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
-    
+
     public function testAddsCachingHeaders()
     {
         $data = ['foo' => 'bar'];
@@ -44,7 +44,7 @@ HTTP;
         $response->cacheFor($seconds);
 
 
-        $expected = <<<HTTP
+        $expected = <<<REQ
 HTTP/1.0 200 OK
 Cache-Control: max-age={$seconds}, public, s-maxage={$seconds}
 Content-Type:  application/json
@@ -52,11 +52,11 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Expires:       Tue, 19 Dec 2017 12:36:59 GMT
 
 {"status":"success","data":{"foo":"bar"},"links":[]}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
-    
+
     public function testSuccess()
     {
         $data = ['foo' => 'bar'];
@@ -64,8 +64,8 @@ HTTP;
 
         $response = Response::success($data, Response::HTTP_ACCEPTED, ['name' => 'value'], ['/link' => ['data']]);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 202 Accepted
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -73,25 +73,25 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Name:          value
 
 {"status":"success","data":{"foo":"bar"},"links":{"\/link":["data"]}}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
 
         $response = Response::success(['foo' => 'bar']);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 200 OK
 Cache-Control: no-cache, private
 Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
 
 {"status":"success","data":{"foo":"bar"},"links":[]}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
-    
+
     public function testCreated()
     {
         $data = ['foo' => 'bar'];
@@ -99,8 +99,8 @@ HTTP;
 
         $response = Response::created('/link', $data, ['name' => 'value']);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 201 Created
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -109,14 +109,14 @@ Location:      /link
 Name:          value
 
 {"status":"success","data":{"uri":"\/link","foo":"bar"},"links":[]}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
 
         $response = Response::created('/link');
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 201 Created
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -124,7 +124,7 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Location:      /link
 
 {"status":"success","data":{"uri":"\/link"},"links":[]}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
 
@@ -134,11 +134,11 @@ HTTP;
                 return ['foo' => 'bar'];
             }
         };
-        
+
         $response = Response::created('/link', $data);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 201 Created
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -146,19 +146,19 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Location:      /link
 
 {"status":"success","data":{"uri":"\/link","foo":"bar"},"links":[]}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
-    
+
     public function testNotFound()
     {
         $date = new DateTime('Tue, 19 Dec 2018 12:34:56');
 
         $response = Response::notFound('Message', ['name' => 'value']);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 404 Not Found
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -166,25 +166,25 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Name:          value
 
 {"status":"fail","message":"Message"}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
 
         $response = Response::notFound();
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 404 Not Found
 Cache-Control: no-cache, private
 Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
 
 {"status":"fail"}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
-    
+
     public function testFail()
     {
         $data = ['foo' => 'bar'];
@@ -192,8 +192,8 @@ HTTP;
 
         $response = Response::fail('Message', 'FAIL-CODE', $data, Response::HTTP_FORBIDDEN, ['name' => 'value']);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 403 Forbidden
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -201,21 +201,21 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Name:          value
 
 {"status":"fail","message":"Message","code":"FAIL-CODE","data":{"foo":"bar"}}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
 
         $response = Response::fail();
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 400 Bad Request
 Cache-Control: no-cache, private
 Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
 
 {"status":"fail"}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }
@@ -227,8 +227,8 @@ HTTP;
 
         $response = Response::error('Message', 'FAIL-CODE', $data, Response::HTTP_FORBIDDEN, ['name' => 'value']);
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 403 Forbidden
 Cache-Control: no-cache, private
 Content-Type:  application/json
@@ -236,21 +236,21 @@ Date:          {$date->format('D, d M Y H:i:s')} GMT
 Name:          value
 
 {"status":"error","message":"Message","code":"FAIL-CODE","data":{"foo":"bar"}}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
 
         $response = Response::error('Message');
         $response->setDate($date);
-        
-        $expected = <<<HTTP
+
+        $expected = <<<REQ
 HTTP/1.0 500 Internal Server Error
 Cache-Control: no-cache, private
 Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
 
 {"status":"error","message":"Message"}
-HTTP;
+REQ;
 
         static::assertSame(str_replace("\n", "\r\n", $expected), $response->__toString());
     }

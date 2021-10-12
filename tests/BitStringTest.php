@@ -2,9 +2,9 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class BitStringTest extends PHPUnit_Framework_TestCase
+class BitStringTest extends TestCase
 {
 
     /**
@@ -75,7 +75,7 @@ class BitStringTest extends PHPUnit_Framework_TestCase
     {
         $bitString = new BitString(16);
         $bitString->setBitsHighToLow(15, '0111001011101000');
-        $this->assertEquals('72e8', $bitString->toHexString());
+        $this->assertEquals('72E8', $bitString->toHexString());
     }
 
     /**
@@ -105,7 +105,7 @@ class BitStringTest extends PHPUnit_Framework_TestCase
     {
         $bitString = new BitString(48);
         $bitString->setBitsHighToLow(47, '000000000000000000000000000000000000000000000000');
-        $this->assertEquals('00000000', $bitString->toHexString());
+        $this->assertEquals('000000000000', $bitString->toHexString());
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Assertis\Util;
@@ -22,6 +23,11 @@ class AmountMoneyTest extends TestCase
             ['123.4', 12340],
             ['123', 12300],
             ['1,234.56', 123456],
+            ['0.00', 0],
+            ['0,00', 0],
+            ['.00', 0],
+            [',00', 0],
+            ['', 0],
         ];
     }
 

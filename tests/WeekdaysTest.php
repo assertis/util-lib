@@ -2,12 +2,13 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class WeekdaysTest extends PHPUnit_Framework_TestCase
+class WeekdaysTest extends TestCase
 {
 
     /**
@@ -24,11 +25,12 @@ class WeekdaysTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidDefinitions
-     * @expectedException \InvalidArgumentException
      * @param string $input
      */
     public function testShouldThrowExceptionOnInvalidFormat($input)
     {
+        $this->expectException(InvalidArgumentException::class);
+
         Weekdays::fromString($input);
     }
 

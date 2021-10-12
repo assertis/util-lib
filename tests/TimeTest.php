@@ -2,12 +2,14 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+use UnexpectedValueException;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class TimeTest extends PHPUnit_Framework_TestCase
+class TimeTest extends TestCase
 {
 
     public function testFromStringWithEmptyStringShouldReturnNull()
@@ -15,11 +17,10 @@ class TimeTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(null, Time::fromString('    '));
     }
 
-    /**
-     * @expectedException \UnexpectedValueException
-     */
     public function testFromStringWithWrongFormatShouldThrowException()
     {
+        $this->expectException(UnexpectedValueException::class);
+
         Time::fromString('34:67');
     }
 

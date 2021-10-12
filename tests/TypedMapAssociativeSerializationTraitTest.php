@@ -2,13 +2,13 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class TypedMapAssociativeSerializationTraitTest extends PHPUnit_Framework_TestCase
+class TypedMapAssociativeSerializationTraitTest extends TestCase
 {
     public function testToArray()
     {
@@ -17,11 +17,11 @@ class TypedMapAssociativeSerializationTraitTest extends PHPUnit_Framework_TestCa
             'bar' => 'Bar',
             'baz' => 'Baz'
         ];
-        
+
         $keys = array_keys($expected);
         $values = array_values($expected);
 
-        /** @var TypedMapAssociativeSerializationTrait|PHPUnit_Framework_MockObject_MockObject $map */
+        /** @var TypedMapAssociativeSerializationTrait|MockObject $map */
         $map = $this->getMockForTrait(TypedMapAssociativeSerializationTrait::class);
         $map->expects($this->any())->method('serializeKey')->willReturnArgument(0);
         $map->expects($this->any())->method('serializeValue')->willReturnArgument(0);

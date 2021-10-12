@@ -2,19 +2,19 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class IdTest extends PHPUnit_Framework_TestCase
+class IdTest extends TestCase
 {
     public function testSerialization()
     {
         $value = 1;
-        
-        /** @var Id|PHPUnit_Framework_MockObject_MockObject $id */
+
+        /** @var Id|MockObject $id */
         $id = $this->getMockForAbstractClass(Id::class, [$value]);
 
         $this->assertSame((string)$value, $id->getValue());
@@ -22,14 +22,14 @@ class IdTest extends PHPUnit_Framework_TestCase
         $this->assertSame((string)$value, $id->toArray());
         $this->assertSame(json_encode((string)$value), json_encode($id));
     }
-    
+
     public function testMatches()
     {
-        /** @var Id|PHPUnit_Framework_MockObject_MockObject $idA */
+        /** @var Id|MockObject $idA */
         $idA = $this->getMockForAbstractClass(Id::class, ['A']);
-        /** @var Id|PHPUnit_Framework_MockObject_MockObject $idA2 */
+        /** @var Id|MockObject $idA2 */
         $idA2 = $this->getMockForAbstractClass(Id::class, ['A']);
-        /** @var Id|PHPUnit_Framework_MockObject_MockObject $idB */
+        /** @var Id|MockObject $idB */
         $idB = $this->getMockForAbstractClass(Id::class, ['B']);
 
         $this->assertTrue($idA->matches($idA));

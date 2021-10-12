@@ -5,12 +5,12 @@ namespace Assertis\Util;
 
 use BadMethodCallException;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
-class EnumTest extends PHPUnit_Framework_TestCase
+class EnumTest extends TestCase
 {
     public function testEqual()
     {
@@ -66,10 +66,10 @@ class EnumTest extends PHPUnit_Framework_TestCase
         new TestEnum(TestEnum::STRING);
         new TestEnum(TestEnum::NULL);
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new TestEnum('FOO');
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new TestEnum(-1);
     }
 
@@ -77,6 +77,7 @@ class EnumTest extends PHPUnit_Framework_TestCase
     {
         new TestChildEnum(TestChildEnum::CHILD);
         new TestChildEnum(TestChildEnum::STRING);
+        self::assertTrue(true);
     }
 
     public function testStaticConstructor()
@@ -84,6 +85,7 @@ class EnumTest extends PHPUnit_Framework_TestCase
         TestEnum::STRING();
         TestChildEnum::STRING();
         TestChildEnum::CHILD();
+        self::assertTrue(true);
     }
 
     public function testStaticConstructorFail()

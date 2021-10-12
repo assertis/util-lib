@@ -2,13 +2,12 @@
 
 namespace Assertis\Util;
 
-use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class XmlTest extends PHPUnit_Framework_TestCase
+class XmlTest extends TestCase
 {
     public function testFind()
     {
@@ -19,7 +18,7 @@ class XmlTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(XML::class, $bar);
         $this->assertSame('1', $bar->attr('id'));
     }
-    
+
     public function testFindNs()
     {
         $xml = new XML('<foo xmlns="http://example.com"><bar id="1"/></foo>');
