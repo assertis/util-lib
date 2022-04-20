@@ -25,6 +25,7 @@ class Date extends DateTime implements JsonSerializable
     const SHORT_FORMAT = 'Y-m-d';
     const LONG_FORMAT = 'Y-m-d H:i:s';
     const ENGLISH_FORMAT = 'd-m-Y';
+    const LONG_FORMAT_WTIH_MS = 'Y-m-d H:i:s.u';
 
     /**
      * @param string $string
