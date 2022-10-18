@@ -31,13 +31,7 @@ abstract class Enum implements JsonSerializable
 
     public static function values(): array
     {
-        static $constants;
-
-        if (empty($constants)) {
-            $constants = (new ReflectionClass(static::class))->getConstants();
-        }
-
-        return $constants;
+        return (new ReflectionClass(static::class))->getConstants();
     }
 
     public static function __callStatic(string $name, array $arguments): self
