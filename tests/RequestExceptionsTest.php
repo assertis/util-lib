@@ -5,8 +5,8 @@ namespace Assertis\Util;
 
 use ArrayIterator;
 use Assertis\Util\Http;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -36,7 +36,7 @@ class RequestExceptionsTest extends TestCase
 
         $iterator = new ArrayIterator([$violationMock]);
 
-        /** @var ConstraintViolationList|PHPUnit_Framework_MockObject_MockObject $listMock */
+        /** @var ConstraintViolationList|MockObject $listMock */
         $listMock = $this->createMock(ConstraintViolationList::class);
         $listMock->expects(static::once())->method('getIterator')->willReturn($iterator);
 
