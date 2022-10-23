@@ -76,6 +76,7 @@ abstract class Enum implements JsonSerializable
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->value;

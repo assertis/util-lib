@@ -202,7 +202,7 @@ class XML extends SimpleXMLElement
         if (false === $strict) {
             trigger_error('Use of non-strict mode in XML::find is deprecated', E_USER_DEPRECATED);
         }
-        
+
         $tmp = $this->xpath($path);
 
         if ($strict && count($tmp) > 1) {
@@ -287,22 +287,26 @@ class XML extends SimpleXMLElement
 
     /**
      * Returns or saves the XML representation of this object.
-     *
-     * @param bool $format
-     * @param bool $preserveWhiteSpace
-     * @param bool $noXmlHeader
-     * @return string|false The XML string or operation result if saving.
+     * @return string The XML string.
      */
-    public function asXML($format = true, $preserveWhiteSpace = false, $noXmlHeader = false)
+    public function asXML(?string $filename = null, bool $preserveWhiteSpace = false, bool $noXmlHeader = false): string
     {
         $doc = new DOMDocument('1.0', 'UTF-8');
-        $doc->formatOutput = $format;
+        if ($filename) {
+            $doc->formatOutput = $filename;
+        }
         $doc->preserveWhiteSpace = $preserveWhiteSpace;
         $doc->loadXML(parent::asXML());
 
-        return $noXmlHeader ?
+        $out = $noXmlHeader ?
             $doc->saveXML($doc->documentElement) :
             $doc->saveXML();
+
+        if ($out === false) {
+            throw new RuntimeException('Failed to save XML');
+        }
+
+        return $out;
     }
 
     /**
