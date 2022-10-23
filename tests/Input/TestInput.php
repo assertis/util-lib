@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Assertis\Util\Input;
@@ -10,7 +11,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class TestInput implements InputInterface
 {
-    public static $constraint;
+    public static Constraint $constraint;
     public static $fromArrayCallback;
 
     /**

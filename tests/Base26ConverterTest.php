@@ -2,13 +2,13 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for the {@link Base26Converter} utility class.
  * @author Daniel Dyer
  */
-class Base26ConverterTest extends PHPUnit_Framework_TestCase
+class Base26ConverterTest extends TestCase
 {
 
     /**

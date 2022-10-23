@@ -3,28 +3,24 @@ declare(strict_types=1);
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class DateTest extends PHPUnit_Framework_TestCase
+class DateTest extends TestCase
 {
     private $timeZone;
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testShouldThrowExceptionOnInvalidFormat()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Date::fromString('invalid');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testShouldThrowExceptionOnInvalidValues()
     {
+        $this->expectException(\InvalidArgumentException::class);
         Date::fromString('2014-34-56');
     }
 

@@ -25,7 +25,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param int $flags
      * @param string $iterator_class
      */
-    public function __construct(array $input = [], $flags = 0, $iterator_class = "ArrayIterator")
+    public function __construct(array $input = [], $flags = 0, $iterator_class = 'ArrayIterator')
     {
         parent::__construct([], $flags, $iterator_class);
 
@@ -40,13 +40,13 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param mixed $value
      * @return boolean
      */
-    abstract public function accepts($value);
+    abstract public function accepts($value): bool;
 
     /**
      * @param mixed $key
      * @return bool
      */
-    public function acceptsKey($key)
+    public function acceptsKey($key): bool
     {
         return true;
     }
@@ -76,17 +76,20 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     {
         if ($this->has($key)) {
             return $this[$key];
-        } elseif (func_num_args() > 1) {
-            return $default;
-        } else {
-            throw new InvalidArgumentException("Invalid key: " . var_export($key, true));
         }
+
+        if (func_num_args() > 1) {
+            return $default;
+        }
+
+        throw new InvalidArgumentException('Invalid key: ' . var_export($key, true));
     }
 
     /**
      * @param mixed $key
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return parent::offsetGet($this->getKeyId($key));
@@ -96,7 +99,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param mixed $key
      * @param mixed $value
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this[$key] = $value;
     }
@@ -107,7 +110,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param mixed $key
      * @param mixed $newValue
      */
-    public function offsetSet($key, $newValue)
+    public function offsetSet($key, $newValue): void
     {
         $this->assertValid($key, $newValue);
 
@@ -120,7 +123,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @inheritdoc
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         $keyId = $this->getKeyId($key);
 
@@ -132,7 +135,17 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @deprecated
      * @return string
      */
-    protected function getErrorText()
+    protected function getErrorText(): string
+    {
+        return $this->getValueErrorText();
+    }
+
+    /**
+     * Return error text
+     *
+     * @return string
+     */
+    protected function getValueErrorText(): string
     {
         return 'Bad type of value in ' . get_called_class();
     }
@@ -142,17 +155,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      *
      * @return string
      */
-    protected function getValueErrorText()
-    {
-        return $this->getErrorText();
-    }
-
-    /**
-     * Return error text
-     *
-     * @return string
-     */
-    protected function getKeyErrorText()
+    protected function getKeyErrorText(): string
     {
         return 'Bad type of key in ' . get_called_class();
     }
@@ -161,7 +164,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param mixed $key
      * @return string
      */
-    protected function getKeyId($key)
+    protected function getKeyId($key): string
     {
         return is_object($key) ? spl_object_hash($key) : $key;
     }
@@ -178,7 +181,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @return array
      */
-    public function getKeys()
+    public function getKeys(): array
     {
         return array_values($this->keys);
     }
@@ -186,7 +189,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @return array
      */
-    public function getValues()
+    public function getValues(): array
     {
         return array_values($this->getArrayCopy());
     }
@@ -195,7 +198,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param mixed $key
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return array_key_exists($this->getKeyId($key), $this->keys);
     }
@@ -237,7 +240,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $keyName = static::getKeyName();
         $valueName = static::getValueName();
@@ -257,7 +260,8 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @inheritdoc
      */
-    public function jsonSerialize()
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
@@ -272,7 +276,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     public static function deserializeKey($data)
     {
         throw new Exception(
-            "To use fromArray deserialization feature please implement a static deserializeItem method."
+            'To use fromArray deserialization feature please implement a static deserializeItem method.'
         );
     }
 
@@ -286,14 +290,14 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     public static function deserializeValue($data)
     {
         throw new Exception(
-            "To use fromArray deserialization feature please implement a static deserializeItem method."
+            'To use fromArray deserialization feature please implement a static deserializeItem method.'
         );
     }
 
     /**
      * @return string
      */
-    public static function getKeyName()
+    public static function getKeyName(): string
     {
         return self::DEFAULT_KEY_NAME;
     }
@@ -301,7 +305,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @return string
      */
-    public static function getValueName()
+    public static function getValueName(): string
     {
         return self::DEFAULT_VALUE_NAME;
     }
@@ -311,7 +315,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return static
      * @throws Exception
      */
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): self
     {
         $keyName = static::getKeyName();
         $valueName = static::getValueName();
@@ -330,7 +334,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @return TypedMapIterator
      */
-    public function getIterator()
+    public function getIterator(): TypedMapIterator
     {
         return new TypedMapIterator($this->keys, $this->getArrayCopy(), 0);
     }
@@ -339,16 +343,16 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param callable $filter
      * @return static
      */
-    public function filter(callable $filter)
+    public function filter(callable $filter): self
     {
-        $out = new static;
-        
+        $out = new static();
+
         foreach ($this as $key => $value) {
             if ($filter($key, $value)) {
                 $out->set($key, $value);
             }
         }
-        
+
         return $out;
     }
 }

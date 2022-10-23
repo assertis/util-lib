@@ -1,6 +1,6 @@
 <?php
 
-namespace Assertis\Util;
+namespace Assertis\Util\Stubs;
 
 use Memcached;
 
@@ -30,12 +30,12 @@ class MemcachedStub extends Memcached
     /**
      * {@inheritdoc}
      */
-    public function add($key, $var, $expire = NULL)
+    public function add($key, $value, $expiration = 0, $udf_flags = 0)
     {
         if (array_key_exists($key, $this->cache)) {
             return false;
         }
-        $this->cache[$key] = $var;
+        $this->cache[$key] = $value;
 
         return $this->cache;
     }

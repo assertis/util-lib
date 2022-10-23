@@ -52,7 +52,7 @@ class TypedMapAlwaysAccept extends TypedMap
     /**
      * @inheritdoc
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return true;
     }
@@ -79,7 +79,7 @@ class TypedMapNeverAccept extends TypedMap
     /**
      * @inheritdoc
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return false;
     }
@@ -90,7 +90,7 @@ class TypedMapNeverAcceptKey extends TypedMap
     /**
      * @inheritdoc
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return true;
     }
@@ -98,7 +98,7 @@ class TypedMapNeverAcceptKey extends TypedMap
     /**
      * @inheritdoc
      */
-    public function acceptsKey($value)
+    public function acceptsKey($value): bool
     {
         return false;
     }

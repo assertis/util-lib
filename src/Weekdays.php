@@ -172,7 +172,7 @@ class Weekdays implements JsonSerializable
     {
         $out = '';
         foreach ($this->toArray() as $key => $val) {
-            $out .= $val ? substr($key, 0, 1) : $empty;
+            $out .= $val ? $key[0] : $empty;
         }
         return $out;
     }
@@ -180,7 +180,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
@@ -190,7 +190,7 @@ class Weekdays implements JsonSerializable
      */
     public function __toString()
     {
-        return join(', ', array_keys(array_filter($this->jsonSerialize())));
+        return implode(', ', array_keys(array_filter($this->jsonSerialize())));
     }
 
     /**

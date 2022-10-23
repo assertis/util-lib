@@ -1,16 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Assertis\Util;
 
 use BadMethodCallException;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
-class EnumTest extends PHPUnit_Framework_TestCase
+class EnumTest extends TestCase
 {
     public function testEqual()
     {
@@ -50,15 +51,17 @@ class EnumTest extends PHPUnit_Framework_TestCase
     public function testValues()
     {
         $enum = new TestEnum(TestEnum::STRING);
-        $this->assertSame([
-            'STRING'       => 'A',
-            'EMPTY_STRING' => '',
-            'ZERO'         => 0,
-            'TEN'          => 10,
-            'TRUE'         => true,
-            'FALSE'        => false,
-            'NULL'         => null,
-        ], $enum::values());
+        $this->assertSame(                                                                                                                     [
+                                                                                                                                                   'STRING'       => 'A',
+                                                                                                                                                   'EMPTY_STRING' => '',
+                                                                                                                                                   'ZERO'         => 0,
+                                                                                                                                                   'TEN'          => 10,
+                                                                                                                                                   'TRUE'         => true,
+                                                                                                                                                   'FALSE'        => false,
+                                                                                                                                                   'NULL'         => null,
+                                                                                                                                               ],
+                                                                                                                                               $enum::values(
+                                                                                                                                               ));
     }
 
     public function testValidateValue()
@@ -66,10 +69,10 @@ class EnumTest extends PHPUnit_Framework_TestCase
         new TestEnum(TestEnum::STRING);
         new TestEnum(TestEnum::NULL);
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new TestEnum('FOO');
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new TestEnum(-1);
     }
 
@@ -77,6 +80,8 @@ class EnumTest extends PHPUnit_Framework_TestCase
     {
         new TestChildEnum(TestChildEnum::CHILD);
         new TestChildEnum(TestChildEnum::STRING);
+
+        $this->expectNotToPerformAssertions();
     }
 
     public function testStaticConstructor()
@@ -84,6 +89,8 @@ class EnumTest extends PHPUnit_Framework_TestCase
         TestEnum::STRING();
         TestChildEnum::STRING();
         TestChildEnum::CHILD();
+
+        $this->expectNotToPerformAssertions();
     }
 
     public function testStaticConstructorFail()

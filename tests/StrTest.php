@@ -2,12 +2,12 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class StrTest extends PHPUnit_Framework_TestCase
+class StrTest extends TestCase
 {
     /**
      * @return array

@@ -3,7 +3,7 @@
 namespace Assertis\Util;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use TypedMapAlwaysAccept;
 use TypedMapNeverAccept;
@@ -12,7 +12,7 @@ use TypedMapNeverAcceptKey;
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class TypedMapTest extends PHPUnit_Framework_TestCase
+class TypedMapTest extends TestCase
 {
     public function testConstructor()
     {
@@ -25,7 +25,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(isset($map[$key]));
         $this->assertSame($value, $map[$key]);
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new TypedMapNeverAccept([$key => $value]);
     }
 
@@ -59,7 +59,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
 
     public function testOffsetSetRefused()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $map = new TypedMapNeverAccept();
         $map['foo'] = 'bar';
@@ -78,7 +78,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         $this->assertSame($value, $map->get($key));
         $this->assertSame($defaultValue, $map->get($invalidKey, $defaultValue));
 
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $map->get($invalidKey);
     }
 
@@ -95,7 +95,7 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
 
     public function testOffsetSetKeyRefused()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $map = new TypedMapNeverAcceptKey();
         $map['foo'] = 'bar';
@@ -190,9 +190,9 @@ class TypedMapTest extends PHPUnit_Framework_TestCase
         foreach ($map as $key => $value) {
             $counter++;
             $this->assertInstanceOf(stdClass::class, $key);
-            $this->assertInternalType('string', $value);
+            $this->assertIsString($value);
         }
-        
+
         $this->assertSame(2, $counter);
     }
 }

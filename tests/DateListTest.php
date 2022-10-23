@@ -3,12 +3,12 @@
 namespace Assertis\Util;
 
 use Assertis\Util\DateList;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Rafał Orłowski <rafal.orlowski@assertis.co.uk>
  */
-class DateListTest extends PHPUnit_Framework_TestCase
+class DateListTest extends TestCase
 {
 
     public function testAccept()

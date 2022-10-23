@@ -9,6 +9,7 @@ namespace Assertis\Util;
 use DateInterval;
 use DateTime;
 use DateTimeInterface;
+use Exception;
 use InvalidArgumentException;
 use JsonSerializable;
 
@@ -32,7 +33,7 @@ class Date extends DateTime implements JsonSerializable
      * @return self
      * @throws InvalidArgumentException
      */
-    public static function fromString($string)
+    public static function fromString($string): Date
     {
         if (preg_match(self::LONG_INPUT_FORMAT, $string, $match)) {
             $date = [$match[1], $match[2], $match[3]];
@@ -72,7 +73,7 @@ class Date extends DateTime implements JsonSerializable
      *
      * @return self
      */
-    public static function fromFormat($format, $string)
+    public static function fromFormat($format, $string): Date
     {
         $dateTime = parent::createFromFormat($format, $string);
         if (false === $dateTime) {
@@ -86,7 +87,7 @@ class Date extends DateTime implements JsonSerializable
      * @param DateTimeInterface $dateTime
      * @return self
      */
-    public static function fromDateTime(DateTimeInterface $dateTime)
+    public static function fromDateTime(DateTimeInterface $dateTime): Date
     {
         $date = new static;
         $date->setTimestamp($dateTime->getTimestamp());
@@ -98,7 +99,7 @@ class Date extends DateTime implements JsonSerializable
     /**
      * @return boolean
      */
-    public function isSaturday()
+    public function isSaturday(): bool
     {
         return (int)$this->format('w') === 6;
     }
@@ -106,7 +107,7 @@ class Date extends DateTime implements JsonSerializable
     /**
      * @return bool
      */
-    public function isSunday()
+    public function isSunday(): bool
     {
         return (int)$this->format('w') === 0;
     }
@@ -114,7 +115,7 @@ class Date extends DateTime implements JsonSerializable
     /**
      * @return bool
      */
-    public function isWorkingDay()
+    public function isWorkingDay(): bool
     {
         $day = (int)$this->format('w');
 
@@ -124,7 +125,7 @@ class Date extends DateTime implements JsonSerializable
     /**
      * @return Date
      */
-    public function getDayEarlier()
+    public function getDayEarlier(): Date
     {
         return $this->getDaysEarlier(1);
     }
@@ -133,18 +134,16 @@ class Date extends DateTime implements JsonSerializable
      * @param int $days
      * @return Date
      */
-    public function getDaysEarlier($days)
+    public function getDaysEarlier($days): Date
     {
-        $date = clone $this;
-
-        return $date->sub(new DateInterval("P{$days}D"));
+        return (clone $this)->sub(new DateInterval("P{$days}D"));
     }
 
     /**
      * @param int $days
      * @return Date
      */
-    public function getWorkingDaysEarlier($days)
+    public function getWorkingDaysEarlier($days): Date
     {
         if ($days < 0) {
             return $this->getWorkingDaysLater(abs($days));
@@ -167,7 +166,7 @@ class Date extends DateTime implements JsonSerializable
      * @param int $days
      * @return Date
      */
-    public function getWorkingDaysLater($days)
+    public function getWorkingDaysLater($days): Date
     {
         if ($days < 0) {
             return $this->getWorkingDaysEarlier(abs($days));
@@ -189,7 +188,7 @@ class Date extends DateTime implements JsonSerializable
     /**
      * @return Date
      */
-    public function getDayLater()
+    public function getDayLater(): Date
     {
         return $this->getDaysLater(1);
     }
@@ -198,149 +197,95 @@ class Date extends DateTime implements JsonSerializable
      * @param int $days
      * @return Date
      */
-    public function getDaysLater($days)
+    public function getDaysLater($days): Date
     {
-        $date = clone $this;
-
-        return $date->add(new DateInterval("P{$days}D"));
+        return (clone $this)->add(new DateInterval("P{$days}D"));
     }
 
-    /**
-     * @param int $months
-     * @return Date
-     */
-    public function getMonthsLater($months)
+    public function getMonthsLater(int $months): Date
     {
-        $date = clone $this;
-
-        return $date->add(new DateInterval("P{$months}M"));
+        return (clone $this)->add(new DateInterval("P{$months}M"));
     }
 
-    /**
-     * @return string
-     */
-    public function formatShort()
+    public function formatShort(): string
     {
         return $this->format(self::SHORT_FORMAT);
     }
 
-    /**
-     * @return string
-     */
-    public function formatLong()
+    public function formatLong(): string
     {
         return $this->format(self::LONG_FORMAT);
     }
 
-    /**
-     * @return string
-     */
-    public function formatEnglish()
+    public function formatEnglish(): string
     {
         return $this->format(self::ENGLISH_FORMAT);
     }
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return $this->formatShort();
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->formatShort();
     }
 
-    /**
-     * @param Date $otherDate
-     * @return bool
-     */
-    public function isBefore(Date $otherDate)
+    public function isBefore(Date $otherDate): bool
     {
         return $otherDate > $this;
     }
 
-    /**
-     * @param Date $otherDate
-     * @return bool
-     */
-    public function isAfter(Date $otherDate)
+    public function isAfter(Date $otherDate): bool
     {
         return $otherDate < $this;
     }
 
-    /**
-     * @param Date $otherDate
-     * @return bool
-     */
-    public function isSameDay(Date $otherDate)
+    public function isSameDay(Date $otherDate): bool
     {
         return ($this->format('Y-m-d') === $otherDate->format('Y-m-d'));
     }
 
-    /**
-     * @param Date $otherDate
-     * @return bool
-     */
-    public function isSameTime(Date $otherDate)
+    public function isSameTime(Date $otherDate): bool
     {
         return ($this->format('H:i:s') === $otherDate->format('H:i:s'));
     }
 
-    /**
-     * @param Date $otherDate
-     * @return bool
-     */
-    public function isDifferentDay(Date $otherDate)
+    public function isDifferentDay(Date $otherDate): bool
     {
         return !$this->isSameDay($otherDate);
     }
 
-    /**
-     * @return Date
-     */
-    public static function getCurrent()
+    public static function getCurrent(): Date
     {
         return new self();
     }
 
-    /**
-     * @return bool
-     */
-    public function isInThePast()
+    public function isInThePast(): bool
     {
         return $this->isBefore(self::getCurrent());
     }
 
-    /**
-     * @return bool
-     */
-    public function isInTheFuture()
+    public function isInTheFuture(): bool
     {
         return $this->isAfter(self::getCurrent());
     }
 
     /**
-     * @return Date
+     * @throws Exception
      */
-    public function getDaysEnd()
+    public function getDaysEnd(): Date
     {
-        return new self($this->formatShort() . " 23:59:59");
+        return new self($this->formatShort() . ' 23:59:59');
     }
 
     /**
      * Get the 2 bit year for CCST mag stripe
      *
      * Binary value of year, in the range 0 to 3, i.e. a single digit in
-     * a repeating 4 year cycle commencing in 1981 with the year
-     * 0, 2002 would therefore be 1.
-     *
-     * @return string
+     * a repeating 4-year cycle commencing in 1981 with the year 0,
+     * 2002 would therefore be 1.
      */
     public function getTwoBitYear()
     {
@@ -351,9 +296,9 @@ class Date extends DateTime implements JsonSerializable
     }
 
     /**
-     * @return integer The day of the month (1-31).
+     * @return int The day of the month (1-31).
      */
-    public function getDayOfMonth()
+    public function getDayOfMonth(): int
     {
         return (int)$this->format('j');
     }
@@ -361,7 +306,7 @@ class Date extends DateTime implements JsonSerializable
     /**
      * @return integer The month of the year (1-12).
      */
-    public function getMonthOfYear()
+    public function getMonthOfYear(): int
     {
         return (int)$this->format('n');
     }
@@ -398,7 +343,7 @@ class Date extends DateTime implements JsonSerializable
      *
      * @return int
      */
-    public function getTenBitDate()
+    public function getTenBitDate(): int
     {
         $nineteenEighty = strtotime('1980-01-01 00:00:00');
         $diff = ceil(($this->getTimestamp() - $nineteenEighty) / 86400);
@@ -416,10 +361,10 @@ class Date extends DateTime implements JsonSerializable
      *
      * @return int
      */
-    public function getNineBitMinuteOfDay()
+    public function getNineBitMinuteOfDay(): int
     {
-        $min = ceil(date("i", $this->getTimestamp()) / 5);
-        $hour = floor(date("H", $this->getTimestamp()) * 12);
+        $min = ceil(date('i', $this->getTimestamp()) / 5);
+        $hour = floor(date('H', $this->getTimestamp()) * 12);
 
         return (int)(100 + $min + $hour - 1);
     }

@@ -4,12 +4,12 @@ declare(strict_types = 1);
 namespace Assertis\Util;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class WeekdayTest extends PHPUnit_Framework_TestCase
+class WeekdayTest extends TestCase
 {
     /**
      * @return array

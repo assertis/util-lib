@@ -9,25 +9,16 @@ use ArrayIterator;
  */
 class TypedMapIterator extends ArrayIterator
 {
-    /**
-     * @var array
-     */
-    private $keys;
+    private array $keys;
 
-    /**
-     * @param array $keys
-     * @param array $values
-     * @param int $flags
-     */
-    public function __construct(array $keys, array $values, $flags)
+    public function __construct(array $keys, array $values, int $flags)
     {
         parent::__construct($values, $flags);
+
         $this->keys = $keys;
     }
 
-    /**
-     * @return mixed
-     */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->keys[parent::key()];

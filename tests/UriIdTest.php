@@ -3,12 +3,12 @@
 namespace Assertis\Util;
 
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class UriIdTest extends PHPUnit_Framework_TestCase
+class UriIdTest extends TestCase
 {
     /**
      * @return array
@@ -36,9 +36,11 @@ class UriIdTest extends PHPUnit_Framework_TestCase
     public function testValidation($uri, $isValid)
     {
         if (!$isValid) {
-            $this->setExpectedException(InvalidArgumentException::class);
+            $this->expectException(InvalidArgumentException::class);
         }
 
         $this->getMockForAbstractClass(UriId::class, [$uri]);
+
+        $this->expectNotToPerformAssertions();
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
-class BitStringTest extends PHPUnit_Framework_TestCase
+class BitStringTest extends TestCase
 {
 
     /**
@@ -65,7 +66,7 @@ class BitStringTest extends PHPUnit_Framework_TestCase
         $bitString->setBitsHighToLow(25, '0111111110000000011110000');
         $bytes = $bitString->getBytes(24, 3);
         // Should be 3 bytes.
-        $this->assertEquals(3, sizeof($bytes));
+        $this->assertCount(3, $bytes);
         $this->assertEquals(255, $bytes[0]);
         $this->assertEquals(0, $bytes[1]);
         $this->assertEquals(240, $bytes[2]);
@@ -75,7 +76,7 @@ class BitStringTest extends PHPUnit_Framework_TestCase
     {
         $bitString = new BitString(16);
         $bitString->setBitsHighToLow(15, '0111001011101000');
-        $this->assertEquals('72e8', $bitString->toHexString());
+        $this->assertEquals('72E8', $bitString->toHexString());
     }
 
     /**
@@ -105,7 +106,7 @@ class BitStringTest extends PHPUnit_Framework_TestCase
     {
         $bitString = new BitString(48);
         $bitString->setBitsHighToLow(47, '000000000000000000000000000000000000000000000000');
-        $this->assertEquals('00000000', $bitString->toHexString());
+        $this->assertEquals('000000000000', $bitString->toHexString());
     }
 
     /**
@@ -131,7 +132,7 @@ class BitStringTest extends PHPUnit_Framework_TestCase
         $bitString->setBit(8, true);
         $string = $bitString->toBinaryString();
         // Testing with leading zero to make sure it isn't omitted.
-        $this->assertEquals("0110001000", $string);
+        $this->assertEquals('0110001000', $string);
     }
 
     public function testConvertToString()
@@ -181,7 +182,12 @@ class BitStringTest extends PHPUnit_Framework_TestCase
         $string = $bitString->__toString();
         // 64-bits should map to 8 8-bit characters.
         $this->assertEquals(8, strlen($string));
+
         $chars = str_split($string);
+        if ($chars === false) {
+            throw new RuntimeException('Failed to split string into characters.');
+        }
+
         $this->assertEquals(chr(255), $chars[0]);
         $this->assertEquals(chr(0), $chars[count($chars) - 1]);
         $bitString2 = BitString::fromString($string);

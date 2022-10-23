@@ -41,7 +41,7 @@ abstract class Id implements JsonSerializable
     /**
      * @return string
      */
-    public function toArray()
+    public function toArray(): string
     {
         return (string) $this;
     }
@@ -49,7 +49,7 @@ abstract class Id implements JsonSerializable
     /**
      * @return string
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->value;
     }
@@ -58,7 +58,7 @@ abstract class Id implements JsonSerializable
      * @param Id $otherId
      * @return bool
      */
-    public function matches(Id $otherId)
+    public function matches(Id $otherId): bool
     {
         return $this->value === $otherId->getValue();
     }

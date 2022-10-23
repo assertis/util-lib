@@ -49,7 +49,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param mixed $index
      * @param mixed $newValue
      */
-    public function offsetSet($index, $newValue)
+    public function offsetSet($index, $newValue): void
     {
         if (!$this->accepts($newValue)) {
             throw new InvalidArgumentException($this->getErrorText());
@@ -78,14 +78,13 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param mixed $value
      * @return self
      */
-    public function append($value)
+    public function append($value): void
     {
         if (!$this->accepts($value)) {
             throw new InvalidArgumentException($this->getErrorText());
         }
-        parent::append($value);
 
-        return $this;
+        parent::append($value);
     }
 
     /**
@@ -382,7 +381,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     {
         if ($max && count($out) >= $max) {
             return;
-        } elseif (empty($list)) {
+        }
+
+        if (empty($list)) {
             $obj = clone $this;
             $obj->exchangeArray($perms);
             $out[] = $obj;
@@ -390,7 +391,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
             for ($i = count($list) - 1; $i >= 0; --$i) {
                 $newList = $list;
                 $newPermutations = $perms;
-                list($element) = array_splice($newList, $i, 1);
+                [$element] = array_splice($newList, $i, 1);
                 array_unshift($newPermutations, $element);
                 $this->permute($out, $newList, $newPermutations, $max);
             }
@@ -423,7 +424,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
@@ -540,7 +541,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      */
     public function contains($element)
     {
-        return false !== array_search($element, $this->getArrayCopy(), true);
+        return in_array($element, $this->getArrayCopy(), true);
     }
 
     //

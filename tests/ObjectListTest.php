@@ -5,20 +5,18 @@ namespace Assertis\Util;
 
 use ObjectListAlwaysAccept;
 use ObjectListNeverAccept;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class ObjectListTest extends PHPUnit_Framework_TestCase
+class ObjectListTest extends TestCase
 {
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testConstructThrowsExceptionIfElementNotAccepted()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $stub = new ObjectListNeverAccept();
         $stub->__construct(['not-accepted']);
     }
@@ -40,20 +38,16 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
         $this->assertSame([$value], $stub->getArrayCopy());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testAppendThrowsExceptionIfValueNotAccepted()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $stub = new ObjectListNeverAccept();
         $stub->append('not-accepted');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testOffsetSetThrowsExceptionIfValueNotAccepted()
     {
+        $this->expectException(\InvalidArgumentException::class);
         $stub = new ObjectListNeverAccept();
         $stub[0] = 'not-accepted';
     }
@@ -334,7 +328,7 @@ class ObjectListTest extends PHPUnit_Framework_TestCase
             return $value === 1;
         }));
 
-        $this->setExpectedException(ObjectListElementNotFoundException::class);
+        $this->expectException(ObjectListElementNotFoundException::class);
         $stub->get(function ($value) {
             return $value === 4;
         });

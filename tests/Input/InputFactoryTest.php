@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Assertis\Util\Input;
 
 use Assertis\Util\Http\ValidationException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -22,7 +22,7 @@ class InputFactoryTest extends TestCase
     {
         $data = ['foo' => 'bar'];
 
-        /** @var ValidatorInterface|PHPUnit_Framework_MockObject_MockObject $validator */
+        /** @var ValidatorInterface|MockObject $validator */
         $validator = $this->createMock(ValidatorInterface::class);
         $constraint = $this->createMock(Constraint::class);
 
@@ -53,7 +53,7 @@ class InputFactoryTest extends TestCase
         $constraint = $this->createMock(Constraint::class);
         $errors = $this->createMock(ConstraintViolationListInterface::class);
         $errors->method('count')->willReturn(0);
-        /** @var ValidatorInterface|PHPUnit_Framework_MockObject_MockObject $validator */
+        /** @var ValidatorInterface|MockObject $validator */
         $validator = $this->createMock(ValidatorInterface::class);
         $validator->expects(self::once())->method('validate')->with($data, $constraint)->willReturn($errors);
 
@@ -61,7 +61,7 @@ class InputFactoryTest extends TestCase
 
         $factory = new InputFactory($validator);
         $input = $factory->fromArray(TestInput::class, $data);
-        
+
         self::assertInstanceOf(TestInput::class, $input);
     }
 }

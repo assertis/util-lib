@@ -2,12 +2,12 @@
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class WeekdaysTest extends PHPUnit_Framework_TestCase
+class WeekdaysTest extends TestCase
 {
 
     /**
@@ -24,11 +24,11 @@ class WeekdaysTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideInvalidDefinitions
-     * @expectedException \InvalidArgumentException
      * @param string $input
      */
     public function testShouldThrowExceptionOnInvalidFormat($input)
     {
+        $this->expectException(\InvalidArgumentException::class);
         Weekdays::fromString($input);
     }
 
@@ -51,7 +51,7 @@ class WeekdaysTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideSingleWeekdays
-     * @param array $input
+     * @param string $input
      * @param bool $isMon
      * @param bool $isTue
      * @param bool $isWed

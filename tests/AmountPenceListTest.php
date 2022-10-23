@@ -3,12 +3,12 @@ declare(strict_types=1);
 
 namespace Assertis\Util;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Rafał Orłowski <rafal.orlowski@assertis.co.uk>
  */
-class AmountPenceListTest extends PHPUnit_Framework_TestCase
+class AmountPenceListTest extends TestCase
 {
     public function testAccept()
     {
