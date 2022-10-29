@@ -13,7 +13,7 @@ class WeekdaysTest extends TestCase
     /**
      * @return array
      */
-    public function provideInvalidDefinitions()
+    public function provideInvalidDefinitions(): array
     {
         return [
             ['Mon Tue'],
@@ -35,7 +35,7 @@ class WeekdaysTest extends TestCase
     /**
      * @return array
      */
-    public function provideSingleWeekdays()
+    public function provideSingleWeekdays(): array
     {
         return [
             ['Mon', true, false, false, false, false, false, false],

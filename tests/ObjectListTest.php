@@ -55,7 +55,7 @@ class ObjectListTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetAllPermutations()
+    public function provideGetAllPermutations(): array
     {
         return [
             [[], 0],
@@ -239,7 +239,7 @@ class ObjectListTest extends TestCase
     /**
      * @return array
      */
-    public function provideSlice()
+    public function provideSlice(): array
     {
         return [
             [0, 1, 1, 1, 1],
@@ -277,7 +277,7 @@ class ObjectListTest extends TestCase
     /**
      * @return array
      */
-    public function provideSum()
+    public function provideSum(): array
     {
         return [
             [[1, 2, 3], null, 6],

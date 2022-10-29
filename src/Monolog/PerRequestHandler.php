@@ -45,7 +45,7 @@ class PerRequestHandler extends StreamHandler
     /**
      * @return mixed|string
      */
-    protected function getTimedAndKeyedFilename()
+    protected function getTimedAndKeyedFilename(): mixed
     {
         $fileInfo = pathinfo($this->filename);
 

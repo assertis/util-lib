@@ -13,7 +13,7 @@ class UriIdTest extends TestCase
     /**
      * @return array
      */
-    public function provideValidation()
+    public function provideValidation(): array
     {
         return [
             ['/foo', true],

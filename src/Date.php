@@ -287,7 +287,7 @@ class Date extends DateTime implements JsonSerializable
      * a repeating 4-year cycle commencing in 1981 with the year 0,
      * 2002 would therefore be 1.
      */
-    public function getTwoBitYear()
+    public function getTwoBitYear(): int
     {
         $year = (int)$this->format('Y');
         $year -= 1981;
@@ -323,7 +323,7 @@ class Date extends DateTime implements JsonSerializable
      *
      * @return string
      */
-    public function getNineBitDate()
+    public function getNineBitDate(): int|string
     {
         $nineteenEighty = strtotime('1980-01-01 00:00:00');
         $diff = ceil(($this->getTimestamp() - $nineteenEighty) / 86400);

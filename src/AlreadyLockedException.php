@@ -29,7 +29,7 @@ class AlreadyLockedException extends RuntimeException
     /**
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->lockingKey;
     }

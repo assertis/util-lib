@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Assertis\Util;
 
@@ -22,7 +23,10 @@ class XML extends SimpleXMLElement
      */
     public static function load(string $filename, string $class = __CLASS__): XML
     {
-        return simplexml_load_file($filename, $class);
+        return simplexml_load_string(
+            file_get_contents($filename),
+            $class
+        );
     }
 
     /**
@@ -132,10 +136,11 @@ class XML extends SimpleXMLElement
      */
     private function removeDOMChildren(DOMElement $node)
     {
-        while ($node->firstChild) {
+        while ($node->firstChild !== null) {
             while ($node->firstChild->firstChild) {
                 self::removeDOMChildren($node->firstChild);
             }
+
             $node->removeChild($node->firstChild);
         }
     }
@@ -180,13 +185,13 @@ class XML extends SimpleXMLElement
      * @param mixed $value
      * @return string Attribute value.
      */
-    public function attr(string $name, $value = null)
+    public function attr(string $name, $value = null): string
     {
         if (func_num_args() === 2) {
             return (string)($this[$name] = $value);
-        } else {
-            return (string)$this[$name];
         }
+
+        return (string)$this[$name];
     }
 
     /**
@@ -197,23 +202,25 @@ class XML extends SimpleXMLElement
      * @param bool $strict Throw an exception if more than one element matches the XPath
      * @return XML|null The object matching the $xpath or null.
      */
-    public function find(string $path, bool $strict = false)
+    public function find(string $path, bool $strict = false): ?XML
     {
-        if (false === $strict) {
+        if ($strict === false) {
             trigger_error('Use of non-strict mode in XML::find is deprecated', E_USER_DEPRECATED);
         }
 
         $tmp = $this->xpath($path);
 
         if ($strict && count($tmp) > 1) {
-            throw new UnexpectedValueException(sprintf(
-                'Found %d nodes matching path %s',
-                count($tmp),
-                $path
-            ));
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Found %d nodes matching path %s',
+                    count($tmp),
+                    $path
+                )
+            );
         }
 
-        return isset($tmp[0]) ? $tmp[0] : null;
+        return is_array($tmp) && isset($tmp[0]) ? $tmp[0] : null;
     }
 
     /**
@@ -224,39 +231,41 @@ class XML extends SimpleXMLElement
      * @param string $path
      * @return XML[]|SimpleXMLElement[]|false
      */
-    public function xpathNs(string $newPrefix, string $path)
+    public function xpathNs(string $newPrefix, string $path): bool|array
     {
         return $this->registerUnprefixedNamespaceAs($newPrefix)->xpath($path);
     }
 
     /**
      * This is the unprefixed namespace equivalent of XML::find().
-     * @see XML::find()
-     * @see XML::xpathNs()
-     *
      * @param string $newPrefix
      * @param string $path
      * @param bool $strict
      * @return XML|null
      * @throws UnexpectedValueException
+     * @see XML::xpathNs()
+     *
+     * @see XML::find()
      */
-    public function findNs(string $newPrefix, string $path, bool $strict = false)
+    public function findNs(string $newPrefix, string $path, bool $strict = false): XML|SimpleXMLElement|null
     {
-        if (false === $strict) {
+        if ($strict === false) {
             trigger_error('Use of non-strict mode in XML::findNs is deprecated', E_USER_DEPRECATED);
         }
 
         $tmp = $this->xpathNs($newPrefix, $path);
 
         if ($strict && count($tmp) > 1) {
-            throw new UnexpectedValueException(sprintf(
-                'Found %d nodes matching path %s',
-                count($tmp),
-                $path
-            ));
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Found %d nodes matching path %s',
+                    count($tmp),
+                    $path
+                )
+            );
         }
 
-        return isset($tmp[0]) ? $tmp[0] : null;
+        return is_array($tmp) && isset($tmp[0]) ? $tmp[0] : null;
     }
 
     /**
@@ -277,23 +286,20 @@ class XML extends SimpleXMLElement
 
     /**
      * Finds the parent of an element.
-     *
-     * @return static
      */
-    public function parent()
+    public function parent(): XML|null
     {
         return $this->find('parent::*');
     }
 
     /**
      * Returns or saves the XML representation of this object.
-     * @return string The XML string.
      */
     public function asXML(?string $filename = null, bool $preserveWhiteSpace = false, bool $noXmlHeader = false): string
     {
         $doc = new DOMDocument('1.0', 'UTF-8');
         if ($filename) {
-            $doc->formatOutput = $filename;
+            $doc->formatOutput = true;
         }
         $doc->preserveWhiteSpace = $preserveWhiteSpace;
         $doc->loadXML(parent::asXML());
@@ -310,9 +316,7 @@ class XML extends SimpleXMLElement
     }
 
     /**
-     * Creates an HTML representation of the this XML object.
-     *
-     * @return string HTML string.
+     * Creates an HTML representation of this XML object.
      */
     public function asHTML(): string
     {
@@ -322,6 +326,10 @@ class XML extends SimpleXMLElement
             '<'  => '&lt;',
             '>'  => '&gt;',
         ];
-        return nl2br(str_replace(array_keys($replace), array_values($replace), $this->asXML(true, false, true)));
+
+        $xml = $this->asXML(null, false, true);
+        $html = str_replace(array_keys($replace), array_values($replace), $xml);
+
+        return nl2br($html);
     }
 }

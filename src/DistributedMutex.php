@@ -23,7 +23,7 @@ abstract class DistributedMutex
     /**
      * @param string $name
      */
-    public function unlock($name)
+    public function unlock($name): void
     {
         $this->memcache->delete($name);
     }

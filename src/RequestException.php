@@ -12,7 +12,7 @@ abstract class RequestException extends Exception
 {
     const ERROR_CODE_PREFIX = 'ERR-';
     const ERROR_CODE_UNKNOWN = 'UNKNOWN';
-    
+
     const TYPE_ERROR = 'error';
     const TYPE_FAIL = 'fail';
     const TYPE_OK = 'ok';
@@ -21,17 +21,17 @@ abstract class RequestException extends Exception
     /**
      * @return int
      */
-    abstract public function getHttpCode();
+    abstract public function getHttpCode(): int;
 
     /**
      * @return string
      */
-    abstract public function getSpecificErrorCode();
+    abstract public function getSpecificErrorCode(): string;
 
     /**
      * @return string
      */
-    public function getErrorCode()
+    public function getErrorCode(): string
     {
         return self::ERROR_CODE_PREFIX . $this->getSpecificErrorCode();
     }
@@ -39,7 +39,7 @@ abstract class RequestException extends Exception
     /**
      * @return string
      */
-    public static function getUnknownErrorCode()
+    public static function getUnknownErrorCode(): string
     {
         return self::ERROR_CODE_PREFIX . self::ERROR_CODE_UNKNOWN;
     }
@@ -47,7 +47,7 @@ abstract class RequestException extends Exception
     /**
      * @return string
      */
-    public function getErrorType()
+    public function getErrorType(): string
     {
         return self::TYPE_ERROR;
     }
@@ -55,7 +55,7 @@ abstract class RequestException extends Exception
     /**
      * @return bool
      */
-    public function isLogged()
+    public function isLogged(): bool
     {
         return true;
     }
@@ -63,7 +63,7 @@ abstract class RequestException extends Exception
     /**
      * @return string
      */
-    public function getLogLevel()
+    public function getLogLevel(): string
     {
         return LogLevel::ERROR;
     }

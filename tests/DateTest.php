@@ -67,7 +67,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsSaturday()
+    public function provideIsSaturday(): array
     {
         return [
             ['2014-12-02', false],
@@ -89,7 +89,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsSunday()
+    public function provideIsSunday(): array
     {
         return [
             ['2015-05-03', true],
@@ -111,7 +111,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsWorkingDay()
+    public function provideIsWorkingDay(): array
     {
         return [
             ['2015-04-07', true],
@@ -157,7 +157,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetDayEarlier()
+    public function provideGetDayEarlier(): array
     {
         return [
             ['2014-01-01', '2013-12-31'],
@@ -180,7 +180,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetMonthsLater()
+    public function provideGetMonthsLater(): array
     {
         return [
             ['2014-12-12', 1, '2015-01-12'],
@@ -213,7 +213,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsBefore()
+    public function provideIsBefore(): array
     {
         return [
             ['2014-10-20', '2014-10-21', true, false],
@@ -265,7 +265,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetWorkingDaysEarlier()
+    public function provideGetWorkingDaysEarlier(): array
     {
         return [
             ['2015-05-08', 5, '2015-05-03'],
@@ -299,7 +299,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetTwoBitYear()
+    public function provideGetTwoBitYear(): array
     {
         return [
             ['1981-05-07', 0],
@@ -321,7 +321,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetNineBitDate()
+    public function provideGetNineBitDate(): array
     {
         return [
             ['1980-01-01 00:00:00', 000],
@@ -344,7 +344,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetNineBitMinuteOfDay()
+    public function provideGetNineBitMinuteOfDay(): array
     {
         return [
             ['2010-01-01 00:09:00', 101],

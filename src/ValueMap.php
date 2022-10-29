@@ -3,6 +3,7 @@
 namespace Assertis\Util;
 
 use Exception;
+use InvalidArgumentException;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
@@ -27,7 +28,7 @@ class ValueMap
      * @param mixed $key
      * @param mixed $value
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this->data[$key] = $value;
     }
@@ -35,40 +36,39 @@ class ValueMap
     /**
      * @param mixed $value
      */
-    public function add($value)
+    public function add($value): void
     {
         $this->data[$value] = true;
     }
 
     /**
-     * @param mixed $key
-     * @param mixed $default
-     * @return mixed
-     * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function get($key, $default = false)
+    public function get(mixed $key, mixed $default = false): mixed
     {
         if ($this->has($key)) {
             return $this->data[$key];
-        } elseif (func_num_args() > 1) {
-            return $default;
-        } else {
-            throw new Exception("Invalid key: {$key}");
         }
+
+        if (func_num_args() > 1) {
+            return $default;
+        }
+
+        throw new InvalidArgumentException("Invalid key: {$key}");
     }
 
     /**
      * @param mixed $key
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return array_key_exists($key, $this->data);
     }
 
     /**
      */
-    public function clear()
+    public function clear(): void
     {
         $this->data = [];
     }

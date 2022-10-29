@@ -63,7 +63,7 @@ class TimeTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsAfter()
+    public function provideIsAfter(): array
     {
         return [
             ['0915', '0930', false],

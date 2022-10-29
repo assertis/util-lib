@@ -22,7 +22,7 @@ class ObjectListAlwaysAccept extends ObjectList
     /**
      * @inheritdoc
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return true;
     }
@@ -30,7 +30,7 @@ class ObjectListAlwaysAccept extends ObjectList
     /**
      * @inheritdoc
      */
-    public static function deserializeItem($data)
+    public static function deserializeItem($data): mixed
     {
         return $data;
     }
@@ -41,7 +41,7 @@ class ObjectListNeverAccept extends ObjectList
     /**
      * @inheritdoc
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return false;
     }
@@ -60,7 +60,7 @@ class TypedMapAlwaysAccept extends TypedMap
     /**
      * @inheritdoc
      */
-    public static function deserializeKey($data)
+    public static function deserializeKey($data): mixed
     {
         return $data;
     }
@@ -68,7 +68,7 @@ class TypedMapAlwaysAccept extends TypedMap
     /**
      * @inheritdoc
      */
-    public static function deserializeValue($data)
+    public static function deserializeValue($data): mixed
     {
         return $data;
     }

@@ -22,9 +22,9 @@ class Base26Converter
      * @param array $bytes An array of bytes (0-255) to be encoded.
      * @return string A string containing only upper case letters.
      */
-    public static function encode(array $bytes)
+    public static function encode(array $bytes): string
     {
-        $length = sizeof($bytes);
+        $length = count($bytes);
         // this size is going to be larger than required
         // This is fairly close to the 1.17519... ratio (actual value below is 1.1752)
         $overEstSize = (int)((($length * self::$base26Nom) + self::$base26Denom - 1) / self::$base26Denom);
@@ -58,7 +58,7 @@ class Base26Converter
      * @param string $string A string containing only upper case letters to be decoded.
      * @return array An array of bytes (0-255).
      */
-    public static function decode($string)
+    public static function decode($string): array
     {
         $length = strlen($string);
         //temporary array to hold the input values

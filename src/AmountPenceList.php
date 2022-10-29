@@ -16,7 +16,7 @@ class AmountPenceList extends ObjectList
      * @param mixed $value
      * @return boolean
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return $value instanceof AmountPence;
     }

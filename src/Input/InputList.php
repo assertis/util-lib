@@ -13,7 +13,7 @@ abstract class InputList extends ObjectList implements InputInterface
     /**
      * @inheritdoc
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return $value instanceof InputInterface;
     }

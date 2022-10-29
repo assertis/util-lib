@@ -49,7 +49,7 @@ class BitString
     /**
      * @return integer The length of this bit string.
      */
-    public function getLength()
+    public function getLength(): int
     {
         return $this->length;
     }
@@ -59,7 +59,7 @@ class BitString
      * @param integer $index The index of the bit to look-up (0 is the least-significant bit).
      * @return bool $boolean A boolean indicating whether the bit is set or not.
      */
-    public function getBit($index)
+    public function getBit($index): bool
     {
         $this->assertValidIndex($index);
 
@@ -75,7 +75,7 @@ class BitString
      * @param integer $index The index of the bit to set (0 is the least-significant bit).
      * @param boolean $set A boolean indicating whether the bit should be set or not.
      */
-    public function setBit($index, $set)
+    public function setBit($index, $set): void
     {
         $this->assertValidIndex($index);
 
@@ -93,7 +93,7 @@ class BitString
      * @param integer $startIndex The index of the first bit to be set.
      * @param string $bits A string of ones and zeros.
      */
-    public function setBitsHighToLow($startIndex, $bits)
+    public function setBitsHighToLow($startIndex, $bits): void
     {
         $chars = str_split($bits);
         $index = $startIndex;
@@ -108,7 +108,7 @@ class BitString
      * @param integer $startIndex The index of the first bit to be set.
      * @param string $bits A string of ones and zeros.
      */
-    public function setBitsLowToHigh($startIndex, $bits)
+    public function setBitsLowToHigh($startIndex, $bits): void
     {
         $chars = str_split($bits);
         $index = $startIndex;
@@ -124,7 +124,7 @@ class BitString
      * @param int $mostSignificantBit
      * @return int
      */
-    public function getByte($mostSignificantBit)
+    public function getByte($mostSignificantBit): int
     {
         $byte = 0;
         for ($i = 0; $i < 8; $i++) {
@@ -138,7 +138,7 @@ class BitString
      * @param int $count
      * @return array
      */
-    public function getBytes($mostSignificantBit, $count)
+    public function getBytes($mostSignificantBit, $count): array
     {
         $bytes = [];
         for ($i = 0; $i < $count; $i++) {
@@ -152,7 +152,7 @@ class BitString
      * Inverts the value of the bit at the specified index.
      * @param integer $index The bit to flip (0 is the least-significant bit).
      */
-    public function flipBit($index)
+    public function flipBit($index): void
     {
         $this->assertValidIndex($index);
         $word = (int)floor($index / $this->wordSize);
@@ -165,7 +165,7 @@ class BitString
      * @param int $index The index to check.
      * @throws Exception
      */
-    private function assertValidIndex($index)
+    private function assertValidIndex($index): void
     {
         if ($index >= $this->length || $index < 0) {
             throw new Exception('Invalid index: ' . $index . ' (length: ' . $this->length . ')');
@@ -177,9 +177,9 @@ class BitString
      * string represents the four most significant bits.
      * @return string
      */
-    public function toHexString()
+    public function toHexString(): string
     {
-        $wordCount = sizeof($this->data);
+        $wordCount = count($this->data);
         $length = $this->length;
         $hex = '';
         for ($word = 0; $word < $wordCount; $word++) {
@@ -199,7 +199,7 @@ class BitString
      * order (index 0 is the right-most bit).
      * @return string This bit string rendered as a String of 1s and 0s.
      */
-    public function toBinaryString()
+    public function toBinaryString(): string
     {
         $string = '';
         for ($i = $this->length - 1; $i >= 0; $i--) {
@@ -216,7 +216,7 @@ class BitString
      */
     public function __toString()
     {
-        $wordCount = sizeof($this->data);
+        $wordCount = count($this->data);
         $length = $this->length;
         $string = '';
         for ($word = 0; $word < $wordCount; $word++) {
@@ -235,12 +235,12 @@ class BitString
      * @param string $string
      * @return BitString
      */
-    public static function fromString($string)
+    public static function fromString($string): BitString
     {
         $bitCount = strlen($string) * 8;
         $bitString = new BitString($bitCount);
         $index = $bitCount - 1;
-        
+
         foreach (str_split($string) as $char) {
             $bitString->setBitsHighToLow($index, str_pad(decbin(ord($char)), 8, '0', STR_PAD_LEFT));
             $index -= 8;

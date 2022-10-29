@@ -30,7 +30,7 @@ class Response extends JsonResponse
     {
         $expires = clone $this->getDate();
         $expires->add(DateInterval::createFromDateString($seconds.' seconds'));
-        
+
         $this->setSharedMaxAge($seconds);
         $this->setMaxAge($seconds);
         $this->setExpires($expires);
@@ -132,10 +132,10 @@ class Response extends JsonResponse
     {
         if ($data instanceof JsonSerializable) {
             $data = $data->jsonSerialize();
-        } elseif (is_null($data)) {
+        } elseif ($data === null) {
             $data = [];
         }
-        
+
         $data = ['uri' => $uri] + $data;
         $headers['Location'] = $uri;
 
@@ -147,7 +147,7 @@ class Response extends JsonResponse
      * @param array $headers
      * @return Response
      */
-    public static function notFound(string $message = null, array $headers = [])
+    public static function notFound(string $message = null, array $headers = []): Response
     {
         return self::fail($message, null, null, self::HTTP_NOT_FOUND, $headers);
     }

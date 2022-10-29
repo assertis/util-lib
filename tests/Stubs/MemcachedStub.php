@@ -21,7 +21,7 @@ class MemcachedStub extends Memcached
     /**
      * @return MemcachedStub
      */
-    public function withServersAdded()
+    public function withServersAdded(): static
     {
         $this->serversAdded = ['localhost:11211' => '1.2.6'];
         return $this;
@@ -30,7 +30,7 @@ class MemcachedStub extends Memcached
     /**
      * {@inheritdoc}
      */
-    public function add($key, $value, $expiration = 0, $udf_flags = 0)
+    public function add($key, $value, $expiration = 0, $udf_flags = 0): bool|array
     {
         if (array_key_exists($key, $this->cache)) {
             return false;
@@ -43,7 +43,7 @@ class MemcachedStub extends Memcached
     /**
      * {@inheritdoc}
      */
-    public function delete($key, $timeout = 0)
+    public function delete($key, $timeout = 0): bool
     {
         if (!array_key_exists($key, $this->cache)) {
             return false;
@@ -56,7 +56,7 @@ class MemcachedStub extends Memcached
     /**
      * {@inheritdoc}
      */
-    public function getversion()
+    public function getversion(): bool|array
     {
         return $this->serversAdded;
     }

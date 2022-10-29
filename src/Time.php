@@ -35,21 +35,25 @@ class Time implements JsonSerializable
      * @return Time|null
      * @throws UnexpectedValueException
      */
-    public static function fromString($string)
+    public static function fromString($string): ?Time
     {
-        if ('' === trim($string)) {
+        if (trim($string) === '') {
             return null;
         }
 
         if (preg_match(self::DEFAULT_FORMAT, $string, $match)) {
             return new self((int)$match[1], (int)$match[2]);
-        } elseif (preg_match(self::LONG_FORMAT, $string, $match)) {
-            return new self((int)$match[1], (int)$match[2]);
-        } elseif (preg_match(self::NRS_FORMAT, $string, $match)) {
-            return new self((int)$match[1], (int)$match[2]);
-        } else {
-            throw new UnexpectedValueException("Could not parse \"{$string}\" as time.");
         }
+
+        if (preg_match(self::LONG_FORMAT, $string, $match)) {
+            return new self((int)$match[1], (int)$match[2]);
+        }
+
+        if (preg_match(self::NRS_FORMAT, $string, $match)) {
+            return new self((int)$match[1], (int)$match[2]);
+        }
+
+        throw new UnexpectedValueException("Could not parse \"{$string}\" as time.");
     }
 
     /**
@@ -65,7 +69,7 @@ class Time implements JsonSerializable
     /**
      * @return int
      */
-    public function getHours()
+    public function getHours(): int
     {
         return $this->hours;
     }
@@ -73,7 +77,7 @@ class Time implements JsonSerializable
     /**
      * @return int
      */
-    public function getMinutes()
+    public function getMinutes(): int
     {
         return $this->minutes;
     }
@@ -81,7 +85,7 @@ class Time implements JsonSerializable
     /**
      * @return string
      */
-    public function getTime()
+    public function getTime(): string
     {
         return $this->hours . ':' . sprintf('%02d', $this->minutes);
     }
@@ -89,7 +93,7 @@ class Time implements JsonSerializable
     /**
      * @return int
      */
-    public function toInt()
+    public function toInt(): int
     {
         return (int)($this->hours . sprintf('%02d', $this->minutes));
     }
@@ -98,7 +102,7 @@ class Time implements JsonSerializable
      * @param Time $other
      * @return bool
      */
-    public function isAfter(Time $other)
+    public function isAfter(Time $other): bool
     {
         return $this->toInt() > $other->toInt();
     }
@@ -107,7 +111,7 @@ class Time implements JsonSerializable
      * @param Time $other
      * @return bool
      */
-    public function isBefore(Time $other)
+    public function isBefore(Time $other): bool
     {
         return $this->toInt() < $other->toInt();
     }

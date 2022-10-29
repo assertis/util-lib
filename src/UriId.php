@@ -14,16 +14,12 @@ abstract class UriId extends Id
     /**
      * @return string
      */
-    protected function getValueRegex()
+    protected function getValueRegex(): string
     {
         return self::$VALUE_REGEX;
     }
 
-    /**
-     * @param mixed $value
-     * @return string
-     */
-    protected function assertIsValidUri($value)
+    protected function assertIsValidUri(mixed $value): void
     {
         if (preg_match($this->getValueRegex(), $value)) {
             return;

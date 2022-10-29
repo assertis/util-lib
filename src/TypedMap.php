@@ -72,7 +72,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws InvalidArgumentException
      */
-    public function get($key, $default = false)
+    public function get($key, $default = false): mixed
     {
         if ($this->has($key)) {
             return $this[$key];
@@ -90,7 +90,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return mixed
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet($key): mixed
     {
         return parent::offsetGet($this->getKeyId($key));
     }
@@ -173,7 +173,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @param mixed $keyId
      * @return mixed
      */
-    protected function getKey($keyId)
+    protected function getKey($keyId): mixed
     {
         return $this->keys[$keyId];
     }
@@ -218,7 +218,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws Exception
      */
-    protected function serializeKey($key)
+    protected function serializeKey($key): mixed
     {
         return (is_object($key) && method_exists($key, 'toArray')) ? $key->toArray() : $key;
     }
@@ -230,7 +230,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws Exception
      */
-    protected function serializeValue($value)
+    protected function serializeValue($value): mixed
     {
         return (is_object($value) && method_exists($value, 'toArray')) ? $value->toArray() : $value;
     }
@@ -273,7 +273,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws Exception
      */
-    public static function deserializeKey($data)
+    public static function deserializeKey($data): mixed
     {
         throw new Exception(
             'To use fromArray deserialization feature please implement a static deserializeItem method.'
@@ -287,7 +287,7 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws Exception
      */
-    public static function deserializeValue($data)
+    public static function deserializeValue($data): mixed
     {
         throw new Exception(
             'To use fromArray deserialization feature please implement a static deserializeItem method.'

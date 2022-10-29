@@ -10,14 +10,6 @@ use Memcache;
  */
 class DistributedMemcacheMutex extends DistributedMutex
 {
-    /**
-     * @var Memcache
-     */
-    protected $memcache;
-
-    /**
-     * @param Memcache $memcache
-     */
     public function __construct(Memcache $memcache)
     {
         $this->memcache = $memcache;
@@ -30,10 +22,13 @@ class DistributedMemcacheMutex extends DistributedMutex
      * @throws InvalidArgumentException
      * @throws AlreadyLockedException
      */
-    public function lock($name, $expirationTimeInSeconds = self::FIVE_MINUTES_SECONDS)
+    public function lock($name, $expirationTimeInSeconds = self::FIVE_MINUTES_SECONDS): void
     {
         $this->assertServersAddedToMemcache();
-        if (false === $this->memcache->add($name, 1, false, $expirationTimeInSeconds)) {
+
+        $added = $this->memcache->add($name, 1, false, $expirationTimeInSeconds);
+
+        if ($added === false) {
             throw new AlreadyLockedException($name);
         }
     }

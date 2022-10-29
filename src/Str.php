@@ -20,7 +20,7 @@ final class Str
      *
      * @return string
      */
-    public static function ucwords($string)
+    public static function ucwords($string): string
     {
         return ucwords(strtolower($string));
     }
@@ -32,7 +32,7 @@ final class Str
      *
      * @return string
      */
-    public static function ccwords($word)
+    public static function ccwords($word): string
     {
         $spaced = str_replace('-', ' ', $word);
         $ucworded = self::ucwords($spaced);
@@ -47,7 +47,7 @@ final class Str
      *
      * @return string
      */
-    public static function substr($text, $start = 0, $length = null)
+    public static function substr($text, $start = 0, $length = null): string
     {
         $lastTextIndex = strlen($text) - 1;
         if (strlen($text) === 0) {
@@ -69,7 +69,7 @@ final class Str
      * @param int $charsPerLine
      * @return string
      */
-    public static function wrap($text, $charsPerLine)
+    public static function wrap($text, $charsPerLine): string
     {
         $inputLines = explode("\n", $text);
         $outputLines = [];
@@ -82,7 +82,7 @@ final class Str
 
             foreach ($inputWords as $inputWord) {
                 if ($spaceLeft < strlen($inputWord)) {
-                    $outputLines[] = join(' ', $outputLine);
+                    $outputLines[] = implode(' ', $outputLine);
                     $outputLine = [];
                     $spaceLeft = $charsPerLine;
                 }
@@ -92,10 +92,10 @@ final class Str
             }
 
             if (count($outputLine) > 0) {
-                $outputLines[] = join(' ', $outputLine);
+                $outputLines[] = implode(' ', $outputLine);
             }
         }
 
-        return join("\n", $outputLines);
+        return implode("\n", $outputLines);
     }
 }

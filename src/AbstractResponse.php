@@ -14,7 +14,7 @@ abstract class AbstractResponse implements JsonSerializable
      *
      * @return array
      */
-    abstract public function toArray();
+    abstract public function toArray(): array;
 
     /**
      * Serialize to json.

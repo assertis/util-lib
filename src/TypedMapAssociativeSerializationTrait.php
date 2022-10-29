@@ -14,24 +14,24 @@ trait TypedMapAssociativeSerializationTrait
      * @param mixed $key
      * @return mixed
      */
-    abstract public function serializeKey($key);
+    abstract public function serializeKey($key): mixed;
 
     /**
      * @param mixed $value
      * @return mixed
      */
-    abstract public function serializeValue($value);
+    abstract public function serializeValue($value): mixed;
 
     /**
      * @return array
      */
-    abstract public function getArrayCopy();
+    abstract public function getArrayCopy(): array;
 
     /**
      * @param mixed $keyId
      * @return mixed
      */
-    abstract public function getKey($keyId);
+    abstract public function getKey($keyId): mixed;
 
     /**
      * @param mixed $key
@@ -42,7 +42,7 @@ trait TypedMapAssociativeSerializationTrait
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $out = [];
         foreach ($this->getArrayCopy() as $keyId => $value) {
@@ -57,7 +57,7 @@ trait TypedMapAssociativeSerializationTrait
      * @param array $data
      * @return static
      */
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): static
     {
         $out = new static();
 

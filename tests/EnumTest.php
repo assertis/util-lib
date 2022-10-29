@@ -93,6 +93,7 @@ class EnumTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    /** @noinspection PhpUndefinedMethodInspection */
     public function testStaticConstructorFail()
     {
         $this->expectException(BadMethodCallException::class);

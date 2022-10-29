@@ -11,7 +11,7 @@ class ObjectListList extends ObjectList
      * @param mixed $value
      * @return boolean
      */
-    public function accepts($value)
+    public function accepts($value): bool
     {
         return $value instanceof ObjectList;
     }

@@ -26,7 +26,7 @@ class TestInput implements InputInterface
      * @param array $data
      * @return InputInterface|static
      */
-    public static function fromArray(array $data)
+    public static function fromArray(array $data): InputInterface|static
     {
         if (static::$fromArrayCallback) {
             (static::$fromArrayCallback)($data);

@@ -18,7 +18,7 @@ class DependencyRequestException extends RequestException
     /**
      * @return int
      */
-    public function getHttpCode()
+    public function getHttpCode(): int
     {
         return Response::HTTP_FAILED_DEPENDENCY;
     }
@@ -26,7 +26,7 @@ class DependencyRequestException extends RequestException
     /**
      * @return string
      */
-    public function getSpecificErrorCode()
+    public function getSpecificErrorCode(): string
     {
         return self::ERROR_CODE;
     }

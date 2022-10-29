@@ -41,7 +41,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param mixed $value
      * @return boolean
      */
-    abstract public function accepts($value);
+    abstract public function accepts($value): bool;
 
     /**
      * Check if {$newValue} is acceptable and set it.
@@ -63,7 +63,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @return string
      */
-    protected function getErrorText()
+    protected function getErrorText(): string
     {
         return 'Bad type of value in ' . get_called_class();
     }
@@ -93,7 +93,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param Traversable $list
      * @return static
      */
-    public function appendAll(Traversable $list)
+    public function appendAll(Traversable $list): static
     {
         foreach ($list as $element) {
             $this->append($element);
@@ -107,7 +107,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param mixed $element
      * @return self
      */
-    public function delete($element)
+    public function delete($element): static
     {
         $list = $this->getArrayCopy();
         $offset = array_search($element, $list, true);
@@ -121,7 +121,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @return mixed
      */
-    public function pop()
+    public function pop(): mixed
     {
         $list = $this->getArrayCopy();
         $element = array_pop($list);
@@ -137,7 +137,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $filter
      * @return mixed|null
      */
-    public function popMatching(callable $filter)
+    public function popMatching(callable $filter): mixed
     {
         foreach ($this as $element) {
             if ($filter($element)) {
@@ -156,7 +156,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $sorter
      * @return static
      */
-    public function sort(callable $sorter)
+    public function sort(callable $sorter): static
     {
         $list = $this->getArrayCopy();
         // Can't unit test anything using usort without suppressing its errors.
@@ -176,7 +176,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $filter
      * @return static
      */
-    public function filter(callable $filter)
+    public function filter(callable $filter): static
     {
         return new static(array_filter($this->getArrayCopy(), $filter));
     }
@@ -187,7 +187,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param ObjectList $otherList
      * @return static
      */
-    public function exclude(ObjectList $otherList)
+    public function exclude(ObjectList $otherList): static
     {
         return $this->filter(function ($element) use ($otherList) {
             return !$otherList->contains($element);
@@ -200,7 +200,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param ObjectList $otherList
      * @return static
      */
-    public function intersect(ObjectList $otherList)
+    public function intersect(ObjectList $otherList): static
     {
         return $this->filter(function ($element) use ($otherList) {
             return $otherList->contains($element);
@@ -214,7 +214,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $selector
      * @return static
      */
-    public function uniqueFor(callable $selector)
+    public function uniqueFor(callable $selector): static
     {
         $keys = [];
 
@@ -233,7 +233,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param int|null $length
      * @return static
      */
-    public function slice($offset, $length = null)
+    public function slice($offset, $length = null): static
     {
         return new static(array_slice($this->getArrayCopy(), $offset, $length));
     }
@@ -243,7 +243,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @return static
      */
-    public function getClone()
+    public function getClone(): static
     {
         $out = new static;
 
@@ -263,7 +263,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @return mixed
      */
-    public function getFirst()
+    public function getFirst(): mixed
     {
         $copy = $this->getArrayCopy();
 
@@ -275,7 +275,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @return mixed
      */
-    public function getLast()
+    public function getLast(): mixed
     {
         $copy = $this->getArrayCopy();
 
@@ -288,7 +288,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $filter
      * @return mixed|null
      */
-    public function find(callable $filter)
+    public function find(callable $filter): mixed
     {
         foreach ($this as $element) {
             if ($filter($element)) {
@@ -306,7 +306,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws ObjectListElementNotFoundException
      */
-    public function get(callable $filter)
+    public function get(callable $filter): mixed
     {
         $element = $this->find($filter);
 
@@ -330,7 +330,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $grouper
      * @return ObjectListList
      */
-    public function group(callable $grouper)
+    public function group(callable $grouper): ObjectListList
     {
         $out = [];
 
@@ -407,7 +407,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $out = [];
         foreach ($this->getArrayCopy() as $key => $value) {
@@ -436,7 +436,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @return mixed
      * @throws Exception
      */
-    public static function deserializeItem($data)
+    public static function deserializeItem($data): mixed
     {
         throw new Exception(sprintf(
             "To use fromArray deserialization feature please implement a static deserializeItem method in %s.",
@@ -451,7 +451,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @return static
      * @throws Exception
      */
-    public static function fromArray(array $items)
+    public static function fromArray(array $items): static
     {
         $out = [];
         foreach ($items as $item) {
@@ -471,7 +471,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $mapper
      * @return array
      */
-    public function map(callable $mapper)
+    public function map(callable $mapper): array
     {
         return array_map($mapper, $this->getArrayCopy());
     }
@@ -483,7 +483,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param mixed|null $initial
      * @return mixed
      */
-    public function reduce(callable $reducer, $initial = null)
+    public function reduce(callable $reducer, $initial = null): mixed
     {
         return array_reduce($this->getArrayCopy(), $reducer, $initial);
     }
@@ -495,7 +495,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param float|int|null $startValue
      * @return float|int
      */
-    public function sum(callable $valueProvider, $startValue = null)
+    public function sum(callable $valueProvider, $startValue = null): float|int
     {
         return $this->reduce(function ($total, $element) use ($valueProvider) {
             return $total + $valueProvider($element);
@@ -508,7 +508,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $filter
      * @return int
      */
-    public function countMatching(callable $filter)
+    public function countMatching(callable $filter): int
     {
         $out = 0;
         foreach ($this as $element) {
@@ -539,7 +539,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param mixed $element
      * @return bool
      */
-    public function contains($element)
+    public function contains($element): bool
     {
         return in_array($element, $this->getArrayCopy(), true);
     }
@@ -554,7 +554,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param callable $operation
      * @return static
      */
-    public function each(callable $operation)
+    public function each(callable $operation): static
     {
         $this->map($operation);
 

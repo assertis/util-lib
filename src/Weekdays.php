@@ -75,7 +75,7 @@ class Weekdays implements JsonSerializable
      * @param string $data
      * @return Weekdays
      */
-    public static function fromString($data)
+    public static function fromString($data): Weekdays
     {
         if (!preg_match('/^([A-Z][a-z]{2},)*[A-Z][a-z]{2}$/', $data)) {
             throw new InvalidArgumentException("Input {$data} is not a valid Weekdays information string.");
@@ -95,7 +95,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function monday()
+    public function monday(): bool
     {
         return $this->monday;
     }
@@ -103,7 +103,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function tuesday()
+    public function tuesday(): bool
     {
         return $this->tuesday;
     }
@@ -111,7 +111,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function wednesday()
+    public function wednesday(): bool
     {
         return $this->wednesday;
     }
@@ -119,7 +119,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function thursday()
+    public function thursday(): bool
     {
         return $this->thursday;
     }
@@ -127,7 +127,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function friday()
+    public function friday(): bool
     {
         return $this->friday;
     }
@@ -135,7 +135,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function saturday()
+    public function saturday(): bool
     {
         return $this->saturday;
     }
@@ -143,7 +143,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return boolean
      */
-    public function sunday()
+    public function sunday(): bool
     {
         return $this->sunday;
     }
@@ -151,7 +151,7 @@ class Weekdays implements JsonSerializable
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'Mon' => $this->monday(),
@@ -168,7 +168,7 @@ class Weekdays implements JsonSerializable
      * @param string $empty
      * @return string
      */
-    public function short($empty = '-')
+    public function short($empty = '-'): string
     {
         $out = '';
         foreach ($this->toArray() as $key => $val) {
@@ -197,7 +197,7 @@ class Weekdays implements JsonSerializable
      * @param Date $date
      * @return bool
      */
-    public function matches(Date $date)
+    public function matches(Date $date): bool
     {
         return (bool)$this->toArray()[$date->format('D')];
     }

@@ -12,7 +12,7 @@ class StrTest extends TestCase
     /**
      * @return array
      */
-    public function provideUcwords()
+    public function provideUcwords(): array
     {
         return [
             ['one two', 'One Two'],
@@ -61,14 +61,14 @@ class StrTest extends TestCase
     /**
      * @return array
      */
-    public function provideWrap()
+    public function provideWrap(): array
     {
         return [
             [ 'Abc def ghi jkl.', 6, "Abc def\nghi\njkl." ],
             [ "Abc def.\nGh ijk.", 6, "Abc\ndef.\nGh ijk." ],
         ];
     }
-    
+
     /**
      * @dataProvider provideWrap
      * @param string $input
