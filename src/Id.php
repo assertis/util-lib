@@ -11,7 +11,7 @@ use JsonSerializable;
  */
 abstract class Id implements JsonSerializable
 {
-    private ?string $value;
+    private ?string $value = null;
 
     public function __construct($value)
     {
@@ -25,7 +25,7 @@ abstract class Id implements JsonSerializable
 
     public function isEmpty(): bool
     {
-        return $this->value === null;
+        return !isset($this->value);
     }
 
     public function __toString()
