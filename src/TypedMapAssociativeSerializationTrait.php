@@ -25,7 +25,7 @@ trait TypedMapAssociativeSerializationTrait
     /**
      * @return array
      */
-    abstract public function getArrayCopy(): array;
+    abstract public function getArrayCopy();
 
     /**
      * @param mixed $keyId
