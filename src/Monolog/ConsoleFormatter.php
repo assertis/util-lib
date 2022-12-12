@@ -25,7 +25,7 @@ class ConsoleFormatter extends LineFormatter
     /**
      * {@inheritdoc}
      */
-    public function format(array $record)
+    public function format(array $record): string
     {
 
         if ($record['level'] >= Logger::ERROR) {
@@ -43,7 +43,7 @@ class ConsoleFormatter extends LineFormatter
         }
 
         $record = $this->applyEmphasis($record);
-        
+
         return parent::format($record);
     }
 }
