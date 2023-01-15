@@ -23,11 +23,11 @@ abstract class TypedMap extends ArrayObject implements JsonSerializable
     /**
      * @param array $input
      * @param int $flags
-     * @param string $iterator_class
+     * @param string $iteratorClass
      */
-    public function __construct(array $input = [], $flags = 0, $iterator_class = 'ArrayIterator')
+    public function __construct(array $input = [], $flags = 0, $iteratorClass = 'ArrayIterator')
     {
-        parent::__construct([], $flags, $iterator_class);
+        parent::__construct([], $flags, $iteratorClass);
 
         foreach ($input as $key => $value) {
             $this->assertValid($key, $value);

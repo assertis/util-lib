@@ -1,12 +1,13 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 namespace Assertis\Util;
 
 use ArrayObject;
-use Exception;
 use InvalidArgumentException;
 use JsonSerializable;
+use LogicException;
 use Traversable;
 
 /**
@@ -17,19 +18,14 @@ use Traversable;
  */
 abstract class ObjectList extends ArrayObject implements JsonSerializable
 {
-    /**
-     * @param array $input
-     * @param int $flags
-     * @param string $iterator_class
-     */
-    public function __construct(array $input = [], $flags = 0, $iterator_class = "ArrayIterator")
+    public function __construct(array $input = [], int $flags = 0, string $iteratorClass = 'ArrayIterator')
     {
         foreach ($input as $element) {
             if (!$this->accepts($element)) {
                 throw new InvalidArgumentException($this->getErrorText());
             }
         }
-        parent::__construct($input, $flags, $iterator_class);
+        parent::__construct($input, $flags, $iteratorClass);
     }
 
     // Methods that govern adding elements to the list
@@ -37,19 +33,13 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Return true if the value is acceptable for this list. Typically something like:
      *   return $value instanceof MyClass
-     *
-     * @param mixed $value
-     * @return boolean
      */
-    abstract public function accepts($value): bool;
+    abstract public function accepts(mixed $value): bool;
 
     /**
      * Check if {$newValue} is acceptable and set it.
-     *
-     * @param mixed $index
-     * @param mixed $newValue
      */
-    public function offsetSet($index, $newValue): void
+    public function offsetSet(mixed $index, mixed $newValue): void
     {
         if (!$this->accepts($newValue)) {
             throw new InvalidArgumentException($this->getErrorText());
@@ -60,12 +50,10 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return error text for when accepts() returns false.
-     *
-     * @return string
      */
     protected function getErrorText(): string
     {
-        return 'Bad type of value in ' . get_called_class();
+        return 'Bad type of value in ' . static::class;
     }
 
     //
@@ -74,11 +62,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Add element to this list.
-     *
-     * @param mixed $value
-     * @return self
      */
-    public function append($value): void
+    public function append(mixed $value): void
     {
         if (!$this->accepts($value)) {
             throw new InvalidArgumentException($this->getErrorText());
@@ -89,25 +74,20 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Add a list of elements to this list.
-     *
-     * @param Traversable $list
-     * @return static
      */
     public function appendAll(Traversable $list): static
     {
         foreach ($list as $element) {
             $this->append($element);
         }
+
         return $this;
     }
 
     /**
      * Remove an element from this list.
-     *
-     * @param mixed $element
-     * @return self
      */
-    public function delete($element): static
+    public function delete(mixed $element): static
     {
         $list = $this->getArrayCopy();
         $offset = array_search($element, $list, true);
@@ -118,8 +98,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Pop an element off the end of this list (see: array_pop).
-     *
-     * @return mixed
      */
     public function pop(): mixed
     {
@@ -133,9 +111,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Remove from list and return the first list value that matches callable filter.
      * Technically it's `unshift`, not `pop`, because it returns the first, not the last element.
-     *
-     * @param callable $filter
-     * @return mixed|null
      */
     public function popMatching(callable $filter): mixed
     {
@@ -152,9 +127,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Sort this list using {$sorter} (see: usort).
-     *
-     * @param callable $sorter
-     * @return static
      */
     public function sort(callable $sorter): static
     {
@@ -172,9 +144,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return a new list containing only those elements matching {$filter}.
-     *
-     * @param callable $filter
-     * @return static
      */
     public function filter(callable $filter): static
     {
@@ -183,9 +152,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return a new list containing only those elements not present in {$otherList}.
-     *
-     * @param ObjectList $otherList
-     * @return static
      */
     public function exclude(ObjectList $otherList): static
     {
@@ -196,9 +162,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return a new list containing only those elements present in {$otherList}.
-     *
-     * @param ObjectList $otherList
-     * @return static
      */
     public function intersect(ObjectList $otherList): static
     {
@@ -210,9 +173,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Returns a new list containing one element for each {$selector($element)} value (i.e. array_unique using
      * a callback for each value).
-     *
-     * @param callable $selector
-     * @return static
      */
     public function uniqueFor(callable $selector): static
     {
@@ -222,30 +182,30 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
             $value = $selector($item);
             $key = is_object($value) ? spl_object_hash($value) : $value;
 
-            return array_key_exists($key, $keys) ? false : $keys[$key] = true;
+            if (array_key_exists($key, $keys)) {
+                return false;
+            }
+
+            $keys[$key] = true;
+
+            return true;
         });
     }
 
     /**
      * Return a new list containing {$length} elements starting on {$offset}.
-     *
-     * @param int $offset
-     * @param int|null $length
-     * @return static
      */
-    public function slice($offset, $length = null): static
+    public function slice(int $offset, ?int $length = null): static
     {
         return new static(array_slice($this->getArrayCopy(), $offset, $length));
     }
 
     /**
      * Return a new list containing cloned copies of all elements from this list.
-     *
-     * @return static
      */
     public function getClone(): static
     {
-        $out = new static;
+        $out = new static();
 
         foreach ($this as $element) {
             $out->append(clone $element);
@@ -259,9 +219,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     //
 
     /**
-     * Return first element.
-     *
-     * @return mixed
+     * Return the first element.
      */
     public function getFirst(): mixed
     {
@@ -271,9 +229,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     }
 
     /**
-     * Return last element.
-     *
-     * @return mixed
+     * Return the last element.
      */
     public function getLast(): mixed
     {
@@ -284,9 +240,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return first element matching {$filter}, or null.
-     *
-     * @param callable $filter
-     * @return mixed|null
      */
     public function find(callable $filter): mixed
     {
@@ -302,17 +255,18 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Return first element matching {$filter}, or throws a RuntimeException.
      *
-     * @param callable $filter
-     * @return mixed
      * @throws ObjectListElementNotFoundException
      */
     public function get(callable $filter): mixed
     {
         $element = $this->find($filter);
 
-        if (null === $element) {
+        if ($element === null) {
             throw new ObjectListElementNotFoundException(
-                "Could not find an element in " . get_class($this) . " using a find filter."
+                sprintf(
+                    'Could not find an element in %s using a find filter.',
+                    get_class($this)
+                )
             );
         }
 
@@ -337,7 +291,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
         foreach ($this as $element) {
             $value = $grouper($element);
             if (!array_key_exists($value, $out)) {
-                $out[$value] = new static;
+                $out[$value] = new static();
             }
             $list = &$out[$value];
             /** @var $list static */
@@ -352,18 +306,14 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * permutations.
      *
      * The returned object is an ObjectListList which behaves like any other ObjectList.
-     *
-     * @param int $max
-     * @return ObjectListList
      */
-    public function getAllPermutations($max = null): ObjectListList
+    public function getAllPermutations(int $max = null): ObjectListList
     {
-        $out = [];
-
         if (count($this) === 0) {
             return new ObjectListList();
         }
 
+        $out = [];
         $this->permute($out, $this->getArrayCopy(), [], $max);
 
         return new ObjectListList($max ? array_slice($out, 0, $max) : $out);
@@ -371,13 +321,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Create all permutations of an array of elements in the $out variable.
-     *
-     * @param array $out
-     * @param array $list
-     * @param array $perms
-     * @param int $max
      */
-    private function permute(&$out, $list, $perms = [], $max = null)
+    private function permute(array &$out, array $list, array $perms = [], int $max = null): void
     {
         if ($max && count($out) >= $max) {
             return;
@@ -404,8 +349,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Turn this object into an array using toArray method on each element if they have it.
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -421,9 +364,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
         return $out;
     }
 
-    /**
-     * @return array
-     */
     public function jsonSerialize(): array
     {
         return $this->toArray();
@@ -432,24 +372,20 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Create a single member element from serialized data.
      *
-     * @param mixed $data
-     * @return mixed
-     * @throws Exception
+     * @throws LogicException
      */
-    public static function deserializeItem($data): mixed
+    public static function deserializeItem(mixed $data): mixed
     {
-        throw new Exception(sprintf(
-            "To use fromArray deserialization feature please implement a static deserializeItem method in %s.",
-            get_called_class()
-        ));
+        throw new LogicException(
+            sprintf(
+                'To use fromArray deserialization feature please implement a static deserializeItem method in %s.',
+                static::class
+            )
+        );
     }
 
     /**
      * Create an object of current list type from a toArray serialized form.
-     *
-     * @param array $items
-     * @return static
-     * @throws Exception
      */
     public static function fromArray(array $items): static
     {
@@ -467,9 +403,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Applies {$mapper} to each element of this list and returns an array of outputs.
-     *
-     * @param callable $mapper
-     * @return array
      */
     public function map(callable $mapper): array
     {
@@ -478,12 +411,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Iteratively reduce this list to a single value.
-     *
-     * @param callable $reducer
-     * @param mixed|null $initial
-     * @return mixed
      */
-    public function reduce(callable $reducer, $initial = null): mixed
+    public function reduce(callable $reducer, mixed $initial = null): mixed
     {
         return array_reduce($this->getArrayCopy(), $reducer, $initial);
     }
@@ -495,7 +424,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * @param float|int|null $startValue
      * @return float|int
      */
-    public function sum(callable $valueProvider, $startValue = null): float|int
+    public function sum(callable $valueProvider, mixed $startValue = null): float|int
     {
         return $this->reduce(function ($total, $element) use ($valueProvider) {
             return $total + $valueProvider($element);
@@ -504,9 +433,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return the number of elements matching {$filter}.
-     *
-     * @param callable $filter
-     * @return int
      */
     public function countMatching(callable $filter): int
     {
@@ -516,12 +442,12 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
                 $out++;
             }
         }
+
         return $out;
     }
 
     /**
-     * @param callable $filter
-     * @return bool
+     * Whether this list contains any elements matching {$filter}.
      */
     public function hasMatching(callable $filter): bool
     {
@@ -530,16 +456,14 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * Return true if this list contains {$element}.
-     *
-     * @param mixed $element
-     * @return bool
      */
-    public function contains($element): bool
+    public function contains(mixed $element): bool
     {
         return in_array($element, $this->getArrayCopy(), true);
     }
@@ -550,9 +474,6 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Executes {$operation} for each of the elements and returns this list intact.
-     *
-     * @param callable $operation
-     * @return static
      */
     public function each(callable $operation): static
     {
