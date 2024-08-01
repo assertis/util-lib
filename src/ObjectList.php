@@ -77,7 +77,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      */
     public function appendAll(Traversable $list): static
     {
-        foreach ($list as $element) {
+        foreach (iterator_to_array($list) as $element) {
             $this->append($element);
         }
 
