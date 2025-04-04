@@ -2,6 +2,7 @@
 
 namespace Assertis\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +14,7 @@ class WeekdaysTest extends TestCase
     /**
      * @return array
      */
-    public function provideInvalidDefinitions(): array
+    public static function provideInvalidDefinitions(): array
     {
         return [
             ['Mon Tue'],
@@ -23,9 +24,9 @@ class WeekdaysTest extends TestCase
     }
 
     /**
-     * @dataProvider provideInvalidDefinitions
      * @param string $input
      */
+    #[DataProvider('provideInvalidDefinitions')]
     public function testShouldThrowExceptionOnInvalidFormat($input)
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -35,7 +36,7 @@ class WeekdaysTest extends TestCase
     /**
      * @return array
      */
-    public function provideSingleWeekdays(): array
+    public static function provideSingleWeekdays(): array
     {
         return [
             ['Mon', true, false, false, false, false, false, false],
@@ -50,7 +51,6 @@ class WeekdaysTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSingleWeekdays
      * @param string $input
      * @param bool $isMon
      * @param bool $isTue
@@ -60,6 +60,7 @@ class WeekdaysTest extends TestCase
      * @param bool $isSat
      * @param bool $isSun
      */
+    #[DataProvider('provideSingleWeekdays')]
     public function testShouldSetInputProperly($input, $isMon, $isTue, $isWed, $isThu, $isFri, $isSat, $isSun)
     {
         $weekdays = Weekdays::fromString($input);

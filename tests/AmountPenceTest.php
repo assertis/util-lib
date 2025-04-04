@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Assertis\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -35,7 +36,7 @@ class AmountPenceTest extends TestCase
     /**
      * @return array
      */
-    public function provideFromHumanReadableString(): array
+    public static function provideFromHumanReadableString(): array
     {
         return [
             ['123.456', 12345],
@@ -47,10 +48,10 @@ class AmountPenceTest extends TestCase
     }
 
     /**
-     * @dataProvider provideFromHumanReadableString
      * @param string $string
      * @param int $pence
      */
+    #[DataProvider('provideFromHumanReadableString')]
     public function testFromHumanReadableString(string $string, int $pence)
     {
         $price = AmountPence::fromHumanReadableString($string);

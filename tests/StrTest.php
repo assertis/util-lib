@@ -2,6 +2,7 @@
 
 namespace Assertis\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ class StrTest extends TestCase
     /**
      * @return array
      */
-    public function provideUcwords(): array
+    public static function provideUcwords(): array
     {
         return [
             ['one two', 'One Two'],
@@ -24,10 +25,10 @@ class StrTest extends TestCase
     }
 
     /**
-     * @dataProvider provideUcwords
      * @param string $input
      * @param string $expected
      */
+    #[DataProvider('provideUcwords')]
     public function testUcwords($input, $expected)
     {
         $this->assertSame($expected, Str::ucwords($input));
@@ -61,7 +62,7 @@ class StrTest extends TestCase
     /**
      * @return array
      */
-    public function provideWrap(): array
+    public static function provideWrap(): array
     {
         return [
             [ 'Abc def ghi jkl.', 6, "Abc def\nghi\njkl." ],
@@ -70,11 +71,11 @@ class StrTest extends TestCase
     }
 
     /**
-     * @dataProvider provideWrap
      * @param string $input
      * @param int $perLine
      * @param string $expected
      */
+    #[DataProvider('provideWrap')]
     public function testWrap($input, $perLine, $expected)
     {
         $this->assertSame($expected, Str::wrap($input, $perLine));

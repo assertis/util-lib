@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Assertis\Util;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,7 +15,7 @@ class WeekdayTest extends TestCase
     /**
      * @return array
      */
-    public function provideFromString(): array
+    public static function provideFromString(): array
     {
         return [
             ['Mon', 0],
@@ -35,10 +36,10 @@ class WeekdayTest extends TestCase
     }
 
     /**
-     * @dataProvider provideFromString
      * @param string $input
      * @param int $expected
      */
+    #[DataProvider('provideFromString')]
     public function testFromString(string $input, int $expected)
     {
         static::assertSame($expected, Weekday::fromString($input)->getDayId());

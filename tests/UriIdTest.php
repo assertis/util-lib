@@ -3,6 +3,7 @@
 namespace Assertis\Util;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,7 +14,7 @@ class UriIdTest extends TestCase
     /**
      * @return array
      */
-    public function provideValidation(): array
+    public static function provideValidation(): array
     {
         return [
             ['/foo', true],
@@ -29,17 +30,21 @@ class UriIdTest extends TestCase
     }
 
     /**
-     * @dataProvider provideValidation
      * @param string $uri
      * @param bool $isValid
      */
+    #[DataProvider('provideValidation')]
     public function testValidation($uri, $isValid)
     {
         if (!$isValid) {
             $this->expectException(InvalidArgumentException::class);
         }
 
-        $this->getMockForAbstractClass(UriId::class, [$uri]);
+        $this->getMockBuilder(UriId::class)
+            ->setConstructorArgs([$uri])
+            ->onlyMethods([])
+            ->getMock();
+
 
         $this->expectNotToPerformAssertions();
     }

@@ -2,6 +2,7 @@
 
 namespace Assertis\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,7 +25,7 @@ class TimeTest extends TestCase
     /**
      * @return array
      */
-    public function provideShouldAcceptFormats(): array
+    public static function provideShouldAcceptFormats(): array
     {
         return [
             ['0123', '1:23'],
@@ -34,10 +35,10 @@ class TimeTest extends TestCase
     }
 
     /**
-     * @dataProvider provideShouldAcceptFormats
      * @param string $input
      * @param string $expected
      */
+    #[DataProvider('provideShouldAcceptFormats')]
     public function testShouldAcceptFormats(string $input, string $expected)
     {
         $this->assertSame($expected, (string)Time::fromString($input));
@@ -63,7 +64,7 @@ class TimeTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsAfter(): array
+    public static function provideIsAfter(): array
     {
         return [
             ['0915', '0930', false],
@@ -76,11 +77,11 @@ class TimeTest extends TestCase
     }
 
     /**
-     * @dataProvider provideIsAfter
      * @param string $firstTime
      * @param string $secondTime
      * @param bool $isAfter
      */
+    #[DataProvider('provideIsAfter')]
     public function testIsAfter($firstTime, $secondTime, $isAfter)
     {
         $first = Time::fromString($firstTime);

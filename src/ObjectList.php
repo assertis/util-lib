@@ -307,7 +307,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      *
      * The returned object is an ObjectListList which behaves like any other ObjectList.
      */
-    public function getAllPermutations(int $max = null): ObjectListList
+    public function getAllPermutations(?int $max = null): ObjectListList
     {
         if (count($this) === 0) {
             return new ObjectListList();
@@ -322,7 +322,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Create all permutations of an array of elements in the $out variable.
      */
-    private function permute(array &$out, array $list, array $perms = [], int $max = null): void
+    private function permute(array &$out, array $list, array $perms = [], ?int $max = null): void
     {
         if ($max && count($out) >= $max) {
             return;

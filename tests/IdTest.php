@@ -2,20 +2,14 @@
 
 namespace Assertis\Util;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @author Michał Tatarynowicz <michal@assertis.co.uk>
- */
 class IdTest extends TestCase
 {
-    public function testSerialization()
+    public function testSerialization(): void
     {
         $value = 1;
-
-        /** @var Id|MockObject $id */
-        $id = $this->getMockForAbstractClass(Id::class, [$value]);
+        $id = new TestableId($value);
 
         $this->assertSame((string)$value, $id->getValue());
         $this->assertSame((string)$value, (string)$id);
@@ -23,17 +17,22 @@ class IdTest extends TestCase
         $this->assertSame(json_encode((string)$value), json_encode($id));
     }
 
-    public function testMatches()
+    public function testMatches(): void
     {
-        /** @var Id|MockObject $idA */
-        $idA = $this->getMockForAbstractClass(Id::class, ['A']);
-        /** @var Id|MockObject $idA2 */
-        $idA2 = $this->getMockForAbstractClass(Id::class, ['A']);
-        /** @var Id|MockObject $idB */
-        $idB = $this->getMockForAbstractClass(Id::class, ['B']);
+        $idA = new TestableId('A');
+        $idA2 = new TestableId('A');
+        $idB = new TestableId('B');
 
         $this->assertTrue($idA->matches($idA));
         $this->assertTrue($idA->matches($idA2));
         $this->assertFalse($idA->matches($idB));
     }
+}
+
+/**
+ * Minimal testable implementation of the abstract Id class.
+ */
+class TestableId extends Id
+{
+    // Assuming the Id constructor handles setting the value and getValue()/matches() are concrete
 }

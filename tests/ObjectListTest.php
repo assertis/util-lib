@@ -5,6 +5,7 @@ namespace Assertis\Util;
 
 use ObjectListAlwaysAccept;
 use ObjectListNeverAccept;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -55,7 +56,7 @@ class ObjectListTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetAllPermutations(): array
+    public static function provideGetAllPermutations(): array
     {
         return [
             [[], 0],
@@ -68,10 +69,10 @@ class ObjectListTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetAllPermutations
      * @param array $values
      * @param int $count
      */
+    #[DataProvider('provideGetAllPermutations')]
     public function testGetAllPermutations($values, $count)
     {
         $stub = new ObjectListAlwaysAccept($values);
@@ -239,7 +240,7 @@ class ObjectListTest extends TestCase
     /**
      * @return array
      */
-    public function provideSlice(): array
+    public static function provideSlice(): array
     {
         return [
             [0, 1, 1, 1, 1],
@@ -251,13 +252,13 @@ class ObjectListTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSlice
      * @param int $offset
      * @param int|null $length
      * @param int $expectedCount
      * @param int $expectedFirst
      * @param int $expectedLast
      */
+    #[DataProvider('provideSlice')]
     public function testSlice($offset, $length, $expectedCount, $expectedFirst, $expectedLast)
     {
         $values = [1, 2, 3, 4, 5];
@@ -277,7 +278,7 @@ class ObjectListTest extends TestCase
     /**
      * @return array
      */
-    public function provideSum(): array
+    public static function provideSum(): array
     {
         return [
             [[1, 2, 3], null, 6],
@@ -288,11 +289,11 @@ class ObjectListTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSum
      * @param array $values
      * @param mixed $default
      * @param int|float $expected
      */
+    #[DataProvider('provideSum')]
     public function testSum($values, $default, $expected)
     {
         $stub = new ObjectListAlwaysAccept($values);

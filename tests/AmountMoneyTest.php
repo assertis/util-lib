@@ -3,18 +3,20 @@ declare(strict_types=1);
 
 namespace Assertis\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @author Rafał Orłowski <rafal.orlowski@assertis.co.uk>
- */
 class AmountMoneyTest extends TestCase
 {
+    #[DataProvider('provideFromHumanReadableString')]
+    public function testFromHumanReadableString(string $string, int $pence): void
+    {
+        $price = AmountMoney::fromHumanReadableString($string);
+        self::assertInstanceOf(AmountMoney::class, $price);
+        self::assertSame($pence, $price->getValue());
+    }
 
-    /**
-     * @return array
-     */
-    public function provideFromHumanReadableString(): array
+    public static function provideFromHumanReadableString(): array
     {
         return [
             ['123.456', 12345],
@@ -24,17 +26,4 @@ class AmountMoneyTest extends TestCase
             ['1,234.56', 123456],
         ];
     }
-
-    /**
-     * @dataProvider provideFromHumanReadableString
-     * @param string $string
-     * @param int $pence
-     */
-    public function testFromHumanReadableString(string $string, int $pence)
-    {
-        $price = AmountMoney::fromHumanReadableString($string);
-        self::assertInstanceOf(AmountMoney::class, $price);
-        self::assertSame($pence, $price->getValue());
-    }
-
 }

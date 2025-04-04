@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Assertis\Util;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,7 +28,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideFromString(): array
+    public static function provideFromString(): array
     {
         return [
             ['2016-05-20 12:34:56', '2016-05-20T12:34:56+00:00'],
@@ -42,10 +43,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideFromString
      * @param string $string
      * @param string $expected
      */
+    #[DataProvider('provideFromString')]
     public function testFromString(string $string, string $expected)
     {
         $this->changeToUTCTimeZone();
@@ -67,7 +68,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsSaturday(): array
+    public static function provideIsSaturday(): array
     {
         return [
             ['2014-12-02', false],
@@ -76,10 +77,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideIsSaturday
      * @param string $dateStr
      * @param bool $isSaturday
      */
+    #[DataProvider('provideIsSaturday')]
     public function testIsSaturday($dateStr, $isSaturday)
     {
         $date = Date::fromString($dateStr);
@@ -89,7 +90,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsSunday(): array
+    public static function provideIsSunday(): array
     {
         return [
             ['2015-05-03', true],
@@ -98,10 +99,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideIsSunday
      * @param string $dateStr
      * @param bool $isSunday
      */
+    #[DataProvider('provideIsSunday')]
     public function testIsSunday($dateStr, $isSunday)
     {
         $date = Date::fromString($dateStr);
@@ -111,7 +112,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsWorkingDay(): array
+    public static function provideIsWorkingDay(): array
     {
         return [
             ['2015-04-07', true],
@@ -122,10 +123,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideIsWorkingDay
      * @param string $dateStr
      * @param bool $isWorkingDay
      */
+    #[DataProvider('provideIsWorkingDay')]
     public function testIsWorkingDay($dateStr, $isWorkingDay)
     {
         $date = Date::fromString($dateStr);
@@ -157,7 +158,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetDayEarlier(): array
+    public static function provideGetDayEarlier(): array
     {
         return [
             ['2014-01-01', '2013-12-31'],
@@ -167,10 +168,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetDayEarlier
      * @param string $today
      * @param string $dayEarlier
      */
+    #[DataProvider('provideGetDayEarlier')]
     public function testGetDayEarlierOrLater($today, $dayEarlier)
     {
         $this->assertEquals($dayEarlier, Date::fromString($today)->getDayEarlier()->format(Date::SHORT_FORMAT));
@@ -180,7 +181,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetMonthsLater(): array
+    public static function provideGetMonthsLater(): array
     {
         return [
             ['2014-12-12', 1, '2015-01-12'],
@@ -197,11 +198,11 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetMonthsLater
      * @param string $start
      * @param int $months
      * @param string $end
      */
+    #[DataProvider('provideGetMonthsLater')]
     public function testGetMonthsLater($start, $months, $end)
     {
         $date = Date::fromString($start);
@@ -213,7 +214,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideIsBefore(): array
+    public static function provideIsBefore(): array
     {
         return [
             ['2014-10-20', '2014-10-21', true, false],
@@ -223,12 +224,12 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideIsBefore
      * @param string $first
      * @param string $second
      * @param bool $isBefore
      * @param bool $isAfter
      */
+    #[DataProvider('provideIsBefore')]
     public function testIsBefore($first, $second, $isBefore, $isAfter)
     {
         $date1 = Date::fromString($first);
@@ -265,7 +266,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetWorkingDaysEarlier(): array
+    public static function provideGetWorkingDaysEarlier(): array
     {
         return [
             ['2015-05-08', 5, '2015-05-03'],
@@ -274,11 +275,11 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetWorkingDaysEarlier
      * @param string $startDate
      * @param int $days
      * @param string $endDate
      */
+    #[DataProvider('provideGetWorkingDaysEarlier')]
     public function testGetWorkingDaysEarlier($startDate, $days, $endDate)
     {
         $start = Date::fromString($startDate);
@@ -299,7 +300,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetTwoBitYear(): array
+    public static function provideGetTwoBitYear(): array
     {
         return [
             ['1981-05-07', 0],
@@ -308,10 +309,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetTwoBitYear
      * @param string $date
      * @param int $bit
      */
+    #[DataProvider('provideGetTwoBitYear')]
     public function testGetTwoBitYear($date, $bit)
     {
         $obj = new Date($date);
@@ -321,7 +322,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetNineBitDate(): array
+    public static function provideGetNineBitDate(): array
     {
         return [
             ['1980-01-01 00:00:00', 000],
@@ -331,10 +332,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetNineBitDate
      * @param string $date
      * @param int $bits
      */
+    #[DataProvider('provideGetNineBitDate')]
     public function testGetNineBitDate1($date, $bits)
     {
         $obj = new Date($date);
@@ -344,7 +345,7 @@ class DateTest extends TestCase
     /**
      * @return array
      */
-    public function provideGetNineBitMinuteOfDay(): array
+    public static function provideGetNineBitMinuteOfDay(): array
     {
         return [
             ['2010-01-01 00:09:00', 101],
@@ -353,10 +354,10 @@ class DateTest extends TestCase
     }
 
     /**
-     * @dataProvider provideGetNineBitMinuteOfDay
      * @param string $date
      * @param int $bits
      */
+    #[DataProvider('provideGetNineBitMinuteOfDay')]
     public function testGetNineBitMinuteOfDay($date, $bits)
     {
         $obj = new Date($date);
