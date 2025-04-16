@@ -4,7 +4,8 @@ declare(strict_types = 1);
 namespace Assertis\Util\Monolog;
 
 use Monolog\Formatter\LineFormatter;
-use Monolog\Logger;
+use Monolog\LogRecord;
+use Monolog\Level;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
@@ -12,38 +13,40 @@ use Monolog\Logger;
 class ConsoleFormatter extends LineFormatter
 {
     /**
-     * @param array $record
-     * @return array
+     * Applies console-style emphasis using tags.
+     *
+     * @param string $message
+     * @param string $startTag
+     * @param string $endTag
+     * @return string
      */
-    private function applyEmphasis(array $record): array
+    private function applyEmphasis(string $message, string $startTag, string $endTag): string
     {
-        $record['message'] = str_replace(['[', ']'], [$record['end_tag'], $record['start_tag']], $record['message']);
-
-        return $record;
+        return str_replace(['[', ']'], [$endTag, $startTag], $message);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function format(array $record): string
+    public function format(LogRecord $record): string
     {
+        $startTag = '';
+        $endTag = '';
 
-        if ($record['level'] >= Logger::ERROR) {
-            $record['start_tag'] = '<error>';
-            $record['end_tag'] = '</error>';
-        } elseif ($record['level'] >= Logger::NOTICE) {
-            $record['start_tag'] = '<comment>';
-            $record['end_tag'] = '</comment>';
-        } elseif ($record['level'] >= Logger::INFO) {
-            $record['start_tag'] = '<info>';
-            $record['end_tag'] = '</info>';
-        } else {
-            $record['start_tag'] = '';
-            $record['end_tag'] = '';
+        if ($record->level->value >= Level::Error->value) {
+            $startTag = '<error>';
+            $endTag = '</error>';
+        } elseif ($record->level->value >= Level::Notice->value) {
+            $startTag = '<comment>';
+            $endTag = '</comment>';
+        } elseif ($record->level->value >= Level::Info->value) {
+            $startTag = '<info>';
+            $endTag = '</info>';
         }
 
-        $record = $this->applyEmphasis($record);
+        // Clone with modified message
+        $modifiedRecord = $record->with(message: $this->applyEmphasis($record->message, $startTag, $endTag));
 
-        return parent::format($record);
+        return parent::format($modifiedRecord);
     }
 }
