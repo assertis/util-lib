@@ -37,19 +37,19 @@ class ResponseData implements JsonSerializable
 
     /**
      * @param StatusEnum $status
-     * @param array|JsonSerializable|null $data
-     * @param array|null $links
-     * @param string|null $message
-     * @param string|null $code
-     * @param array|null $debug
+     * @param  array|JsonSerializable|null  $data
+     * @param  array|null  $links
+     * @param  string|null  $message
+     * @param  string|null  $code
+     * @param  array|null  $debug
      */
     public function __construct(
         StatusEnum $status,
-        $data = null,
-        array $links = null,
-        string $message = null,
-        string $code = null,
-        array $debug = null
+        array|JsonSerializable|null $data = null,
+        ?array $links = null,
+        ?string $message = null,
+        ?string $code = null,
+        ?array $debug = null
     ) {
         $this->status = $status;
         $this->data = $data;

@@ -65,17 +65,17 @@ class Response extends JsonResponse
     /**
      * Return fail response
      *
-     * @param string $message
-     * @param string|null $code
-     * @param array|JsonSerializable|null $data
+     * @param  string|null  $message
+     * @param  string|null  $code
+     * @param  array|JsonSerializable|null  $data
      * @param int $status
      * @param array $headers
      * @return Response
      */
     public static function fail(
-        string $message = null,
-        string $code = null,
-        $data = null,
+        ?string $message = null,
+        ?string $code = null,
+        array|JsonSerializable|null $data = null,
         int $status = self::HTTP_BAD_REQUEST,
         array $headers = []
     ): Response {
@@ -96,16 +96,16 @@ class Response extends JsonResponse
      * Return error response
      *
      * @param string $message
-     * @param null|string $code
-     * @param array|JsonSerializable|null $data
+     * @param  string|null  $code
+     * @param  array|JsonSerializable|null  $data
      * @param int $status
      * @param array $headers
      * @return Response
      */
     public static function error(
         string $message,
-        string $code = null,
-        $data = null,
+        ?string $code = null,
+        array|JsonSerializable|null $data = null,
         int $status = self::HTTP_INTERNAL_SERVER_ERROR,
         array $headers = []
     ): Response {
@@ -124,11 +124,11 @@ class Response extends JsonResponse
 
     /**
      * @param string $uri
-     * @param array|JsonSerializable|null $data
+     * @param  array|JsonSerializable|null  $data
      * @param array $headers
      * @return Response
      */
-    public static function created(string $uri, $data = null, array $headers = []): Response
+    public static function created(string $uri, array|JsonSerializable|null $data = null, array $headers = []): Response
     {
         if ($data instanceof JsonSerializable) {
             $data = $data->jsonSerialize();
@@ -143,11 +143,11 @@ class Response extends JsonResponse
     }
 
     /**
-     * @param string $message
+     * @param  string|null  $message
      * @param array $headers
      * @return Response
      */
-    public static function notFound(string $message = null, array $headers = []): Response
+    public static function notFound(?string $message = null, array $headers = []): Response
     {
         return self::fail($message, null, null, self::HTTP_NOT_FOUND, $headers);
     }
