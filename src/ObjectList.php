@@ -15,9 +15,17 @@ use Traversable;
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  *
  * Note: an element matches a filter when $filter($element) === true.
+ *
+ * @template T of object
+ * @extends ArrayObject<mixed, T>
  */
 abstract class ObjectList extends ArrayObject implements JsonSerializable
 {
+	/**
+	 * @param T[] $input
+	 * @param int $flags
+	 * @param class-string $iteratorClass
+	 */
     public function __construct(array $input = [], int $flags = 0, string $iteratorClass = 'ArrayIterator')
     {
         foreach ($input as $element) {
@@ -36,16 +44,18 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      */
     abstract public function accepts(mixed $value): bool;
 
-    /**
-     * Check if {$newValue} is acceptable and set it.
-     */
-    public function offsetSet(mixed $index, mixed $newValue): void
+	/**
+	 * Check if {$newValue} is acceptable and set it.
+	 * @param mixed $key
+	 * @param T $value
+	 */
+    public function offsetSet(mixed $key, mixed $value): void
     {
-        if (!$this->accepts($newValue)) {
+        if (!$this->accepts($value)) {
             throw new InvalidArgumentException($this->getErrorText());
         }
 
-        parent::offsetSet($index, $newValue);
+        parent::offsetSet($key, $value);
     }
 
     /**
@@ -62,6 +72,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Add element to this list.
+	 * @param T $value
      */
     public function append(mixed $value): void
     {
@@ -74,6 +85,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Add a list of elements to this list.
+	 * @param Traversable<mixed, T> $list
      */
     public function appendAll(Traversable $list): static
     {
@@ -86,6 +98,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Remove an element from this list.
+	 * @param T $element
      */
     public function delete(mixed $element): static
     {
@@ -98,6 +111,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Pop an element off the end of this list (see: array_pop).
+	 * @return T|null
      */
     public function pop(): mixed
     {
@@ -111,7 +125,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Remove from list and return the first list value that matches callable filter.
      * Technically it's `unshift`, not `pop`, because it returns the first, not the last element.
-     */
+	 * @param callable(T): bool $filter
+	 * @return T|null
+	 */
     public function popMatching(callable $filter): mixed
     {
         foreach ($this as $element) {
@@ -127,7 +143,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Sort this list using {$sorter} (see: usort).
-     */
+	 * @param callable(T, T): int $sorter
+	 */
     public function sort(callable $sorter): static
     {
         $list = $this->getArrayCopy();
@@ -144,7 +161,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return a new list containing only those elements matching {$filter}.
-     */
+	 * @param callable(T): bool $filter
+	 */
     public function filter(callable $filter): static
     {
         return new static(array_filter($this->getArrayCopy(), $filter));
@@ -152,7 +170,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return a new list containing only those elements not present in {$otherList}.
-     */
+	 * @param ObjectList<T> $otherList
+	 */
     public function exclude(ObjectList $otherList): static
     {
         return $this->filter(function ($element) use ($otherList) {
@@ -162,7 +181,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return a new list containing only those elements present in {$otherList}.
-     */
+	 * @param ObjectList<T> $otherList
+	 */
     public function intersect(ObjectList $otherList): static
     {
         return $this->filter(function ($element) use ($otherList) {
@@ -173,7 +193,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Returns a new list containing one element for each {$selector($element)} value (i.e. array_unique using
      * a callback for each value).
-     */
+	 * @param callable(T): mixed $selector
+	 */
     public function uniqueFor(callable $selector): static
     {
         $keys = [];
@@ -220,6 +241,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return the first element.
+	 * @return T|null
      */
     public function getFirst(): mixed
     {
@@ -230,7 +252,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return the last element.
-     */
+	 * @return T|null
+	 */
     public function getLast(): mixed
     {
         $copy = $this->getArrayCopy();
@@ -240,7 +263,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return first element matching {$filter}, or null.
-     */
+	 * @return T|null
+	 */
     public function find(callable $filter): mixed
     {
         foreach ($this as $element) {
@@ -255,7 +279,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Return first element matching {$filter}, or throws a RuntimeException.
      *
-     * @throws ObjectListElementNotFoundException
+	 * @param callable(T): bool $filter
+	 * @return T
+	 * @throws ObjectListElementNotFoundException
      */
     public function get(callable $filter): mixed
     {
@@ -281,8 +307,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * For each element create a key using {$grouper} and split this list into a series of lists based on that key.
      * The returned object is an ObjectListList which behaves like any other ObjectList.
      *
-     * @param callable $grouper
-     * @return ObjectListList
+     * @param callable(T): mixed $grouper
+     * @return ObjectListList<T>
      */
     public function group(callable $grouper): ObjectListList
     {
@@ -306,6 +332,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
      * permutations.
      *
      * The returned object is an ObjectListList which behaves like any other ObjectList.
+	 *
+	 * @return ObjectListList<T>
      */
     public function getAllPermutations(?int $max = null): ObjectListList
     {
@@ -372,6 +400,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     /**
      * Create a single member element from serialized data.
      *
+	 * @return T
      * @throws LogicException
      */
     public static function deserializeItem(mixed $data): mixed
@@ -386,6 +415,7 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Create an object of current list type from a toArray serialized form.
+	 * @return ObjectList<T>
      */
     public static function fromArray(array $items): static
     {
@@ -403,6 +433,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Applies {$mapper} to each element of this list and returns an array of outputs.
+	 * @template U
+	 * @param callable(T): U $mapper
+	 * @return U[]
      */
     public function map(callable $mapper): array
     {
@@ -411,20 +444,25 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Iteratively reduce this list to a single value.
-     */
+	 * @template U
+	 * @param callable(U, T): U $reducer
+	 * @param U|null $initial
+	 * @return U|null
+	 */
     public function reduce(callable $reducer, mixed $initial = null): mixed
     {
         return array_reduce($this->getArrayCopy(), $reducer, $initial);
     }
 
-    /**
-     * Iteratively reduce this list into a single value by adding up the result of {$valueProvider} for each element.
-     *
-     * @param callable $valueProvider
-     * @param float|int|null $startValue
-     * @return float|int
-     */
-    public function sum(callable $valueProvider, mixed $startValue = null): float|int
+	/**
+	 * Iteratively reduce this list into a single value by adding up the result of {$valueProvider} for each element.
+	 *
+	 * @template U of float|int
+	 * @param callable(T): U $valueProvider
+	 * @param U|null $startValue
+	 * @return U|null
+	 */
+    public function sum(callable $valueProvider, mixed $startValue = null): int|float
     {
         return $this->reduce(function ($total, $element) use ($valueProvider) {
             return $total + $valueProvider($element);
@@ -433,7 +471,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return the number of elements matching {$filter}.
-     */
+	 *
+	 * @param callable(T): bool $filter
+	 */
     public function countMatching(callable $filter): int
     {
         $out = 0;
@@ -448,7 +488,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Whether this list contains any elements matching {$filter}.
-     */
+	 *
+	 * @param callable(T): bool $filter
+	 */
     public function hasMatching(callable $filter): bool
     {
         foreach ($this as $element) {
@@ -462,6 +504,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Return true if this list contains {$element}.
+	 *
+	 * @param T $element
      */
     public function contains(mixed $element): bool
     {
@@ -474,7 +518,9 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
 
     /**
      * Executes {$operation} for each of the elements and returns this list intact.
-     */
+	 *
+	 * @param callable(T): void $operation
+	 */
     public function each(callable $operation): static
     {
         $this->map($operation);

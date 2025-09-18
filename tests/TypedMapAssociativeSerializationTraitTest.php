@@ -21,14 +21,17 @@ class TypedMapAssociativeSerializationTraitTest extends TestCase
         $keys = array_keys($expected);
         $values = array_values($expected);
 
-        /** @var TypedMapAssociativeSerializationTrait|MockObject $map */
-        $map = $this->getMockForTrait(TypedMapAssociativeSerializationTrait::class);
-        $map->expects($this->any())->method('serializeKey')->willReturnArgument(0);
-        $map->expects($this->any())->method('serializeValue')->willReturnArgument(0);
-        $map->expects($this->once())->method('getArrayCopy')->willReturn($values);
-        $map->expects($this->any())->method('getKey')->willReturnCallback(function ($keyId) use ($keys) {
-            return $keys[$keyId];
-        });
+		$map = new class($keys, $values) {
+			use TypedMapAssociativeSerializationTrait;
+
+			public function __construct(public array $keys, public array $values) {}
+
+			public function serializeKey($key): mixed { return $key; }
+			public function serializeValue($value): mixed { return $value; }
+			public function getArrayCopy(): array { return $this->values; }
+			public function getKey($keyId): mixed { return $this->keys[$keyId]; }
+			public function set($key, $value): void { $this->values[$key] = $value; }
+		};
 
         $this->assertSame($expected, $map->toArray());
     }

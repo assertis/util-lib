@@ -21,7 +21,7 @@
   "require-dev": {
     "assertis/http-lib": "^4.0.1",
     "symfony/var-dumper": "*",
-    "phpunit/phpunit": "12.0.10",
+    "phpunit/phpunit": "^12.3",
     "monolog/monolog": "^3.0",
     "symfony/validator": "^7.0"
   },

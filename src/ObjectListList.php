@@ -4,12 +4,14 @@ namespace Assertis\Util;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
+ *
+ * @template T of object
+ * @extends ObjectList<ObjectList<T>>
  */
 class ObjectListList extends ObjectList
 {
     /**
-     * @param mixed $value
-     * @return boolean
+     * @param ObjectList<T> $value
      */
     public function accepts($value): bool
     {

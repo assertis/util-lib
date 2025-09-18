@@ -49,7 +49,7 @@ HTTP;
 Cache-Control: max-age={$seconds}, public, s-maxage={$seconds}
 Content-Type:  application/json
 Date:          {$date->format('D, d M Y H:i:s')} GMT
-Expires:       Tue, 19 Dec 2017 12:36:59 GMT
+Expires:       {$date->format('D, d M Y H:i:s')} GMT
 
 {"status":"success","data":{"foo":"bar"},"links":[]}
 HTTP;
