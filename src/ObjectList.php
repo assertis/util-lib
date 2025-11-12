@@ -246,8 +246,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     public function getFirst(): mixed
     {
         $copy = $this->getArrayCopy();
-
-        return reset($copy);
+        $first = reset($copy);
+        return $first === false ? null : $first;
     }
 
     /**
@@ -257,8 +257,8 @@ abstract class ObjectList extends ArrayObject implements JsonSerializable
     public function getLast(): mixed
     {
         $copy = $this->getArrayCopy();
-
-        return end($copy);
+        $last = end($copy);
+        return $last === false ? null : $last;
     }
 
     /**
