@@ -247,7 +247,7 @@ class ObjectListTest extends TestCase
             [1, 2, 2, 2, 3],
             [4, 9, 1, 5, 5],
             [4, null, 1, 5, 5],
-            [5, null, 0, null, null],
+            [5, null, 0, false, false],
         ];
     }
 
