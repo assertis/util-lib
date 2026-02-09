@@ -17,7 +17,7 @@ class MultilineFormatter implements FormatterInterface
      * @param  array $record A record to format
      * @return mixed The formatted record
      */
-    public function format(array $record): mixed
+    public function format(array|\Monolog\LogRecord $record): mixed
     {
         return trim($record['message']) . "\n\n";
     }

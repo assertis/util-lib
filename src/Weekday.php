@@ -45,16 +45,16 @@ class Weekday
 
     /**
      * @param string $string
-     * @param array|null $map
+     * @param  array|null  $map
      * @return Weekday
      */
-    public static function fromString(string $string, array $map = null): Weekday
+    public static function fromString(string $string, ?array $map = null): Weekday
     {
         if ($map !== null) {
             $key = array_search($string, $map);
         } else {
             $key = array_search($string, self::$long);
-            
+
             if (false === $key) {
                 $key = array_search($string, self::$short);
             }

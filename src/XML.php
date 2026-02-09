@@ -149,11 +149,11 @@ class XML extends SimpleXMLElement
      * Creates a CDATA section element to this tree.
      *
      * @param string $name Node name
-     * @param string $text String to append.
+     * @param  string|null  $text String to append.
      * @return XML
      * @throws RuntimeException
      */
-    public function cdata(string $name, string $text = null): XML
+    public function cdata(string $name, ?string $text = null): XML
     {
         if ($text === null && !$this->getName()) {
             throw new RuntimeException("Element not initialized yet, can't add CDATA.");
